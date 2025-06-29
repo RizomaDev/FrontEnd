@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+import LoginPage from "../../assets/LoginPage.jpg";
 
 export default function Login() {
   const {
@@ -35,9 +36,8 @@ export default function Login() {
       <div
         className="min-h-screen flex items-center justify-center bg-cover bg-center [filter:sepia(40%)]"
         style={{
-          backgroundImage:
-            "url(https://media.istockphoto.com/id/1705694439/es/foto/mujeres-vietnamitas-vendiendo-frutas-en-el-mercado-flotante-delta-del-r%C3%ADo-mekong-vietnam.jpg?s=2048x2048&w=is&k=20&c=mQQPY7t7R8Jhdjoj8wwgZByXY73kYI0yglYieGrJWJ4=",
-        }}
+          backgroundImage: `url(${LoginPage})`,
+          }}
       >
         <div className="card w-96 bg-base-100 shadow-xl p-4">
           <div className="card-body items-center text-left">

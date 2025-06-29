@@ -7,6 +7,8 @@ import React, { useEffect, useState } from "react";
 import { getAllBookmarks } from "../../service/apiService";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import heroWelcome from "../../assets/heroWelcome.jpg";
+import Verdiales from "../../assets/Verdiales.jpg";
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
@@ -31,7 +33,7 @@ export default function LandingPage() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Cargando...</div>;
   }
 
  
@@ -59,7 +61,7 @@ export default function LandingPage() {
         className="hero min-h-screen"
         style={{
           backgroundImage:
-            "url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp)",
+              `url(${heroWelcome})`,
         }}
       >
         <div className="hero-overlay"></div>
@@ -75,16 +77,16 @@ export default function LandingPage() {
       <div className="hero bg-base-200 py-16">
         <div className="hero-content flex-col lg:flex-row items-center">
           <img
-            src={imageTemporal}
+            src={Verdiales}
             className="max-w-sm rounded-lg shadow-2xl"
             alt="Imagen temporal"
           />
           <div className="lg:ml-8 flex flex-col items-start">
             <h1 className="text-5xl font-bold text-secondary">
-              ¡Bienvenida a Rizoma!
+              ¡Bienvenida a Otra Málaga!
             </h1>
             <p className="py-6">
-              Rizoma es un mapa colaborativo donde puedes descubrir, documentar y compartir marcadores ciudadanos, espacios colectivos y prácticas sociales transformadoras. Explora el territorio desde una mirada comunitaria y participa subiendo tus propias propuestas. Cada marcador representa una propuesta viva: un centro cultural autogestionado, una red de cuidados, un huerto urbano, una biblioteca feminista, un grupo de consumo responsable o cualquier otra expresión de comunidad y resistencia cotidiana.
+              Otra Málaga es un mapa colaborativo donde puedes descubrir, documentar y compartir marcadores ciudadanos, espacios colectivos y prácticas sociales transformadoras. Explora el territorio desde una mirada comunitaria y participa subiendo tus propias propuestas. Cada marcador representa una propuesta viva: un centro cultural autogestionado, una red de cuidados, un huerto urbano, una biblioteca feminista, un grupo de consumo responsable o cualquier otra expresión de comunidad y resistencia cotidiana.
             </p>
           </div>
         </div>
