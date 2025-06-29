@@ -94,24 +94,61 @@ export default function BookmarkDetails() {
                 <h3 className="text-2xl font-semibold text-secondary ml-5 mb-4">
                   Qué esperar
                 </h3>
-                <p className="text-md text-secondary font-semibold text-neutral-content ml-5 mb-6">
+                <p className="text-base text-base-content leading-relaxed ml-5 mb-6">
                    {bookmark.description} 
                 </p>
                 <div className="text-base text-base-content leading-relaxed space-y-4 ml-5">
                   {/* Optionally add more details here if available */}
                 </div>
-                {bookmark.itinerary && (
+                {bookmark.url && (
                 <div className="mb-6 ml-5">
-                  <h4 className="text-lg font-semibold text-primary mb-2">Itinerary</h4>
-                  <p className="text-base text-base-content leading-relaxed">{bookmark.itinerary}</p>
+                  <h4 className="text-lg font-semibold text-primary mb-2">Información adicional</h4>
+                  <a className="text-base text-base-content leading-relaxed underline" href={bookmark.url} target="_blank" rel="noopener noreferrer">{bookmark.url}</a>
                 </div>
-              )}
-              {bookmark.observation && (
-                <div className="mb-6 ml-5">
-                  <h4 className="text-lg font-semibold text-primary mb-2">Observations</h4>
-                  <p className="text-base text-base-content leading-relaxed">{bookmark.observation}</p>
-                </div>
-              )}
+                )}
+                {bookmark.video && (
+                  <div className="mb-6 ml-5">
+                    <h4 className="text-lg font-semibold text-primary mb-2">Video</h4>
+                    {(() => {
+                      // Soporte para YouTube y Vimeo
+                      const ytMatch = bookmark.video.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([\w-]{11})/);
+                      const vimeoMatch = bookmark.video.match(/vimeo\.com\/(\d+)/);
+                      if (ytMatch) {
+                        return (
+                          <div className="aspect-video w-full max-w-xl">
+                            <iframe
+                              width="100%"
+                              height="315"
+                              src={`https://www.youtube.com/embed/${ytMatch[1]}`}
+                              title="YouTube video player"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                            ></iframe>
+                          </div>
+                        );
+                      } else if (vimeoMatch) {
+                        return (
+                          <div className="aspect-video w-full max-w-xl">
+                            <iframe
+                              src={`https://player.vimeo.com/video/${vimeoMatch[1]}`}
+                              width="100%"
+                              height="315"
+                              frameBorder="0"
+                              allow="autoplay; fullscreen; picture-in-picture"
+                              allowFullScreen
+                              title="Vimeo video player"
+                            ></iframe>
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <a className="text-base text-base-content leading-relaxed underline" href={bookmark.video} target="_blank" rel="noopener noreferrer">{bookmark.video}</a>
+                        );
+                      }
+                    })()}
+                  </div>
+                )}
               </div>
               <div className="bg-base-300 pt-8 pb-6 [filter:sepia(40%)]">
                 <h3 className="text-2xl font-semibold text-primary mb-4 ml-5">

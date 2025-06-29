@@ -318,23 +318,39 @@ export default function FormEditBookmark() {
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
-                <span className="label-text font-semibold">Video URL</span>
+                <span className="label-text font-semibold">Información adicional (URL)</span>
               </label>
               <input
-                type="text"
+                type="url"
                 className="input input-bordered w-full"
-                {...register("video")}
+                {...register("url", {
+                  pattern: {
+                    value: /^(https?:\/\/)?([\w\d-]+\.)+[\w\d]{2,}(\/.*)?$/i,
+                    message: "Introduce una URL válida."
+                  }
+                })}
               />
+              {errors.url && (
+                <span className="text-error text-sm mt-1">{errors.url.message}</span>
+              )}
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
-                <span className="label-text font-semibold">Additional Info URL</span>
+                <span className="label-text font-semibold">Video (URL)</span>
               </label>
               <input
-                type="text"
+                type="url"
                 className="input input-bordered w-full"
-                {...register("url")}
+                {...register("video", {
+                  pattern: {
+                    value: /^(https?:\/\/)?([\w\d-]+\.)+[\w\d]{2,}(\/.*)?$/i,
+                    message: "Introduce una URL válida."
+                  }
+                })}
               />
+              {errors.video && (
+                <span className="text-error text-sm mt-1">{errors.video.message}</span>
+              )}
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">

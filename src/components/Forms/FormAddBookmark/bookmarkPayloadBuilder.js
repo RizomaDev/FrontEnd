@@ -30,7 +30,7 @@ export async function buildBookmarkPayload(data) {
     categoryId: Number(data.categoryId),
     images,
     video: data.video || "",
-    url: data.addInfo || "",
+    url: data.url || "",
     location,
     publicationDate: new Date().toISOString(),
   };

@@ -5,28 +5,6 @@ export default function BookmarkPlanningContact({ register, errors }) {
     <>
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
-          <span className="label-text font-semibold">Itinerario</span>
-        </label>
-        <textarea
-          className="textarea textarea-bordered h-20 w-full"
-          placeholder="Describe el itinerario (opcional)"
-          {...register("itinerary")}
-        ></textarea>
-      </div>
-
-      <div className="form-control w-full max-w-md mb-4 text-left">
-        <label className="label">
-          <span className="label-text font-semibold">Observaciones</span>
-        </label>
-        <textarea
-          className="textarea textarea-bordered h-20 w-full"
-          placeholder="¿Alguna observación especial? (opcional)"
-          {...register("observation")}
-        ></textarea>
-      </div>
-
-      <div className="form-control w-full max-w-md mb-4 text-left">
-        <label className="label">
           <span className="label-text font-semibold">Latitud <span className="text-error">*</span></span>
         </label>
         <input
