@@ -105,3 +105,13 @@ export function getTags() {
       throw error;
     });
 }
+
+export function getUserById(id) {
+  const url = `http://localhost:8080/api/users/${id}`;
+  return axios
+    .get(url, getRequestOptions())
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
