@@ -108,7 +108,7 @@ export default function FormAddBookmark() {
       <div className="card w-full max-w-4xl bg-base-100 shadow-xl p-8 rounded-lg">
         <div className="card-body items-center text-center p-0">
           <h2 className="card-title text-4xl font-bold text-primary mb-8">
-            Add a New Bookmark
+            Añadir un nuevo marcador
           </h2>
 
           <ul className="steps steps-vertical lg:steps-horizontal w-full mb-8 font-semibold">
@@ -135,7 +135,7 @@ export default function FormAddBookmark() {
                 <div className="form-control w-full max-w-md mb-6 text-left">
                   <label className="label">
                     <span className="label-text font-semibold">
-                      Add Images (minimum 3) <span className="text-error">*</span>
+                      Añadir imágenes (mínimo 3) <span className="text-error">*</span>
                     </span>
                   </label>
                   <input
@@ -170,7 +170,7 @@ export default function FormAddBookmark() {
               <div className="flex flex-col items-center">
                 <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Host Contact</h3>
                 <BookmarkHostContact />
-                <p className="mb-4">Review your information and click <b>Add Bookmark</b> to submit.</p>
+                <p className="mb-4">Revisa tu información y haz clic en <b>Añadir marcador</b> para enviarlo.</p>
               </div>
             )}
 
@@ -194,7 +194,7 @@ export default function FormAddBookmark() {
                 </button>
               ) : (
                 <button type="submit" className="btn btn-primary flex-1">
-                  Add Bookmark
+                  Añadir marcador
                 </button>
               )}
             </div>

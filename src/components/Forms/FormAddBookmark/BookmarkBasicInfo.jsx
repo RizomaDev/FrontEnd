@@ -18,13 +18,13 @@ export default function BookmarkBasicInfo({
        <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
           <span className="label-text font-semibold">
-            Bookmark Name <span className="text-error">*</span>
+            Título del marcador <span className="text-error">*</span>
           </span>
         </label>
         <input
           type="text"
           className="input input-bordered w-full"
-          {...register("title", { required: "Bookmark Name is required." })}
+          {...register("title", { required: "El título del marcador es requerido." })}
         />
         {errors.title && (
           <span className="text-error text-sm mt-1"> 
@@ -41,10 +41,10 @@ export default function BookmarkBasicInfo({
         </label>
         <select
           className="select select-bordered w-full"
-          {...register("tagId", { required: "Tag is required." })}
+          {...register("tagId", { required: "La etiqueta es requerida." })}
         >
           <option value="" disabled>
-            Select a tag
+            Selecciona una etiqueta
           </option>
           {loadingTags ? (
             <option>Loading tags...</option>
@@ -73,13 +73,13 @@ export default function BookmarkBasicInfo({
         </label>
         <select
           className="select select-bordered w-full"
-          {...register("categoryId", { required: "Category is required." })}
+          {...register("categoryId", { required: "La categoría es requerida." })}
         >
           <option value="" disabled>
-            Select a category
+            Selecciona una categoría
           </option>
           {loadingCategories ? (
-            <option>Loading categories...</option>
+            <option>Cargando categorías...</option>
           ) : categoriesError ? (
             <option className="text-error">{categoriesError}</option>
           ) : (

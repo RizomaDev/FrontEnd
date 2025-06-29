@@ -143,7 +143,7 @@ export default function HeaderLogged() {
           to="/HomePage"
           className="btn btn-ghost text-3xl text-white font-sans normal-case ml-4"
         >
-          Travel4Real
+          Otra Málaga
         </Link>
       </div>
 
@@ -182,16 +182,16 @@ export default function HeaderLogged() {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[2000] mt-3 p-2 shadow min-w-max absolute right-0"
             >
               <li>
-                <Link to="/HomePage">Home</Link>
+                <Link to="/HomePage">Inicio</Link>
               </li>
               <li>
-                <Link to="/AddBookmark">Add Bookmark</Link>
+                <Link to="/AddBookmark">Añadir marcador</Link>
               </li>
               <li>
-                <Link to="/MyBookmark">My Bookmarks</Link>
+                <Link to="/MyBookmark">Mis marcadores</Link>
               </li>
               <li>
-                <button onClick={onClick}>Logout</button>
+                <button onClick={onClick}>Cerrar sesión</button>
               </li>
             </ul>
           )}

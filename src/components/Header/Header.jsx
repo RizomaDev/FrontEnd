@@ -12,7 +12,7 @@ function Header() {
           to="/"
           className="btn btn-ghost text-3xl text-white font-sans normal-case ml-4"
         >
-          Travel4Real
+          Otra Málaga
         </Link>
       </div>
       <div className="flex-none flex items-center">
@@ -25,10 +25,10 @@ function Header() {
               color: "var(--color-base-content)",
             }}
           >
-            {"Login"}
+            {"Iniciar sesión"}
           </Buttons>
           <Buttons to="/Register" color="btn-primary [filter:sepia(40%)]">
-            {"Register"}
+            {"Registrarse"}
           </Buttons>
         </div>
         <div className="dropdown dropdown-end">

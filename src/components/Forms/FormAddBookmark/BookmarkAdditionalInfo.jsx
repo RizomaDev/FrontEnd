@@ -6,15 +6,15 @@ export default function BookmarkAdditionalInfo({ register, errors }) {
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
           <span className="label-text font-semibold">
-            Description of the Bookmark (min. 100 characters) <span className="text-error">*</span>
+            Descripción del marcador (min. 100 caracteres) <span className="text-error">*</span>
           </span>
         </label>
         <textarea
           className="textarea textarea-bordered h-24 w-full"
-          placeholder="Provide a detailed description of the bookmark..."
+          placeholder="Proporciona una descripción detallada del marcador..."
           {...register("description", {
-            required: "Description is required.",
-            minLength: { value: 100, message: "Description must be at least 100 characters long." }
+            required: "La descripción es requerida.",
+            minLength: { value: 100, message: "La descripción debe tener al menos 100 caracteres." }
           })}
         ></textarea>
         {errors.description && (

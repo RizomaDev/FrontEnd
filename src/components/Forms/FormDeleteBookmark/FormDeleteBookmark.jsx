@@ -13,7 +13,7 @@ export default function FormDeleteBookmark({id_bookmark}) {
             setShowDeleteModal(false);
             navigate("/HomePage");
         } else {
-            alert("Failed to delete bookmark");
+            alert("Error al eliminar el marcador");
         }
 
     }
@@ -22,21 +22,20 @@ export default function FormDeleteBookmark({id_bookmark}) {
         <div className="">
             <dialog id="success_modal" className={`modal ${showDeleteModal ? 'modal-open' : ''}`}>
                 <div className="modal-box bg-warning text-black text-center p-8 rounded-lg shadow-lg">
-                    <h2 className="font-bold text-2xl">Are you sure you want to Delete this Bookmark?</h2>
-                    <p className="py-4 text-lg">If you delete the bookmark, all the information connected
-                        will be lost.</p>
+                    <h2 className="font-bold text-2xl">¿Estás seguro de querer eliminar este marcador?</h2>
+                    <p className="py-4 text-lg">Si eliminas el marcador, se perderá toda la información.</p>
                     <div className="modal-action">
                         <button
                             className="btn btn-primary text-white px-6 py-2 rounded-lg"
                             onClick={() => setShowDeleteModal(false)}
                         >
-                            NO
+                            NO  
                         </button>
                         <button
                             className="btn btn-secondary text-black px-6 py-2 rounded-lg"
                             onClick={handleDeleteBookmark}
                         >
-                            YES
+                            SÍ
                         </button>
                     </div>
                 </div>

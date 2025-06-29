@@ -65,7 +65,7 @@ export default function MyBookmark(){
         <div className="hero-overlay"></div>
         <div className="hero-content text-neutral-content justify-start w-full">
           <div className="max-w-md text-left">
-            <h1 className="mb-5 text-5xl font-bold">My Bookmarks Created</h1>
+            <h1 className="mb-5 text-5xl font-bold">Mis marcadores</h1>
           </div>
         </div>
       </div>

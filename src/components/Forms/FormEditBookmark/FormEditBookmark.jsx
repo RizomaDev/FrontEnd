@@ -199,9 +199,9 @@ export default function FormEditBookmark() {
         <div className="alert alert-error shadow-lg max-w-md">
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span>You are not authorized to edit this bookmark.</span>
+            <span>No tienes permisos para editar este marcador.</span>
           </div>
-          <button className="btn btn-sm btn-error" onClick={() => navigate('/HomePage')}>Go to Homepage</button>
+          <button className="btn btn-sm btn-error" onClick={() => navigate('/HomePage')}>Ir a la página de inicio</button>
         </div>
       </div>
     );
@@ -218,7 +218,7 @@ export default function FormEditBookmark() {
       <div className="card w-full max-w-2xl bg-base-100 shadow-xl p-8 rounded-lg">
         <div className="card-body items-center text-center p-0">
           <h2 className="card-title text-4xl font-bold text-primary mb-8">
-            Edit Bookmark
+            Editar marcador
           </h2>
           <form onSubmit={handleSubmit(onSubmit)} className="w-full">
             <div className="form-control w-full mb-4 text-left">
@@ -230,7 +230,7 @@ export default function FormEditBookmark() {
               <input
                 type="text"
                 className="input input-bordered w-full"
-                {...register("title", { required: "Title is required." })}
+                {...register("title", { required: "El título del marcador es requerido." })}
               />
               {errors.title && (
                 <span className="text-error text-sm mt-1">
@@ -241,12 +241,12 @@ export default function FormEditBookmark() {
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
                 <span className="label-text font-semibold">
-                  Description <span className="text-error">*</span>
+                  Descripción <span className="text-error">*</span>
                 </span>
               </label>
               <textarea
                 className="textarea textarea-bordered h-24 w-full"
-                {...register("description", { required: "Description is required." })}
+                {...register("description", { required: "La descripción es requerida." })}
               ></textarea>
               {errors.description && (
                 <span className="text-error text-sm mt-1">
@@ -262,10 +262,10 @@ export default function FormEditBookmark() {
               </label>
               <select
                 className="select select-bordered w-full"
-                {...register("tag", { required: "Tag is required." })}
+                {...register("tag", { required: "La etiqueta es requerida." })}
               >
                 <option value="" disabled>
-                  Select a tag
+                  Selecciona una etiqueta
                 </option>
                 {loadingTags ? (
                   <option>Loading tags...</option>
@@ -293,13 +293,13 @@ export default function FormEditBookmark() {
               </label>
               <select
                 className="select select-bordered w-full"
-                {...register("category", { required: "Category is required." })}
+                {...register("category", { required: "La categoría es requerida." })}
               >
                 <option value="" disabled>
-                  Select a category
+                  Selecciona una categoría
                 </option>
                 {loadingCategories ? (
-                  <option>Loading categories...</option>
+                  <option>Cargando categorías...</option>
                 ) : categoriesError ? (
                   <option className="text-error">{categoriesError}</option>
                 ) : (
@@ -338,7 +338,7 @@ export default function FormEditBookmark() {
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
-                <span className="label-text font-semibold">Location (Latitude)</span>
+                <span className="label-text font-semibold">Ubicación (Latitud)</span>
               </label>
               <input
                 type="number"
@@ -349,7 +349,7 @@ export default function FormEditBookmark() {
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
-                <span className="label-text font-semibold">Location (Longitude)</span>
+                <span className="label-text font-semibold">Ubicación (Longitud)</span>
               </label>
               <input
                 type="number"
@@ -360,7 +360,7 @@ export default function FormEditBookmark() {
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
-                <span className="label-text font-semibold">Publication Date</span>
+                <span className="label-text font-semibold">Fecha de publicación</span>
               </label>
               <input
                 type="datetime-local"
@@ -370,7 +370,7 @@ export default function FormEditBookmark() {
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
-                <span className="label-text font-semibold">Images</span>
+                <span className="label-text font-semibold">Imágenes</span>
               </label>
               <input
                 type="file"
@@ -385,7 +385,7 @@ export default function FormEditBookmark() {
                 type="submit"
                 className="btn btn-primary w-full"
               >
-                Update Bookmark
+                Actualizar marcador
               </button>
             </div>
           </form>
@@ -393,14 +393,14 @@ export default function FormEditBookmark() {
       </div>
       <dialog id="success_modal" className={`modal ${showSuccessModal ? 'modal-open' : ''}`}>
         <div className="modal-box bg-warning text-black text-center p-8 rounded-lg shadow-lg">
-          <h3 className="font-bold text-2xl">Bookmark Updated Successfully!</h3>
-          <p className="py-4 text-lg">Your bookmark has been updated successfully.</p>
+          <h3 className="font-bold text-2xl">Marcador actualizado correctamente!</h3>
+          <p className="py-4 text-lg">Tu marcador ha sido actualizado correctamente.</p>
           <div className="modal-action">
             <button
               className="btn btn-success text-white px-6 py-2 rounded-lg"
               onClick={handleCloseSuccessModal}
             >
-              Go to Homepage
+              Ir a la página de inicio
             </button>
           </div>
         </div>
@@ -414,7 +414,7 @@ export default function FormEditBookmark() {
               className="btn btn-neutral text-white px-6 py-2 rounded-lg"
               onClick={handleCloseErrorModal}
             >
-              Close
+              Cerrar
             </button>
           </div>
         </div>

@@ -8,7 +8,7 @@ export default function BookmarkFormActions({ isSubmitting }) {
         className="btn btn-primary w-full"
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Submitting..." : "Add Bookmark"}
+        {isSubmitting ? "Añadiendo marcador..." : "Añadir marcador"}
       </button>
     </div>
   );

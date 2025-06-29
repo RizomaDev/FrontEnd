@@ -5,35 +5,35 @@ export default function BookmarkPlanningContact({ register, errors }) {
     <>
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
-          <span className="label-text font-semibold">Itinerary</span>
+          <span className="label-text font-semibold">Itinerario</span>
         </label>
         <textarea
           className="textarea textarea-bordered h-20 w-full"
-          placeholder="Describe the itinerary (optional)"
+          placeholder="Describe el itinerario (opcional)"
           {...register("itinerary")}
         ></textarea>
       </div>
 
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
-          <span className="label-text font-semibold">Observations</span>
+          <span className="label-text font-semibold">Observaciones</span>
         </label>
         <textarea
           className="textarea textarea-bordered h-20 w-full"
-          placeholder="Any special observations? (optional)"
+          placeholder="¿Alguna observación especial? (opcional)"
           {...register("observation")}
         ></textarea>
       </div>
 
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
-          <span className="label-text font-semibold">Latitude <span className="text-error">*</span></span>
+          <span className="label-text font-semibold">Latitud <span className="text-error">*</span></span>
         </label>
         <input
           type="number"
           step="any"
           className="input input-bordered w-full"
-          {...register("latitude", { required: "Latitude is required." })}
+          {...register("latitude", { required: "La latitud es obligatoria." })}
         />
         {errors.latitude && (
           <span className="text-error text-sm mt-1">{errors.latitude.message}</span>
