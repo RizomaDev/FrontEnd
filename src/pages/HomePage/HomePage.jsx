@@ -3,6 +3,9 @@ import { getAllBookmarks, getCategories, getTags } from "../../service/apiServic
 import Cards from "../../components/Cards/Cards";
 import Buttons from "../../components/Buttons/Buttons";
 import imageTemporal from "../../assets/imageTemporal.png";
+import Verdiales from "../../assets/Verdiales.jpg";
+import heroWelcome from "../../assets/heroWelcome.jpg";
+
 
 export default function HomePage() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -79,8 +82,7 @@ export default function HomePage() {
       <div
         className="hero min-h-screen"
         style={{
-          backgroundImage:
-            "url(https://media.istockphoto.com/id/624183176/es/foto/arroz-campo-terraplenado-en-mu-cang-chai-vietnam.jpg?s=1024x1024&w=is&k=20&c=avWIfgrGKtPaskn1YY3sGjMTw2H8OjP0GQlRzaPeHPY=)",
+          backgroundImage: `url(${heroWelcome})`,
         }}
       >
         <div className="hero-overlay"></div>
@@ -96,7 +98,7 @@ export default function HomePage() {
       <div className="hero bg-base-200 py-16">
         <div className="hero-content flex-col lg:flex-row items-center">
           <img
-            src={imageTemporal}
+            src={Verdiales}
             className="max-w-sm rounded-lg shadow-2xl"
             alt="Imagen temporal"
           />
@@ -182,10 +184,11 @@ export default function HomePage() {
             id={bookmark.id}
             title={bookmark.title}
             category={bookmark.category}
+            tag={bookmark.tag}
             location={bookmark.location}
             img={
-              Array.isArray(bookmark.imageUrls) && bookmark.imageUrls.length > 0
-                ? bookmark.imageUrls[0]
+              bookmark.imageUrls && bookmark.imageUrls.length > 0
+                ? `http://localhost:8080/api/images/${bookmark.imageUrls[0].split('/').pop()}`
                 : imageTemporal
             }
           />

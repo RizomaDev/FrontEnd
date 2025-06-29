@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-export default function Cards({ title, category, location, img, id }) {
+export default function Cards({ title, category, tag, location, img, id }) {
   return (
    
     <div className="card bg-base-100 w-full shadow-sm">
@@ -13,6 +13,7 @@ export default function Cards({ title, category, location, img, id }) {
         <h2 className="card-title text-neutral">{title}</h2>
 
         <p className="text-secondary">{category}</p>
+        <p className="text-secondary">{tag}</p>
        
         <p className="text-primary font-semibold text-sm mt-2">
           {location && typeof location === "object"
@@ -21,7 +22,7 @@ export default function Cards({ title, category, location, img, id }) {
         </p> 
         <div className="card-actions justify-end mt-4"> 
            <Link to={`/BookmarkDetails/${id}`} className="btn btn-primary">
-            read more
+            Ver más
           </Link>
         
         </div>

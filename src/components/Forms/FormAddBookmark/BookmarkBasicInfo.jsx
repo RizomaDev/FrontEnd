@@ -36,7 +36,7 @@ export default function BookmarkBasicInfo({
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
           <span className="label-text font-semibold">
-            Tag <span className="text-error">*</span>
+          Etiqueta <span className="text-error">*</span>
           </span>
         </label>
         <select
@@ -47,7 +47,7 @@ export default function BookmarkBasicInfo({
             Selecciona una etiqueta
           </option>
           {loadingTags ? (
-            <option>Loading tags...</option>
+            <option>Cargando etiquetas...</option>
           ) : tagsError ? (
             <option className="text-error">{tagsError}</option>
           ) : (
@@ -68,7 +68,7 @@ export default function BookmarkBasicInfo({
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
           <span className="label-text font-semibold">
-            Category <span className="text-error">*</span>
+            Categoría <span className="text-error">*</span>
           </span>
         </label>
         <select

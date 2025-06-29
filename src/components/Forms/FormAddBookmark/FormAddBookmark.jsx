@@ -112,10 +112,10 @@ export default function FormAddBookmark() {
           </h2>
 
           <ul className="steps steps-vertical lg:steps-horizontal w-full mb-8 font-semibold">
-            <li className={`step ${currentStep >= 1 ? "step-primary" : ""}`}>Bookmark Details</li>
-            <li className={`step ${currentStep >= 2 ? "step-primary" : ""}`}>Additional Information</li>
-            <li className={`step ${currentStep >= 3 ? "step-primary" : ""}`}>Planning & Scheduling</li>
-            <li className={`step ${currentStep >= 4 ? "step-primary" : ""}`}>Host Contact</li>
+            <li className={`step ${currentStep >= 1 ? "step-primary" : ""}`}>Detalles del marcador</li>
+            <li className={`step ${currentStep >= 2 ? "step-primary" : ""}`}>Información adicional</li>
+            <li className={`step ${currentStep >= 3 ? "step-primary" : ""}`}>Localización</li>
+            <li className={`step ${currentStep >= 4 ? "step-primary" : ""}`}>Confirmación</li>
           </ul>
 
           <form onSubmit={formHandleSubmit(currentStep === totalSteps ? onSubmit : onNext)} className="w-full">
