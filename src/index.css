@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "caramellatte";
+  default: false;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(98% 0.003 247.858);
+  --color-base-200: oklch(0.9632 0.0152 83.05);
+  --color-base-300: oklch(0.709 0.084 176.7 / 0.5);
+  --color-base-content: oklch(21% 0.006 285.885);
+  --color-primary: oklch(0.6789 0.1477 35.23);
+  --color-primary-content: oklch(26% 0.079 36.259);
+  --color-secondary: oklch(0.7036 0.0814 186.26);
+  --color-secondary-content: oklch(27% 0.046 192.524);
+  --color-accent: oklch(0.7036 0.0814 186.26);
+  --color-accent-content: oklch(29% 0.136 325.661);
+  --color-neutral: oklch(0.4607 0.0611 264.88);
+  --color-neutral-content: oklch(98% 0 0);
+  --color-info: oklch(68% 0.169 237.323);
+  --color-info-content: oklch(97% 0.013 236.62);
+  --color-success: oklch(0.7036 0.0814 186.26);
+  --color-success-content: oklch(98% 0.031 120.757);
+  --color-warning: oklch(0.8663 0.1867 99.58);
+  --color-warning-content: oklch(98% 0.022 95.277);
+  --color-error: oklch(59% 0.249 0.584);
+  --color-error-content: oklch(97% 0.014 343.198);
+  
+}
+
