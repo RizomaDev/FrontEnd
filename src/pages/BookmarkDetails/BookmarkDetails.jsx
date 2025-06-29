@@ -23,7 +23,7 @@ export default function BookmarkDetails() {
         setLoading(false);
       })
       .catch((err) => {
-        setError("Error fetching bookmark details");
+        setError("Error al cargar los detalles del marcador");
         setLoading(false);
       });
   }, [id]);
@@ -53,7 +53,9 @@ export default function BookmarkDetails() {
         <div className="card-body p-0">
           <div className="p-6 md:p-8">
             <p className="text-lg text-accent-content font-medium mb-2">
-              Routes with a local perspective
+              {bookmark.category}
+              <br />
+              {bookmark.tag}
             </p>
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-2 leading-tight">
               {bookmark.title}
@@ -87,21 +89,13 @@ export default function BookmarkDetails() {
 
           <div className="p-6 md:p-8 pt-0 flex flex-col lg:flex-row gap-6">
             <div className="flex-1 order-2 lg:order-1">
-              <div className="text-md text-content mb-4 flex items-center gap-2 ml-5">
-                <span className="font-semibold text-base-content">Created by:</span>{" "}
-                {bookmark.userName && (
-                  <span className="font-bold text-secondary">@{bookmark.userName}</span>
-                )}
-              </div>
-              <p className="text-base text-base-content leading-relaxed mb-6 ml-5">
-                {bookmark.description}
-              </p>
+              
               <div className="bg-base-200 pb-10 pt-4">
                 <h3 className="text-2xl font-semibold text-secondary ml-5 mb-4">
-                  What to Expect
+                  Qué esperar
                 </h3>
                 <p className="text-md text-secondary font-semibold text-neutral-content ml-5 mb-6">
-                  Duration: {bookmark.duration} in hours
+                   {bookmark.description} 
                 </p>
                 <div className="text-base text-base-content leading-relaxed space-y-4 ml-5">
                   {/* Optionally add more details here if available */}
@@ -121,7 +115,7 @@ export default function BookmarkDetails() {
               </div>
               <div className="bg-base-300 pt-8 pb-6 [filter:sepia(40%)]">
                 <h3 className="text-2xl font-semibold text-primary mb-4 ml-5">
-                  Contact the local guide
+                  Creado por
                 </h3>
                 <div className="flex items-center gap-6 mb-8 ml-5">
                   <div className="avatar">
@@ -133,17 +127,17 @@ export default function BookmarkDetails() {
                     </div>
                   </div>
                   <div className="text-base text-base-content leading-relaxed flex flex-col gap-1">
-                    <p>Name: {bookmark.host}</p>
+                    <p>Nombre: {bookmark.host}</p>
                     <p>Email: {bookmark.email}</p>
-                    <p>Phone/whatsapp: {bookmark.mobile}</p>
+                 
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex flex-col gap-4 w-11/12 mx-auto lg:w-64 flex-shrink-0 self-start order-1 lg:order-2 ">
               <div className="card bg-secondary shadow-md rounded-lg p-6 text-center [filter:sepia(40%)]">
-                <div className="text-xl font-bold text-neutral-content mb-2">Average Price</div>
-                <div className="text-3xl font-extrabold text-neutral-content">EUR {bookmark.price}</div>
+                <div className="text-xl font-bold text-neutral-content mb-2">Creado por</div>
+                <div className="text-3xl font-extrabold text-neutral-content">nombre usuario {bookmark.userId}</div>
               </div>
               {user && bookmark.userId === user.id && (
                 <div className="flex flex-col gap-3">

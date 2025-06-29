@@ -45,8 +45,8 @@ export default function HomePage() {
     const bookmarkCategoryName = bookmark.category;
 
     const matchesCategory =
-      selectedCategory === "" || expCategoryName === selectedCategory;
-    const matchesTag = selectedTag === "" || expTag === selectedTag;
+      selectedCategory === "" || bookmarkCategoryName === selectedCategory;
+    const matchesTag = selectedTag === "" || bookmarkTag === selectedTag;
     return matchesCategory && matchesTag;
   });
 
@@ -142,17 +142,16 @@ export default function HomePage() {
               onChange={handleCategoryChange}
             >
               <option value="">Todas las categorías</option>
-              {uniqueCategoriesForFilter.map(
+              {categoriesData.map(
                 (cat) =>
                   cat && (
-                    <option key={cat} value={cat}>
-                      {cat}
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
                     </option>
                   )
               )}
             </select>
           </div>
-
           <div className="form-control w-full md:w-auto">
             <label htmlFor="tagFilter" className="label sr-only">
               <span className="label-text">Filtrar por etiqueta</span>
@@ -201,14 +200,14 @@ export default function HomePage() {
           onClick={handlePrevPage}
           disabled={currentPage === 1}
         >
-          {"< Prev"}
+          {"< Anterior"}
         </Buttons>
         <Buttons
           color="btn-secondary"
           onClick={handleNextPage}
           disabled={currentPage === Math.ceil(filteredBookmarks.length / cardsPerPage)}
         >
-          {"Next >"}
+          {"Siguiente >"}
         </Buttons>
       </div>
     </>

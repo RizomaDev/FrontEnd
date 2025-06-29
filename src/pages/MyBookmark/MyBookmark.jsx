@@ -77,6 +77,7 @@ export default function MyBookmark(){
             id={bookmark.id}
             title={bookmark.title}
             category={bookmark.category}
+            tag={bookmark.tag}
             location={
               bookmark.location
                 ? `Lat: ${bookmark.location.latitude}, Lng: ${bookmark.location.longitude}`
