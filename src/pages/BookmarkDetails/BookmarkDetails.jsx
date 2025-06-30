@@ -170,25 +170,16 @@ export default function BookmarkDetails() {
                     </div>
                   </div>
                   <div className="text-base text-base-content leading-relaxed flex flex-col gap-1">
-                    <p>Nombre: {creator.name}</p>
-                    <p>Email: {creator.email}</p>
+                    <p>Nombre: {creator ? creator.name : "Desconocido"}</p>
+                    <p>Email: {creator ? creator.email : "Desconocido"}</p>
                  
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex flex-col gap-4 w-11/12 mx-auto lg:w-64 flex-shrink-0 self-start order-1 lg:order-2 ">
-              <div className="card bg-secondary shadow-md rounded-lg p-6 text-center [filter:sepia(40%)]">
-                <div className="text-xl font-bold text-neutral-content mb-2">Creado por</div>
-                {creator ? (
-                  <>
-                    <div className="text-lg font-semibold text-neutral-content">{creator.name}</div>
-                    <div className="text-base text-neutral-content">{creator.email}</div>
-                  </>
-                ) : (
-                  <div className="text-3xl font-extrabold text-neutral-content">nombre usuario {bookmark.userId}</div>
-                )}
-              </div>
+             
+           
               {user && bookmark.userId === user.id && (
                 <div className="flex flex-col gap-3">
                   <div className="">
