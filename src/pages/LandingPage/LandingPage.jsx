@@ -9,6 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import heroWelcome from "../../assets/heroWelcome.jpg";
 import Verdiales from "../../assets/Verdiales.jpg";
+import ButtonMap from "../../components/Buttons/ButtonMap";
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
@@ -88,6 +89,7 @@ export default function LandingPage() {
             <p className="py-6">
               Otra Málaga es un mapa colaborativo donde puedes descubrir, documentar y compartir marcadores ciudadanos, espacios colectivos y prácticas sociales transformadoras. Explora el territorio desde una mirada comunitaria y participa subiendo tus propias propuestas. Cada marcador representa una propuesta viva: un centro cultural autogestionado, una red de cuidados, un huerto urbano, una biblioteca feminista, un grupo de consumo responsable o cualquier otra expresión de comunidad y resistencia cotidiana.
             </p>
+            <ButtonMap />
           </div>
         </div>
       </div>
@@ -99,6 +101,7 @@ export default function LandingPage() {
         <p className="text-xl text-neutral">
           Cada marcador en el mapa representa una iniciativa ciudadana. Haz clic para ver más información, filtra por categoría o barrio, y contribuye sumando nuevos marcadores. ¡Construyamos juntas una ciudad más justa, inclusiva y descentralizada!
         </p>
+        
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto py-8 px-4 [filter:sepia(40%)]">

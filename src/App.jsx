@@ -1,4 +1,4 @@
-
+import 'leaflet/dist/leaflet.css';
 import Router from "./config/router/Router";
 
 

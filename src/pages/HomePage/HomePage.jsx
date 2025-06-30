@@ -6,6 +6,8 @@ import FilterCategoryTag from "../../components/FilterCategoryTag";
 import imageTemporal from "../../assets/imageTemporal.png";
 import Verdiales from "../../assets/Verdiales.jpg";
 import heroWelcome from "../../assets/heroWelcome.jpg";
+import MapBookmarks from "../../components/MapBookmarks";
+import ButtonMap from "../../components/Buttons/ButtonMap";
 
 export default function HomePage() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -69,7 +71,7 @@ export default function HomePage() {
     <>
       <div
         className="hero min-h-screen"
-        style={{ backgroundImage: `url(${heroWelcome})` }}
+        style={{ backgroundImage: `url(${heroWelcome})` }}    
       >
         <div className="hero-overlay"></div>
         <div className="hero-content text-neutral-content justify-start w-full">
@@ -78,6 +80,7 @@ export default function HomePage() {
               Encuentra tu siguiente marcador y únete a la comunidad
             </h1>
           </div>
+         
         </div>
       </div>
 
@@ -106,6 +109,9 @@ export default function HomePage() {
         <p className="text-xl text-neutral">
           Cada marcador en el mapa representa una iniciativa ciudadana. Haz clic para ver más información, filtra por categoría o barrio, y contribuye sumando nuevos marcadores. ¡Construyamos juntas una ciudad más justa, inclusiva y descentralizada!
         </p>
+        <div className="flex justify-right mt-4">
+          <ButtonMap />
+        </div>
       </div>
 
       <div className="text-left py-8 max-w-6xl mx-auto px-4">
@@ -123,6 +129,11 @@ export default function HomePage() {
           onCategoryChange={handleCategoryChange}
           onTagChange={handleTagChange}
         />
+      </div>
+
+      {/* Mapa de bookmarks */}
+      <div className="max-w-6xl mx-auto px-4 mb-8">
+        <MapBookmarks bookmarks={filteredBookmarks} height="400px" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto py-8 px-4 [filter:sepia(40%)]">

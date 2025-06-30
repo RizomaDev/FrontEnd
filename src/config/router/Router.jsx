@@ -10,6 +10,7 @@ import EditBookmark from "../../pages/EditBookmark/EditBookmark";
 import { AuthProvider } from "../../context/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import PrivateLayout from "../../components/Layout/PrivateLayout";
+import MapView from "../../pages/MapView/MapView";
 
 export default function Router() {
   return (
@@ -19,6 +20,7 @@ export default function Router() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
+          <Route path="/MapView" element={<MapView />} />
           <Route path="/BookmarkDetails/:id"  element= {<BookmarkDetails />} />
           <Route element={<ProtectedRoute />}>
             <Route

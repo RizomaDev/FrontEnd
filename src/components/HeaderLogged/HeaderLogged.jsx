@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
 import { searchBookmarks } from "../../service/apiService";
 
+
 export default function HeaderLogged() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -154,6 +155,9 @@ export default function HeaderLogged() {
               <img alt="User Avatar" src="https://cdn-icons-png.flaticon.com/512/147/147137.png"  />
             </div>
           </div>
+        </div>
+        <div className="flex-1 md:order-first">
+
         </div>
 
         <div className="dropdown dropdown-end relative">
