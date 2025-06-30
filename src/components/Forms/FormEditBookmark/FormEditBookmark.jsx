@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
 import { getBookmarkById, getCategories, getTags, updateBookmark } from "../../../service/apiService";
+import LocationAutocomplete from "../../LocationAutocomplete/LocationAutocomplete";
 
 const getCurrentUser = () => {
   const user = localStorage.getItem("user");
@@ -32,6 +33,7 @@ export default function FormEditBookmark() {
     setValue,
     formState: { errors },
     reset,
+    getValues,
   } = useForm({
     defaultValues: {
       title: "",
@@ -354,25 +356,19 @@ export default function FormEditBookmark() {
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
-                <span className="label-text font-semibold">Ubicación (Latitud)</span>
+                <span className="label-text font-semibold">Ubicación</span>
               </label>
-              <input
-                type="number"
-                step="any"
-                className="input input-bordered w-full"
-                {...register("location_latitude")}
+              <LocationAutocomplete
+                onSelect={({ lat, lon }) => {
+                  setValue("location_latitude", lat);
+                  setValue("location_longitude", lon);
+                }}
               />
-            </div>
-            <div className="form-control w-full mb-4 text-left">
-              <label className="label">
-                <span className="label-text font-semibold">Ubicación (Longitud)</span>
-              </label>
-              <input
-                type="number"
-                step="any"
-                className="input input-bordered w-full"
-                {...register("location_longitude")}
-              />
+              {(getValues && (getValues("location_latitude") || getValues("location_longitude"))) && (
+                <div className="mt-2 text-xs text-gray-500">
+                  Lat: {getValues("location_latitude")} | Lon: {getValues("location_longitude")}
+                </div>
+              )}
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">

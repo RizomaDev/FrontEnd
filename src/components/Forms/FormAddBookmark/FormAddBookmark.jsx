@@ -14,7 +14,7 @@ import { buildBookmarkPayload } from "./bookmarkPayloadBuilder";
 export default function FormAddBookmark() {
   const navigate = useNavigate();
 
-  const { register, handleSubmit: formHandleSubmit, formState: { errors }, reset, setError, clearErrors } = useForm();
+  const { register, handleSubmit: formHandleSubmit, formState: { errors }, reset, setError, clearErrors, setValue, getValues } = useForm();
   const {
     tags, categories,
     loadingTags, loadingCategories,
@@ -162,7 +162,7 @@ export default function FormAddBookmark() {
             {currentStep === 3 && (
               <div className="flex flex-col items-center">
                 <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Planning & Scheduling</h3>
-                <BookmarkPlanningContact register={register} errors={errors} />
+                <BookmarkPlanningContact register={register} errors={errors} setValue={setValue} getValues={getValues} />
               </div>
             )}
 
