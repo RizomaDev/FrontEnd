@@ -67,9 +67,9 @@ export default function BookmarkDetails() {
               {bookmark.title}
             </h1>
             <p className="text-xl text-primary text-content mb-4">
-              {bookmark.location && typeof bookmark.location === "object"
-                ? `Lat: ${bookmark.location.latitude}, Lng: ${bookmark.location.longitude}`
-                : bookmark.location}
+              {bookmark.address && bookmark.address !== "Dirección no disponible"
+                ? bookmark.address
+                : "Sin dirección disponible"}
             </p>
           </div>
 

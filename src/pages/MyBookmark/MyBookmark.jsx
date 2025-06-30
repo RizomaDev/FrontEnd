@@ -78,7 +78,7 @@ export default function MyBookmark(){
             title={bookmark.title}
             category={bookmark.category}
             tag={bookmark.tag}
-            location={bookmark.location}
+            address={bookmark.address}
             img={
               bookmark.imageUrls && bookmark.imageUrls.length > 0
                 ? `http://localhost:8080/api/images/${bookmark.imageUrls[0].split('/').pop()}`

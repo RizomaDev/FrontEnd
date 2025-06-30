@@ -108,7 +108,8 @@ export default function LandingPage() {
             id={bookmark.id}
             title={bookmark.title}
             category={bookmark.category}
-            location={bookmark.location}
+            tag={bookmark.tag}
+            address={bookmark.address}
             img={
               Array.isArray(bookmark.imageUrls) && bookmark.imageUrls.length > 0
                 ? bookmark.imageUrls[0]
