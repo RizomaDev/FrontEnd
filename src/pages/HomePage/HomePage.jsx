@@ -6,7 +6,6 @@ import FilterCategoryTag from "../../components/FilterCategoryTag";
 import imageTemporal from "../../assets/imageTemporal.png";
 import Verdiales from "../../assets/Verdiales.jpg";
 import heroWelcome from "../../assets/heroWelcome.jpg";
-import MapBookmarks from "../../components/MapBookmarks";
 import ButtonMap from "../../components/Buttons/ButtonMap";
 
 export default function HomePage() {
@@ -131,10 +130,7 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Mapa de bookmarks */}
-      <div className="max-w-6xl mx-auto px-4 mb-8">
-        <MapBookmarks bookmarks={filteredBookmarks} height="400px" />
-      </div>
+
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto py-8 px-4 [filter:sepia(40%)]">
         {currentCards.map((bookmark) => (
