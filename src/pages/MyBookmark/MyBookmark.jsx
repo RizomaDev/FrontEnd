@@ -78,11 +78,7 @@ export default function MyBookmark(){
             title={bookmark.title}
             category={bookmark.category}
             tag={bookmark.tag}
-            location={
-              bookmark.location
-                ? `Lat: ${bookmark.location.latitude}, Lng: ${bookmark.location.longitude}`
-                : "Sin ubicación"
-            }
+            location={bookmark.location}
             img={
               bookmark.imageUrls && bookmark.imageUrls.length > 0
                 ? `http://localhost:8080/api/images/${bookmark.imageUrls[0].split('/').pop()}`
