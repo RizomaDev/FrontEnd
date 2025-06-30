@@ -8,7 +8,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 const DefaultIcon = L.icon({ iconUrl, shadowUrl: iconShadow });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=';
+const NOMINATIM_URL = 'https://corsproxy.io/?https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=';
 
 const LocationAutocomplete = ({ onSelect }) => {
   const [query, setQuery] = useState('');
@@ -88,19 +88,21 @@ const LocationAutocomplete = ({ onSelect }) => {
         className="w-full px-3 py-2 text-sm md:text-base rounded-l-lg focus:outline-none focus:ring-2 focus:ring-[#004f59]"
       />
       {(isLoading || suggestions.length > 0) && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          zIndex: 9999,
-          maxHeight: 200,
-          overflowY: 'auto',
-          background: 'white',
-          border: '1px solid #ddd',
-          borderRadius: 6,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 9999,
+            maxHeight: 200,
+            overflowY: 'auto',
+            background: 'white',
+            border: '1px solid #ddd',
+            borderRadius: 6,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+          }}
+        >
           {isLoading && (
             <div className="p-2 text-center text-gray-500">Buscando...</div>
           )}
@@ -122,7 +124,7 @@ const LocationAutocomplete = ({ onSelect }) => {
       )}
       <div className="mt-4" style={{ height: '250px', width: '100%' }}>
         <MapContainer
-          center={selectedLocation ? [selectedLocation.lat, selectedLocation.lon] : [40.4168, -3.7038]} // Default: Madrid
+          center={selectedLocation ? [selectedLocation.lat, selectedLocation.lon] : [40.4168, -3.7038]}
           zoom={selectedLocation ? 15 : 5}
           scrollWheelZoom={true}
           style={{ height: '100%', width: '100%' }}

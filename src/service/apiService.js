@@ -115,3 +115,12 @@ export function getUserById(id) {
       throw error;
     });
 }
+
+const onSubmit = async (data) => {
+  const t0 = performance.now();
+  const payload = await buildBookmarkPayload(data);
+  await createBookmark(payload);
+  const t1 = performance.now();
+  console.log("Tiempo total de creación:", (t1 - t0) / 1000, "segundos");
+  // ...
+};
