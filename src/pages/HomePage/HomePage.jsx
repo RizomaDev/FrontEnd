@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import { getAllBookmarks, getCategories, getTags } from "../../service/apiService";
 import Cards from "../../components/Cards/Cards";
 import Buttons from "../../components/Buttons/Buttons";
+import FilterCategoryTag from "../../components/FilterCategoryTag";
 import imageTemporal from "../../assets/imageTemporal.png";
 import Verdiales from "../../assets/Verdiales.jpg";
 import heroWelcome from "../../assets/heroWelcome.jpg";
 
-
 export default function HomePage() {
   const [bookmarks, setBookmarks] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
-  const [tagsData, setTagsData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
   const [tagsForFilter, setTagsForFilter] = useState([]);
@@ -22,35 +21,24 @@ export default function HomePage() {
       try {
         const bookmarksData = await getAllBookmarks();
         setBookmarks(bookmarksData);
-
         const categoriesResponse = await getCategories();
         setCategoriesData(categoriesResponse);
-
         const tagsResponse = await getTags();
         const sortedTags = tagsResponse.map((tag) => tag.name).sort();
         setTagsForFilter(sortedTags);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     fetchAllData();
   }, []);
 
-  const uniqueCategoriesForFilter = [
-    "",
-    ...new Set(categoriesData.map((cat) => cat.name)),
-  ].sort();
-
   const filteredBookmarks = bookmarks.filter((bookmark) => {
     const bookmarkTag = bookmark.tag;
     const bookmarkCategoryName = bookmark.category;
-
-    const matchesCategory =
-      selectedCategory === "" || bookmarkCategoryName === selectedCategory;
+    const matchesCategory = selectedCategory === "" || bookmarkCategoryName === selectedCategory;
     const matchesTag = selectedTag === "" || bookmarkTag === selectedTag;
     return matchesCategory && matchesTag;
   });
 
- 
   const indexOfLastCard = currentPage * cardsPerPage;
   const indexOfFirstCard = indexOfLastCard - cardsPerPage;
   const currentCards = filteredBookmarks.slice(indexOfFirstCard, indexOfLastCard);
@@ -69,7 +57,7 @@ export default function HomePage() {
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const handleTagChange = (e) => {
@@ -81,9 +69,7 @@ export default function HomePage() {
     <>
       <div
         className="hero min-h-screen"
-        style={{
-          backgroundImage: `url(${heroWelcome})`,
-        }}
+        style={{ backgroundImage: `url(${heroWelcome})` }}
       >
         <div className="hero-overlay"></div>
         <div className="hero-content text-neutral-content justify-start w-full">
@@ -127,53 +113,16 @@ export default function HomePage() {
           Busca tu siguiente marcador
         </h2>
         <p className="text-xl text-neutral mb-6">
-        Aquí puedes encontrar los últimos marcadores
+          Aquí puedes encontrar los últimos marcadores
         </p>
-
-        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
-          <div className="form-control w-full md:w-auto">
-            <label htmlFor="categoryFilter" className="label sr-only">
-              <span className="label-text">Filtrar por categoría</span>
-            </label>
-            <select
-              id="categoryFilter"
-              className="select select-bordered w-full max-w-xs"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-            >
-              <option value="">Todas las categorías</option>
-              {categoriesData.map(
-                (cat) =>
-                  cat && (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  )
-              )}
-            </select>
-          </div>
-          <div className="form-control w-full md:w-auto">
-            <label htmlFor="tagFilter" className="label sr-only">
-              <span className="label-text">Filtrar por etiqueta</span>
-            </label>
-            <select
-              id="tagFilter"
-              className="select select-bordered w-full max-w-xs"
-              value={selectedTag}
-              onChange={handleTagChange}
-            >
-              <option value="">Todas las etiquetas</option>
-              {tagsForFilter.map(
-                (tag) =>
-                  tag && (
-                    <option key={tag} value={tag}>
-                      {tag}
-                    </option>
-                  )
-              )}
-            </select>
-          </div>
-        </div>
+        <FilterCategoryTag
+          categories={categoriesData}
+          tags={tagsForFilter}
+          selectedCategory={selectedCategory}
+          selectedTag={selectedTag}
+          onCategoryChange={handleCategoryChange}
+          onTagChange={handleTagChange}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto py-8 px-4 [filter:sepia(40%)]">
