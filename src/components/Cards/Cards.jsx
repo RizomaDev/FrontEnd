@@ -13,7 +13,21 @@ export default function Cards({ title, category, tag, address, img, id }) {
         <p className="text-secondary">{tag}</p>
         <p className="text-primary font-semibold text-sm mt-2">
           {address && address !== "Dirección no disponible"
-            ? address
+            ? (() => {
+                const parts = address.split(',').map(p => p.trim());
+                const filtered = parts.filter(Boolean);
+                const noPostcode = filtered.filter(p => !/^\d{5}$/.test(p));
+                const noCountry = noPostcode.filter(p => !/^(Spain|España)$/i.test(p));
+                if (noCountry.length >= 3) {
+                  // Eliminar cualquier número aislado en la parte de la calle
+                  let street = noCountry[0].replace(/\b\d+\b/g, '').replace(/\s{2,}/g, ' ').trim();
+                  const province = noCountry[noCountry.length - 2];
+                  const city = noCountry[noCountry.length - 3];
+                  return `${street}, ${city}, ${province}`;
+                } else {
+                  return noCountry.join(', ');
+                }
+              })()
             : "Sin dirección disponible"}
         </p>
         <div className="card-actions justify-end mt-4">
