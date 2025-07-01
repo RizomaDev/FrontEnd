@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { getAllBookmarks } from '../../service/apiService';
+import { useAuth } from '../../context/AuthContext';
+import HeaderLogged from '../HeaderLogged/HeaderLogged';
+import Header from '../Header/Header';
+import BookmarkPopup from './BookmarkPopup';
 
 // Importar los iconos predeterminados de Leaflet
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -27,6 +31,7 @@ function MapClickHandler({ onClick }) {
 }
 
 export default function MapInteractive() {
+  const { user } = useAuth();
   const [isClient, setIsClient] = useState(false);
   const [formPosition, setFormPosition] = useState(null);
   const [markers, setMarkers] = useState([]);
@@ -56,11 +61,13 @@ export default function MapInteractive() {
   }, []);
 
   const handleMapClick = (position) => {
-    setFormPosition(position);
+    if (user) {
+      setFormPosition(position);
+    }
   };
 
   const handleFormSubmit = (data) => {
-    if (formPosition) {
+    if (formPosition && user) {
       setMarkers([...markers, { 
         position: formPosition,
         title: data.title,
@@ -91,53 +98,36 @@ export default function MapInteractive() {
   }
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      <MapContainer
-        center={[36.7213, -4.4214]}
-        zoom={13}
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-        <MapClickHandler onClick={handleMapClick} />
-        {markers.map((marker, idx) => (
-          <Marker 
-            key={marker.id || idx} 
-            position={[marker.location?.latitude || marker.position[0], marker.location?.longitude || marker.position[1]]}
-          >
-            <Popup>
-              <div className="max-w-sm">
-                <h3 className="font-bold text-lg">{marker.title}</h3>
-                <p className="text-sm mt-2">{marker.description}</p>
-                <div className="mt-2">
-                  <span className="badge badge-secondary">{marker.category}</span>
-                  <span className="badge badge-primary ml-2">{marker.tag}</span>
-                </div>
-                {(marker.imageUrls && marker.imageUrls.length > 0) ? (
-                  <img
-                    src={`http://localhost:8080/api/images/${marker.imageUrls[0].split('/').pop()}`}
-                    alt={marker.title}
-                    className="w-full h-32 object-cover mt-2 rounded"
-                  />
-                ) : marker.imageFile && (
-                  <img
-                    src={URL.createObjectURL(marker.imageFile)}
-                    alt={marker.title}
-                    className="w-full h-32 object-cover mt-2 rounded"
-                  />
-                )}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
-      <MarkerForm
-        position={formPosition}
-        onSubmit={handleFormSubmit}
-        onCancel={handleFormCancel}
-      />
+    <div className="flex flex-col h-screen">
+      {user ? <HeaderLogged /> : <Header />}
+      <div className="flex-grow relative">
+        <MapContainer
+          center={[36.7213, -4.4214]}
+          zoom={13}
+          style={{ height: '100%', width: '100%' }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <MapClickHandler onClick={handleMapClick} />
+          {markers.map((marker, idx) => (
+            <Marker 
+              key={marker.id || idx} 
+              position={[marker.location?.latitude || marker.position[0], marker.location?.longitude || marker.position[1]]}
+            >
+              <BookmarkPopup marker={marker} />
+            </Marker>
+          ))}
+        </MapContainer>
+        {user && formPosition && (
+          <MarkerForm
+            position={formPosition}
+            onSubmit={handleFormSubmit}
+            onCancel={handleFormCancel}
+          />
+        )}
+      </div>
     </div>
   );
 }

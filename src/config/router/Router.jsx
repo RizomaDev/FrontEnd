@@ -21,7 +21,7 @@ export default function Router() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
           <Route path="/MapView" element={<MapView />} />
-          <Route path="/BookmarkDetails/:id"  element= {<BookmarkDetails />} />
+          <Route path="/BookmarkDetails/:id" element={<BookmarkDetails />} />
           <Route element={<ProtectedRoute />}>
             <Route
               path="/HomePage"
@@ -55,14 +55,6 @@ export default function Router() {
                 </PrivateLayout>
               }
             />
-            {/* <Route
-              path="/ExperienceDetails/:id"
-              element={
-                <PrivateLayout>
-                  <ExperienceDetails />
-                </PrivateLayout>
-              }
-            /> */}
           </Route>
         </Routes>
       </AuthProvider>
