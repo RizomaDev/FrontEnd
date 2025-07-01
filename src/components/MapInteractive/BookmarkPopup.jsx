@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Popup } from 'react-leaflet';      
 import Buttons from '../Buttons/Buttons';
 
@@ -29,16 +28,16 @@ export default function BookmarkPopup({ marker }) {
         )}
         {marker.id && (
           <div className="mt-4 flex justify-end text-black">
-                 <Buttons
-            to="/Login"
-            className="border-none sm:btn-sm"
-            style={{
-              backgroundColor: "info",
-              color: "black",
-            }}
-          >
-            {"Ver más detalles"}
-          </Buttons>
+            <Buttons
+              to={`/BookmarkDetails/${marker.id}`}
+              className="border-none sm:btn-sm"
+              style={{
+                backgroundColor: "info",
+                color: "black",
+              }}
+            >
+              {"Ver más detalles"}
+            </Buttons>
           </div>
         )}
       </div>
