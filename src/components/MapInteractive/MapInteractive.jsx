@@ -7,6 +7,8 @@ import { useAuth } from '../../context/AuthContext';
 import HeaderLogged from '../HeaderLogged/HeaderLogged';
 import Header from '../Header/Header';
 import BookmarkPopup from './BookmarkPopup';
+import LocationMarker from './LocationMarker';
+import SearchControl from './SearchControl';
 
 // Importar los iconos predeterminados de Leaflet
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -37,6 +39,7 @@ export default function MapInteractive() {
   const [markers, setMarkers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -83,6 +86,23 @@ export default function MapInteractive() {
     setFormPosition(null);
   };
 
+  const handleSearch = async (searchValue) => {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchValue)}`);
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        mapInstance?.setView([lat, lon], 16);
+      } else {
+        alert('No se encontraron resultados para esta búsqueda.');
+      }
+    } catch (error) {
+      console.error('Error en la búsqueda:', error);
+      alert('Error al realizar la búsqueda. Por favor, inténtalo de nuevo.');
+    }
+  };
+
   if (!isClient) return null;
 
   if (loading) {
@@ -101,15 +121,18 @@ export default function MapInteractive() {
     <div className="flex flex-col h-screen">
       {user ? <HeaderLogged /> : <Header />}
       <div className="flex-grow relative">
+        <SearchControl onSearch={handleSearch} />
         <MapContainer
           center={[36.7213, -4.4214]}
           zoom={13}
           style={{ height: '100%', width: '100%' }}
+          ref={setMapInstance}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
+          <LocationMarker />
           <MapClickHandler onClick={handleMapClick} />
           {markers.map((marker, idx) => (
             <Marker 

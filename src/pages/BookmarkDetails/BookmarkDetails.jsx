@@ -6,6 +6,8 @@ import FormDeleteBookmark from "../../components/Forms/FormDeleteBookmark/FormDe
 import Header from "../../components/Header/Header";
 import HeaderLogged from "../../components/HeaderLogged/HeaderLogged";
 import Footer from "../../components/Footer/Footer";
+import { tagIcons, categoryColors } from '../../config/categoryIcons'; // ajusta la ruta
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function BookmarkDetails() {
   const { id } = useParams();
@@ -52,17 +54,24 @@ export default function BookmarkDetails() {
 
   if (!bookmark) return null;
 
+  const tagIcon = tagIcons[bookmark.tag];
+  const categoryColor = categoryColors[bookmark.category];
+
   return (
     <>
       {user ? <HeaderLogged /> : <Header />}
       <div className="card bg-base-100 shadow-xl rounded-lg ">
         <div className="card-body p-0">
           <div className="p-6 md:p-8">
-            <p className="text-lg text-accent-content font-medium mb-2">
-              {bookmark.category}
-              <br />
-              {bookmark.tag}
-            </p>
+          <div className="flex items-center gap-2 mb-2">
+  {tagIcon && (
+    <FontAwesomeIcon icon={tagIcon} className={`text-${categoryColor} text-2xl`} />
+  )}
+  <p className="text-lg text-accent-content font-medium">
+    {bookmark.category} — {bookmark.tag}
+  </p>
+</div>
+
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-2 leading-tight">
               {bookmark.title}
             </h1>
