@@ -23,10 +23,13 @@ export default function HomePage() {
         const bookmarksData = await getAllBookmarks();
         setBookmarks(bookmarksData);
         const categoriesResponse = await getCategories();
-        setCategoriesData(categoriesResponse);
+        const sortedCategories = categoriesResponse.map((category) => ({
+          id: category.id,
+          name: category.name
+        })).sort((a, b) => a.name.localeCompare(b.name));
+        setCategoriesData(sortedCategories);
         const tagsResponse = await getTags();
-        const sortedTags = tagsResponse.map((tag) => tag.name).sort();
-        setTagsForFilter(sortedTags);
+        setTagsForFilter(tagsResponse.sort((a, b) => a.name.localeCompare(b.name)));
       } catch (error) {}
     };
     fetchAllData();

@@ -23,9 +23,12 @@ export default function Cards({ title, category, tag, address, img, id }) {
                   let street = noCountry[0].replace(/\b\d+\b/g, '').replace(/\s{2,}/g, ' ').trim();
                   const province = noCountry[noCountry.length - 2];
                   const city = noCountry[noCountry.length - 3];
-                  return `${street}, ${city}, ${province}`;
+                  const result = `${street}, ${city}, ${province}`;
+                  // Eliminar cualquier coma al inicio y espacios extras
+                  return result.replace(/^,\s*/, '').trim();
                 } else {
-                  return noCountry.join(', ');
+                  // Eliminar cualquier coma al inicio y espacios extras
+                  return noCountry.join(', ').replace(/^,\s*/, '').trim();
                 }
               })()
             : "Sin dirección disponible"}

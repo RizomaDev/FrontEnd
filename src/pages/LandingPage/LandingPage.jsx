@@ -14,46 +14,8 @@ import ButtonMap from "../../components/Buttons/ButtonMap";
 export default function LandingPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [bookmarks, setBookmarks] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const cardsPerPage = 6;
-
-  
-  useEffect(() => {
-    const fetchBookmarks = async () => {
-      try {
-        const data = await getAllBookmarks();
-        const sortedBookmarks = data.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        );
-        setBookmarks(sortedBookmarks.slice(0, 6));
-      } catch (error) {
-      }
-    };
-    fetchBookmarks();
-  }, []);
-
-  if (loading) {
-    return <div>Cargando...</div>;
-  }
-
- 
-  const indexOfLastCard = currentPage * cardsPerPage;
-  const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-  const currentCards = bookmarks.slice(indexOfFirstCard, indexOfLastCard);
 
 
-  const handleNextPage = () => {
-    if (currentPage < Math.ceil(bookmarks.length / cardsPerPage)) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   return (
     <>
@@ -103,25 +65,7 @@ export default function LandingPage() {
         </p>
         
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto py-8 px-4 [filter:sepia(40%)]">
-        {currentCards.map((bookmark) => (
-          <Cards
-            key={bookmark.id}
-            id={bookmark.id}
-            title={bookmark.title}
-            category={bookmark.category}
-            tag={bookmark.tag}
-            address={bookmark.address}
-            img={
-              Array.isArray(bookmark.imageUrls) && bookmark.imageUrls.length > 0
-                ? bookmark.imageUrls[0]
-                : imageTemporal
-            }
-          />
-        ))}
-      </div>
-
+     
       <div className="flex justify-center gap-4 my-8"></div>
       <div className="flex justify-center gap-4 my-8">
         <div className="hero bg-base-200 py-8 px-4 rounded-lg shadow-lg text-center max-w-4xl mx-auto">

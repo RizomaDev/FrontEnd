@@ -22,7 +22,7 @@ export default function FilterCategoryTag({
         </label>
         <select
           id="categoryFilter"
-          className="select select-bordered w-full max-w-xs"
+          className="select select-bordered w-full max-w-xs dropdown"
           value={selectedCategory}
           onChange={onCategoryChange}
         >
@@ -32,14 +32,11 @@ export default function FilterCategoryTag({
           ) : categoriesError ? (
             <option className="text-error">{categoriesError}</option>
           ) : (
-            categories.map(
-              (category) =>
-                category && (
-                  <option key={category.id} value={category.name}>
-                    {category.name}
-                  </option>
-                )
-            )
+            categories.map((category) => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))
           )}
         </select>
       </div>
@@ -49,7 +46,7 @@ export default function FilterCategoryTag({
         </label>
         <select
           id="tagFilter"
-          className="select select-bordered w-full max-w-xs"
+          className="select select-bordered w-full max-w-xs dropdown"
           value={selectedTag}
           onChange={onTagChange}
         >
@@ -59,14 +56,11 @@ export default function FilterCategoryTag({
           ) : tagsError ? (
             <option className="text-error">{tagsError}</option>
           ) : (
-            tags.map(
-              (tag) =>
-                tag && (
-                  <option key={tag} value={tag}>
-                    {tag}
-                  </option>
-                )
-            )
+            tags.map((tag) => (
+              <option key={tag.id} value={tag.name}>
+                {tag.name}
+              </option>
+            ))
           )}
         </select>
       </div>

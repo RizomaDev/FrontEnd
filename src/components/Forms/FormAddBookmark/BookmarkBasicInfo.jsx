@@ -14,8 +14,7 @@ export default function BookmarkBasicInfo({
 
   return (
     <>
-
-       <div className="form-control w-full max-w-md mb-4 text-left">
+      <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
           <span className="label-text font-semibold">
             Título del marcador <span className="text-error">*</span>
@@ -53,7 +52,7 @@ export default function BookmarkBasicInfo({
           ) : (
             sortedTags.map((tag) => (
               <option key={tag.id} value={tag.id}>
-                {tag.name}
+                {tag.emoji} {tag.name}
               </option>
             ))
           )}
@@ -93,6 +92,29 @@ export default function BookmarkBasicInfo({
         {errors.category && (
           <span className="text-error text-sm mt-1">
             {errors.category.message}
+          </span>
+        )}
+      </div>
+
+      <div className="form-control w-full max-w-md mb-4 text-left">
+        <label className="label">
+          <span className="label-text font-semibold">
+            Descripción <span className="text-error">*</span>
+          </span>
+        </label>
+        <textarea
+          className="textarea textarea-bordered h-24"
+          {...register("description", {
+            required: "La descripción es requerida.",
+            minLength: {
+              value: 10,
+              message: "La descripción debe tener al menos 10 caracteres.",
+            },
+          })}
+        />
+        {errors.description && (
+          <span className="text-error text-sm mt-1">
+            {errors.description.message}
           </span>
         )}
       </div>
