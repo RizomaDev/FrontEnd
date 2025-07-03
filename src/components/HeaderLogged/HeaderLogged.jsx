@@ -211,24 +211,20 @@ export default function HeaderLogged() {
             className="h-5 w-5 opacity-50"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
-            </g>
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
           </svg>
           <input
             ref={inputRef}
             type="search"
             required
             value={searchTerm}
-            placeholder="Search bookmarks...  |  type at least 3 characters"
+            placeholder="🔖 Buscar marcadores..."
             className="w-full"
             onChange={handleSearchChange}
             onFocus={handleInputFocus}
@@ -236,10 +232,10 @@ export default function HeaderLogged() {
         </label>
 
         {dropdownOpen && (
-          <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full absolute top-full left-0 mt-1">
+          <ul className="dropdown-content z-[9999] menu p-2 shadow bg-base-100 rounded-box w-full absolute top-full left-0 mt-1">
             {loading && searchTerm.trim().length >= 2 && (
               <li>
-                <span className="text-info">Searching...</span>
+                <span className="text-info">Buscando marcadores...</span>
               </li>
             )}
             {!loading && error && searchTerm.trim().length >= 2 && (
@@ -257,7 +253,7 @@ export default function HeaderLogged() {
                 {bookmarks.map((bookmark) => (
                   <li key={bookmark.id}>
                     <a onClick={() => handleResultClick(bookmark)}>
-                      {bookmark.title}
+                      🔖 {bookmark.title}
                       <span className="text-xs text-gray-500 ml-2 truncate">
                         {bookmark.description}
                       </span>

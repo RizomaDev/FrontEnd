@@ -7,12 +7,13 @@ export default function BookmarkPopup({ marker }) {
   return (
     <Popup>
       <div className="max-w-sm">
-        <h3 className="font-bold text-lg">{marker.title}</h3>
-        <p className="text-sm mt-2">{marker.description}</p>
-        <div className="mt-2">
+      <div className="mt-2">
           <span className="badge badge-secondary">{marker.category}</span>
           <span className="badge badge-primary ml-2">{marker.tag}</span>
         </div>
+        <h3 className="font-bold text-lg">{marker.title}</h3>
+        <p className="text-sm mt-2">{marker.description}</p>
+       
         {(marker.imageUrls && marker.imageUrls.length > 0) ? (
           <img
             src={`http://localhost:8080/api/images/${marker.imageUrls[0].split('/').pop()}`}

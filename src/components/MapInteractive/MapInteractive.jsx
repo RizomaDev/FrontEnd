@@ -93,13 +93,12 @@ export default function MapInteractive() {
       
       if (data && data.length > 0) {
         const { lat, lon } = data[0];
-        mapInstance?.setView([lat, lon], 16);
-      } else {
-        alert('No se encontraron resultados para esta búsqueda.');
+        if (mapInstance) {
+          mapInstance.setView([parseFloat(lat), parseFloat(lon)], 16);
+        }
       }
     } catch (error) {
       console.error('Error en la búsqueda:', error);
-      alert('Error al realizar la búsqueda. Por favor, inténtalo de nuevo.');
     }
   };
 
@@ -118,37 +117,45 @@ export default function MapInteractive() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      {user ? <HeaderLogged /> : <Header />}
+    <div className="flex flex-col h-screen relative">
+      <div className="z-10">
+        {user ? <HeaderLogged /> : <Header />}
+      </div>
+      
       <div className="flex-grow relative">
-        <SearchControl onSearch={handleSearch} />
-        <MapContainer
-          center={[36.7213, -4.4214]}
-          zoom={13}
-          style={{ height: '100%', width: '100%' }}
-          ref={setMapInstance}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-          <LocationMarker />
-          <MapClickHandler onClick={handleMapClick} />
-          {markers.map((marker, idx) => (
-            <Marker 
-              key={marker.id || idx} 
-              position={[marker.location?.latitude || marker.position[0], marker.location?.longitude || marker.position[1]]}
-            >
-              <BookmarkPopup marker={marker} />
-            </Marker>
-          ))}
-        </MapContainer>
+        <div className="absolute inset-0 z-20">
+          <SearchControl onSearch={handleSearch} />
+          <MapContainer
+            center={[36.7213, -4.4214]}
+            zoom={13}
+            style={{ height: '100%', width: '100%' }}
+            ref={setMapInstance}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <LocationMarker />
+            <MapClickHandler onClick={handleMapClick} />
+            {markers.map((marker, idx) => (
+              <Marker 
+                key={marker.id || idx} 
+                position={[marker.location?.latitude || marker.position[0], marker.location?.longitude || marker.position[1]]}
+              >
+                <BookmarkPopup marker={marker} />
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
+        
         {user && formPosition && (
-          <MarkerForm
-            position={formPosition}
-            onSubmit={handleFormSubmit}
-            onCancel={handleFormCancel}
-          />
+          <div className="absolute inset-0 z-30">
+            <MarkerForm
+              position={formPosition}
+              onSubmit={handleFormSubmit}
+              onCancel={handleFormCancel}
+            />
+          </div>
         )}
       </div>
     </div>
