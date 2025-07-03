@@ -96,28 +96,7 @@ export default function BookmarkBasicInfo({
         )}
       </div>
 
-      <div className="form-control w-full max-w-md mb-4 text-left">
-        <label className="label">
-          <span className="label-text font-semibold">
-            Descripción <span className="text-error">*</span>
-          </span>
-        </label>
-        <textarea
-          className="textarea textarea-bordered h-24"
-          {...register("description", {
-            required: "La descripción es requerida.",
-            minLength: {
-              value: 10,
-              message: "La descripción debe tener al menos 10 caracteres.",
-            },
-          })}
-        />
-        {errors.description && (
-          <span className="text-error text-sm mt-1">
-            {errors.description.message}
-          </span>
-        )}
-      </div>
+     
     </>
   );
 } 
