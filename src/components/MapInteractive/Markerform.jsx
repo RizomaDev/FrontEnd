@@ -5,8 +5,22 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     title: '',
     description: '',
     tag: '',
+    category: '',
     imageFile: null,
   });
+
+  const categories = [
+    "Medio Ambiente",
+    "Feminismos",
+    "Servicios Públicos",
+    "Vivienda",
+    "Urbanismo",
+    "Movilidad",
+    "Cultura",
+    "Economía y empleo",
+    "Deporte",
+    "Memoria democrática"
+  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +36,7 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-    setFormData({ title: '', description: '', tag: '', imageFile: null });
+    setFormData({ title: '', description: '', tag: '', category: '', imageFile: null });
   };
 
   if (!position) return null;
@@ -37,6 +51,26 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
           </p>
           
           <form onSubmit={handleSubmit} className="form-control gap-4">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Categoría</span>
+              </label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                required
+                className="select select-bordered w-full"
+              >
+                <option value="">Selecciona una categoría</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Título</span>

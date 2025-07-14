@@ -9,6 +9,7 @@ import Header from '../Header/Header';
 import BookmarkPopup from './BookmarkPopup';
 import LocationMarker from './LocationMarker';
 import SearchControl from './SearchControl';
+import MapFilters from '../MapFilters';
 
 // Importar los iconos predeterminados de Leaflet
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -41,6 +42,12 @@ export default function MapInteractive() {
   const [error, setError] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
 
+  // Estados para los filtros
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
+
   useEffect(() => {
     setIsClient(true);
     const fetchBookmarks = async () => {
@@ -53,6 +60,18 @@ export default function MapInteractive() {
           bookmark.location.longitude
         );
         setMarkers(validBookmarks);
+
+        // Extraer categorías y tags únicos de los bookmarks
+        const uniqueCategories = Array.from(new Set(validBookmarks.map(bookmark => bookmark.category)))
+          .filter(category => category) // Filtrar valores nulos o undefined
+          .map(category => ({ id: category, name: category }));
+        
+        const uniqueTags = Array.from(new Set(validBookmarks.map(bookmark => bookmark.tag)))
+          .filter(tag => tag) // Filtrar valores nulos o undefined
+          .map(tag => ({ id: tag, name: tag }));
+
+        setCategories(uniqueCategories);
+        setTags(uniqueTags);
       } catch (err) {
         setError('Error al cargar los marcadores');
         console.error('Error fetching bookmarks:', err);
@@ -71,19 +90,38 @@ export default function MapInteractive() {
 
   const handleFormSubmit = (data) => {
     if (formPosition && user) {
-      setMarkers([...markers, { 
+      const newMarker = { 
         position: formPosition,
         title: data.title,
         description: data.description,
         tag: data.tag,
+        category: data.category,
         imageFile: data.imageFile
-      }]);
+      };
+      setMarkers([...markers, newMarker]);
+
+      // Actualizar categorías y tags si son nuevos
+      if (data.category && !categories.find(c => c.name === data.category)) {
+        setCategories([...categories, { id: data.category, name: data.category }]);
+      }
+      if (data.tag && !tags.find(t => t.name === data.tag)) {
+        setTags([...tags, { id: data.tag, name: data.tag }]);
+      }
+
       setFormPosition(null);
     }
   };
 
   const handleFormCancel = () => {
     setFormPosition(null);
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  const handleTagChange = (e) => {
+    setSelectedTag(e.target.value);
   };
 
   const handleSearch = async (searchValue) => {
@@ -101,6 +139,13 @@ export default function MapInteractive() {
       console.error('Error en la búsqueda:', error);
     }
   };
+
+  // Filtrar marcadores basados en la categoría y tag seleccionados
+  const filteredMarkers = markers.filter(marker => {
+    const matchCategory = !selectedCategory || marker.category === selectedCategory;
+    const matchTag = !selectedTag || marker.tag === selectedTag;
+    return matchCategory && matchTag;
+  });
 
   if (!isClient) return null;
 
@@ -125,6 +170,14 @@ export default function MapInteractive() {
       <div className="flex-grow relative">
         <div className="absolute inset-0 z-20">
           <SearchControl onSearch={handleSearch} />
+          <MapFilters
+            categories={categories}
+            tags={tags}
+            selectedCategory={selectedCategory}
+            selectedTag={selectedTag}
+            onCategoryChange={handleCategoryChange}
+            onTagChange={handleTagChange}
+          />
           <MapContainer
             center={[36.7213, -4.4214]}
             zoom={13}
@@ -137,7 +190,7 @@ export default function MapInteractive() {
             />
             <LocationMarker />
             <MapClickHandler onClick={handleMapClick} />
-            {markers.map((marker, idx) => (
+            {filteredMarkers.map((marker, idx) => (
               <Marker 
                 key={marker.id || idx} 
                 position={[marker.location?.latitude || marker.position[0], marker.location?.longitude || marker.position[1]]}
