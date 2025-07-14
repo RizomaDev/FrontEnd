@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search?format=json&q=';
 
@@ -84,83 +86,68 @@ const SearchControl = ({ className = '', onSearch }) => {
   };
 
   return (
-    <div className={`${className} absolute right-4 top-20 z-[9999]`} ref={searchRef}>
-      {!isExpanded ? (
+    <div className={`${className} absolute top-4 left-4 z-[1002]`} ref={searchRef}>
+      <div className="relative">
+        {/* Floating Button */}
         <button
           onClick={toggleSearch}
-          className="btn btn-circle btn-primary"
-          title="Buscar en el mapa"
+          className={`
+            btn btn-secondary rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300
+            flex items-center justify-center w-12 h-12
+            ${isExpanded ? 'rotate-180' : ''}
+          `}
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5" 
-            viewBox="0 0 24 24"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth="2" 
-              stroke="currentColor"
-              fill="none"
-              d="M12 21c-.6 0-1-.4-1-1v-1.1c-3.3-.5-5.9-3.1-6.4-6.4H3.5c-.6 0-1-.4-1-1s.4-1 1-1h1.1c.5-3.3 3.1-5.9 6.4-6.4V3c0-.6.4-1 1-1s1 .4 1 1v1.1c3.3.5 5.9 3.1 6.4 6.4h1.1c.6 0 1 .4 1 1s-.4 1-1 1h-1.1c-.5 3.3-3.1 5.9-6.4 6.4V20c0 .6-.4 1-1 1zm0-4c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5z"
-            />
-          </svg>
+          <FontAwesomeIcon icon={faSearch} className="text-gray-600" />
         </button>
-      ) : (
-        <form onSubmit={handleSubmit} className="relative">
-          <label className="input input-bordered join-item flex items-center gap-2 bg-base-100 w-72">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5 opacity-50" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth="2" 
-                stroke="currentColor"
-                fill="none"
-                d="M12 21c-.6 0-1-.4-1-1v-1.1c-3.3-.5-5.9-3.1-6.4-6.4H3.5c-.6 0-1-.4-1-1s.4-1 1-1h1.1c.5-3.3 3.1-5.9 6.4-6.4V3c0-.6.4-1 1-1s1 .4 1 1v1.1c3.3.5 5.9 3.1 6.4 6.4h1.1c.6 0 1 .4 1 1s-.4 1-1 1h-1.1c-.5 3.3-3.1 5.9-6.4 6.4V20c0 .6-.4 1-1 1zm0-4c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5z"
-              />
-            </svg>
-            <input
-              type="text"
-              value={searchValue}
-              onChange={handleInputChange}
-              placeholder="🗺️ Buscar en el mapa..."
-              className="grow"
-            />
-            <button 
-              type="button" 
-              className="btn btn-ghost btn-sm"
-              onClick={() => setIsExpanded(false)}
-            >
-              ✕
-            </button>
-          </label>
-          
-          {(isLoading || suggestions.length > 0) && (
-            <div className="absolute top-full right-0 mt-1 bg-base-100 rounded-lg shadow-lg overflow-hidden w-72">
-              {isLoading && (
-                <div className="p-2 text-center text-gray-500">Buscando lugares...</div>
-              )}
-              {!isLoading && suggestions.length > 0 && (
-                <ul className="max-h-60 overflow-auto">
-                  {suggestions.map((suggestion, index) => (
-                    <li
-                      key={index}
-                      onClick={() => handleSelect(suggestion)}
-                      className="p-2 hover:bg-base-200 cursor-pointer"
-                    >
-                      📍 {suggestion.display_name}
-                    </li>
-                  ))}
-                </ul>
-              )}
+
+        {/* Search Panel */}
+        <div className={`
+          absolute top-16 left-0
+          bg-secondary rounded-lg shadow-lg p-4
+          transition-all duration-300 origin-top-left
+          min-w-[250px]
+          ${isExpanded 
+            ? 'opacity-100 transform scale-100 translate-y-0' 
+            : 'opacity-0 transform scale-95 -translate-y-4 pointer-events-none'}
+        `}>
+          <form onSubmit={handleSubmit} className="relative">
+            <div className="form-control">
+              <h3 className="text-gray-700 font-medium mb-2">Buscar ubicación</h3>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={searchValue}
+                  onChange={handleInputChange}
+                  placeholder="🗺️ Buscar en el mapa..."
+                  className="input input-bordered input-secondary w-full"
+                />
+              </div>
             </div>
-          )}
-        </form>
-      )}
+            
+            {(isLoading || suggestions.length > 0) && (
+              <div className="mt-2 bg-base-100 rounded-lg shadow-lg overflow-hidden">
+                {isLoading && (
+                  <div className="p-2 text-center text-gray-500">Buscando lugares...</div>
+                )}
+                {!isLoading && suggestions.length > 0 && (
+                  <ul className="max-h-60 overflow-auto">
+                    {suggestions.map((suggestion, index) => (
+                      <li
+                        key={index}
+                        onClick={() => handleSelect(suggestion)}
+                        className="p-2 hover:bg-secondary/10 cursor-pointer flex items-center gap-2"
+                      >
+                        <span className="text-secondary">📍</span>
+                        <span className="text-sm">{suggestion.display_name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

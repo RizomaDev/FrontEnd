@@ -48,7 +48,7 @@ const MapFilters = ({
   }, []);
 
   return (
-    <div className="absolute top-20 left-4 z-[1000]">
+    <div className="absolute top-[88px] left-4 z-[1001]">
       <div className="relative">
         {/* Floating Button */}
         <button

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { getAllBookmarks } from '../../service/apiService';
@@ -183,7 +183,9 @@ export default function MapInteractive() {
             zoom={13}
             style={{ height: '100%', width: '100%' }}
             ref={setMapInstance}
+            zoomControl={false}
           >
+            <ZoomControl position="bottomright" />
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
