@@ -163,12 +163,12 @@ export default function MapInteractive() {
 
   return (
     <div className="flex flex-col h-screen relative">
-      <div className="z-10">
+      <div className="z-[1003]">
         {user ? <HeaderLogged /> : <Header />}
       </div>
       
       <div className="flex-grow relative">
-        <div className="absolute inset-0 z-20">
+        <div className="absolute inset-0 z-[900]">
           <SearchControl onSearch={handleSearch} />
           <MapFilters
             categories={categories}
@@ -204,7 +204,7 @@ export default function MapInteractive() {
         </div>
         
         {user && formPosition && (
-          <div className="absolute inset-0 z-30">
+          <div className="absolute inset-0 z-[901]">
             <MarkerForm
               position={formPosition}
               onSubmit={handleFormSubmit}
