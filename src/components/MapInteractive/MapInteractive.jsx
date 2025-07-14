@@ -43,8 +43,8 @@ export default function MapInteractive() {
   const [mapInstance, setMapInstance] = useState(null);
 
   // Estados para los filtros
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedTag, setSelectedTag] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState(new Set());
+  const [selectedTags, setSelectedTags] = useState(new Set());
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
 
@@ -63,11 +63,11 @@ export default function MapInteractive() {
 
         // Extraer categorías y tags únicos de los bookmarks
         const uniqueCategories = Array.from(new Set(validBookmarks.map(bookmark => bookmark.category)))
-          .filter(category => category) // Filtrar valores nulos o undefined
+          .filter(category => category)
           .map(category => ({ id: category, name: category }));
         
         const uniqueTags = Array.from(new Set(validBookmarks.map(bookmark => bookmark.tag)))
-          .filter(tag => tag) // Filtrar valores nulos o undefined
+          .filter(tag => tag)
           .map(tag => ({ id: tag, name: tag }));
 
         setCategories(uniqueCategories);
@@ -117,11 +117,24 @@ export default function MapInteractive() {
   };
 
   const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
+    const categoryName = e.target.value;
+    const newSelectedCategories = new Set(selectedCategories);
+    
+    if (categoryName === "") {
+      // Si selecciona "Todas", limpia la selección
+      newSelectedCategories.clear();
+    } else if (newSelectedCategories.has(categoryName)) {
+      newSelectedCategories.delete(categoryName);
+    } else {
+      newSelectedCategories.add(categoryName);
+    }
+    
+    setSelectedCategories(newSelectedCategories);
   };
 
   const handleTagChange = (e) => {
-    setSelectedTag(e.target.value);
+    const newSelectedTags = new Set(Array.isArray(e.target.value) ? e.target.value : [e.target.value]);
+    setSelectedTags(newSelectedTags);
   };
 
   const handleSearch = async (searchValue) => {
@@ -140,10 +153,10 @@ export default function MapInteractive() {
     }
   };
 
-  // Filtrar marcadores basados en la categoría y tag seleccionados
+  // Filtrar marcadores basados en las categorías y tags seleccionados
   const filteredMarkers = markers.filter(marker => {
-    const matchCategory = !selectedCategory || marker.category === selectedCategory;
-    const matchTag = !selectedTag || marker.tag === selectedTag;
+    const matchCategory = selectedCategories.size === 0 || selectedCategories.has(marker.category);
+    const matchTag = selectedTags.size === 0 || selectedTags.has(marker.tag);
     return matchCategory && matchTag;
   });
 
@@ -173,8 +186,8 @@ export default function MapInteractive() {
           <MapFilters
             categories={categories}
             tags={tags}
-            selectedCategory={selectedCategory}
-            selectedTag={selectedTag}
+            selectedCategories={Array.from(selectedCategories)}
+            selectedTags={Array.from(selectedTags)}
             onCategoryChange={handleCategoryChange}
             onTagChange={handleTagChange}
           />

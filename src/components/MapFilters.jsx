@@ -4,48 +4,59 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { getCategories, getTags } from '../service/apiService';
 
 const MapFilters = ({
-  selectedCategory,
-  selectedTag,
+  categories,
+  tags,
+  selectedCategories = [],
+  selectedTags = [],
   onCategoryChange,
   onTagChange,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState({ categories: false, tags: false });
   const [error, setError] = useState({ categories: null, tags: null });
+  const [localCategories, setLocalCategories] = useState([]);
+  const [localTags, setLocalTags] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      // Fetch categories
+    const fetchCategories = async () => {
       setLoading(prev => ({ ...prev, categories: true }));
       try {
-        const categoriesData = await getCategories();
-        setCategories(categoriesData);
-        setError(prev => ({ ...prev, categories: null }));
+        const data = await getCategories();
+        setLocalCategories(data);
       } catch (err) {
         setError(prev => ({ ...prev, categories: 'Error al cargar categorías' }));
-        console.error('Error fetching categories:', err);
       } finally {
         setLoading(prev => ({ ...prev, categories: false }));
       }
+    };
 
-      // Fetch tags
+    const fetchTags = async () => {
       setLoading(prev => ({ ...prev, tags: true }));
       try {
-        const tagsData = await getTags();
-        setTags(tagsData);
-        setError(prev => ({ ...prev, tags: null }));
+        const data = await getTags();
+        setLocalTags(data);
       } catch (err) {
         setError(prev => ({ ...prev, tags: 'Error al cargar etiquetas' }));
-        console.error('Error fetching tags:', err);
       } finally {
         setLoading(prev => ({ ...prev, tags: false }));
       }
     };
 
-    fetchData();
+    fetchCategories();
+    fetchTags();
   }, []);
+
+  const clearCategories = () => {
+    onCategoryChange({ target: { value: "" } });
+  };
+
+  const clearTags = () => {
+    onTagChange({ target: { value: [] } });
+  };
+
+  // Use localCategories and localTags if available, otherwise fall back to props
+  const displayCategories = localCategories.length > 0 ? localCategories : categories;
+  const displayTags = localTags.length > 0 ? localTags : tags;
 
   return (
     <div className="absolute top-[88px] left-4 z-[1001]">
@@ -74,31 +85,35 @@ const MapFilters = ({
         `}>
           {/* Categories Filter */}
           <div>
-            <h3 className="text-gray-700 font-medium mb-2">Categorías</h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-gray-700 font-medium">Categorías</h3>
+              {selectedCategories.length > 0 && (
+                <button 
+                  onClick={clearCategories}
+                  className="btn btn-ghost btn-xs text-gray-500 hover:text-primary"
+                >
+                  Limpiar
+                </button>
+              )}
+            </div>
             <div className="filter flex flex-wrap gap-2">
-              <label className="btn cursor-pointer">
-                <input
-                  type="radio"
-                  className="hidden"
-                  name="categories"
-                  checked={selectedCategory === ""}
-                  onChange={(e) => onCategoryChange({ target: { value: "" } })}
-                />
-                Todas
-              </label>
-              
               {loading.categories ? (
                 <span className="text-gray-500">Cargando...</span>
               ) : error.categories ? (
                 <span className="text-error">{error.categories}</span>
               ) : (
-                categories?.map((category) => (
-                  <label key={category.id} className="btn cursor-pointer">
+                displayCategories?.map((category) => (
+                  <label 
+                    key={category.id} 
+                    className={`
+                      btn cursor-pointer
+                      ${selectedCategories.includes(category.name) ? 'border-2 border-primary/50' : ''}
+                    `}
+                  >
                     <input
-                      type="radio"
+                      type="checkbox"
                       className="hidden"
-                      name="categories"
-                      checked={selectedCategory === category.name}
+                      checked={selectedCategories.includes(category.name)}
                       onChange={(e) => onCategoryChange({ target: { value: category.name } })}
                     />
                     {category.name}
@@ -110,31 +125,35 @@ const MapFilters = ({
 
           {/* Tags Filter */}
           <div>
-            <h3 className="text-gray-700 font-medium mb-2">Etiquetas</h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-gray-700 font-medium">Etiquetas</h3>
+              {selectedTags.length > 0 && (
+                <button 
+                  onClick={clearTags}
+                  className="btn btn-ghost btn-xs text-gray-500 hover:text-primary"
+                >
+                  Limpiar
+                </button>
+              )}
+            </div>
             <div className="filter flex flex-wrap gap-2">
-              <label className="btn cursor-pointer">
-                <input
-                  type="radio"
-                  className="hidden"
-                  name="tags"
-                  checked={selectedTag === ""}
-                  onChange={(e) => onTagChange({ target: { value: "" } })}
-                />
-                Todas
-              </label>
-
               {loading.tags ? (
                 <span className="text-gray-500">Cargando...</span>
               ) : error.tags ? (
                 <span className="text-error">{error.tags}</span>
               ) : (
-                tags?.map((tag) => (
-                  <label key={tag.id} className="btn cursor-pointer">
+                displayTags?.map((tag) => (
+                  <label 
+                    key={tag.id} 
+                    className={`
+                      btn cursor-pointer
+                      ${selectedTags.includes(tag.name) ? 'border-2 border-primary/50' : ''}
+                    `}
+                  >
                     <input
-                      type="radio"
+                      type="checkbox"
                       className="hidden"
-                      name="tags"
-                      checked={selectedTag === tag.name}
+                      checked={selectedTags.includes(tag.name)}
                       onChange={(e) => onTagChange({ target: { value: tag.name } })}
                     />
                     {tag.name}
