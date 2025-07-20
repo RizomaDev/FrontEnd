@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import { getAllBookmarks } from '../../service/apiService';
 import { useAuth } from '../../context/AuthContext';
 import HeaderLogged from '../HeaderLogged/HeaderLogged';
 import Header from '../Header/Header';
@@ -11,60 +9,10 @@ import LocationMarker from './LocationMarker';
 import SearchControl from './SearchControl';
 import MapFilters from '../MapFilters';
 import MarkerForm from './Markerform';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { tagIcons, categoryColors } from '../../config/categoryIcons';
-import ReactDOMServer from 'react-dom/server';
-
-const capitalizeWords = (str) => {
-  return str.split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
-};
-
-const CATEGORY_COLORS = {
-  'conflictos': '#FF4444',    // Rojo
-  'propuestas': '#00C853',    // Verde
-  'iniciativas': '#FFD700'    // Dorado
-};
-
-const createCustomIcon = (category, tag) => {
-  const categoryLower = category ? category.toLowerCase() : '';
-  const tagCapitalized = tag ? capitalizeWords(tag) : '';
-  
-  const backgroundColor = CATEGORY_COLORS[categoryLower] || '#9E9E9E';
-  const icon = tagIcons[tagCapitalized] || tagIcons['Medio Ambiente'];
-
-  const iconHtml = ReactDOMServer.renderToString(
-    <FontAwesomeIcon 
-      icon={icon} 
-      style={{ color: 'white', fontSize: '16px' }} 
-    />
-  );
-  
-  return L.divIcon({
-    className: 'custom-div-icon',
-    html: `
-      <div style="
-        background-color: ${backgroundColor}; 
-        width: 30px; 
-        height: 30px; 
-        border-radius: 50%; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        border: 2px solid white;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        position: relative;
-        z-index: 1;
-      ">
-        ${iconHtml}
-      </div>
-    `,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
-    popupAnchor: [0, -15]
-  });
-};
+import { createCustomIcon } from './CustomMarkerIcon';
+import { useMapMarkers } from '../../hooks/useMapMarkers';
+import { useMapFilters } from '../../hooks/useMapFilters';
+import { DEFAULT_MAP_CENTER, DEFAULT_ZOOM } from '../../constants/mapConstants';
 
 function MapClickHandler({ onClick }) {
   useMapEvents({
@@ -79,47 +27,27 @@ export default function MapInteractive() {
   const { user } = useAuth();
   const [isClient, setIsClient] = useState(false);
   const [formPosition, setFormPosition] = useState(null);
-  const [markers, setMarkers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
 
-  const [selectedCategories, setSelectedCategories] = useState(new Set());
-  const [selectedTags, setSelectedTags] = useState(new Set());
-  const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
+  const {
+    markers,
+    loading,
+    error,
+    categories,
+    tags,
+    addMarker
+  } = useMapMarkers();
 
-  useEffect(() => {
+  const {
+    selectedCategories,
+    selectedTags,
+    handleCategoryChange,
+    handleTagChange,
+    filterMarkers
+  } = useMapFilters();
+
+  useState(() => {
     setIsClient(true);
-    const fetchBookmarks = async () => {
-      try {
-        const bookmarksData = await getAllBookmarks();
-        const validBookmarks = bookmarksData.filter(bookmark => 
-          bookmark.location && 
-          bookmark.location.latitude && 
-          bookmark.location.longitude
-        );
-        
-        setMarkers(validBookmarks);
-
-        const uniqueCategories = Array.from(new Set(validBookmarks.map(bookmark => bookmark.category)))
-          .filter(category => category)
-          .map(category => ({ id: category, name: category }));
-        
-        const uniqueTags = Array.from(new Set(validBookmarks.map(bookmark => bookmark.tag)))
-          .filter(tag => tag)
-          .map(tag => ({ id: tag, name: tag }));
-
-        setCategories(uniqueCategories);
-        setTags(uniqueTags);
-      } catch (err) {
-        setError('Error al cargar los marcadores');
-        console.error('Error fetching bookmarks:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBookmarks();
   }, []);
 
   const handleMapClick = (position) => {
@@ -130,49 +58,13 @@ export default function MapInteractive() {
 
   const handleFormSubmit = (data) => {
     if (formPosition && user) {
-      const newMarker = { 
-        position: formPosition,
-        title: data.title,
-        description: data.description,
-        tag: data.tag,
-        category: data.category,
-        imageFile: data.imageFile
-      };
-      setMarkers([...markers, newMarker]);
-
-      if (data.category && !categories.find(c => c.name === data.category)) {
-        setCategories([...categories, { id: data.category, name: data.category }]);
-      }
-      if (data.tag && !tags.find(t => t.name === data.tag)) {
-        setTags([...tags, { id: data.tag, name: data.tag }]);
-      }
-
+      addMarker(formPosition, data);
       setFormPosition(null);
     }
   };
 
   const handleFormCancel = () => {
     setFormPosition(null);
-  };
-
-  const handleCategoryChange = (e) => {
-    const categoryName = e.target.value;
-    const newSelectedCategories = new Set(selectedCategories);
-    
-    if (categoryName === "") {
-      newSelectedCategories.clear();
-    } else if (newSelectedCategories.has(categoryName)) {
-      newSelectedCategories.delete(categoryName);
-    } else {
-      newSelectedCategories.add(categoryName);
-    }
-    
-    setSelectedCategories(newSelectedCategories);
-  };
-
-  const handleTagChange = (e) => {
-    const newSelectedTags = new Set(Array.isArray(e.target.value) ? e.target.value : [e.target.value]);
-    setSelectedTags(newSelectedTags);
   };
 
   const handleSearch = async (searchValue) => {
@@ -191,12 +83,7 @@ export default function MapInteractive() {
     }
   };
 
-  // Filtrar marcadores basados en las categorías y tags seleccionados
-  const filteredMarkers = markers.filter(marker => {
-    const matchCategory = selectedCategories.size === 0 || selectedCategories.has(marker.category);
-    const matchTag = selectedTags.size === 0 || selectedTags.has(marker.tag);
-    return matchCategory && matchTag;
-  });
+  const filteredMarkers = filterMarkers(markers);
 
   if (!isClient) return null;
 
@@ -224,14 +111,14 @@ export default function MapInteractive() {
           <MapFilters
             categories={categories}
             tags={tags}
-            selectedCategories={Array.from(selectedCategories)}
-            selectedTags={Array.from(selectedTags)}
+            selectedCategories={selectedCategories}
+            selectedTags={selectedTags}
             onCategoryChange={handleCategoryChange}
             onTagChange={handleTagChange}
           />
           <MapContainer
-            center={[36.7213, -4.4214]}
-            zoom={13}
+            center={DEFAULT_MAP_CENTER}
+            zoom={DEFAULT_ZOOM}
             style={{ height: '100%', width: '100%' }}
             ref={setMapInstance}
             zoomControl={false}

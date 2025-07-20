@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { tagIcons } from '../../config/categoryIcons';
 
 export default function MarkerForm({ position, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
@@ -21,6 +22,9 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     "Deporte",
     "Memoria democrática"
   ];
+
+  // Obtener las etiquetas de tagIcons
+  const availableTags = Object.keys(tagIcons);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -106,16 +110,20 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
               <label className="label">
                 <span className="label-text">Tag</span>
               </label>
-              <input
-                type="text"
-                id="tag"
+              <select
                 name="tag"
                 value={formData.tag}
                 onChange={handleInputChange}
                 required
-                className="input input-bordered w-full"
-                placeholder="Añade un tag"
-              />
+                className="select select-bordered w-full"
+              >
+                <option value="">Selecciona un tag</option>
+                {availableTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="form-control">
