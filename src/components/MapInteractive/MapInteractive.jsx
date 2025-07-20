@@ -32,7 +32,6 @@ const createCustomIcon = (category, tag) => {
   const tagCapitalized = tag ? capitalizeWords(tag) : '';
   
   const backgroundColor = CATEGORY_COLORS[categoryLower] || '#9E9E9E';
-  
   const icon = tagIcons[tagCapitalized] || tagIcons['Medio Ambiente'];
 
   const iconHtml = ReactDOMServer.renderToString(
@@ -55,6 +54,8 @@ const createCustomIcon = (category, tag) => {
         align-items: center; 
         border: 2px solid white;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        position: relative;
+        z-index: 1;
       ">
         ${iconHtml}
       </div>
