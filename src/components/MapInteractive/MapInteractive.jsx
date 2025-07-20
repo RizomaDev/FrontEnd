@@ -13,6 +13,7 @@ import { createCustomIcon } from './CustomMarkerIcon';
 import { useMapMarkers } from '../../hooks/useMapMarkers';
 import { useMapFilters } from '../../hooks/useMapFilters';
 import { DEFAULT_MAP_CENTER, DEFAULT_ZOOM } from '../../constants/mapConstants';
+import { searchLocation } from '../../service/mapService';
 
 function MapClickHandler({ onClick }) {
   useMapEvents({
@@ -69,17 +70,14 @@ export default function MapInteractive() {
 
   const handleSearch = async (searchValue) => {
     try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchValue)}`);
-      const data = await response.json();
-      
-      if (data && data.length > 0) {
-        const { lat, lon } = data[0];
-        if (mapInstance) {
-          mapInstance.setView([parseFloat(lat), parseFloat(lon)], 16);
-        }
+      const coordinates = await searchLocation(searchValue);
+      if (coordinates && mapInstance) {
+        mapInstance.setView([coordinates.lat, coordinates.lon], 16);
       }
     } catch (error) {
       console.error('Error en la búsqueda:', error);
+      // Aquí podrías manejar el error de una manera más amigable para el usuario
+      // Por ejemplo, mostrando una notificación o un mensaje de error en la UI
     }
   };
 
