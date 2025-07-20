@@ -10,19 +10,67 @@ import BookmarkPopup from './BookmarkPopup';
 import LocationMarker from './LocationMarker';
 import SearchControl from './SearchControl';
 import MapFilters from '../MapFilters';
-
-// Importar los iconos predeterminados de Leaflet
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
 import MarkerForm from './Markerform';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { tagIcons, categoryColors } from '../../config/categoryIcons';
+import ReactDOMServer from 'react-dom/server';
 
-const DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-});
+// Función auxiliar para capitalizar la primera letra de cada palabra
+const capitalizeWords = (str) => {
+  return str.split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
 
-L.Marker.prototype.options.icon = DefaultIcon;
+// Colores para las categorías
+const CATEGORY_COLORS = {
+  'conflictos': '#FF4444',    // Rojo
+  'propuestas': '#00C853',    // Verde
+  'iniciativas': '#FFD700'    // Dorado
+};
+
+// Definir los estilos base para los iconos
+const createCustomIcon = (category, tag) => {
+  // Convertir categoría y tag a minúsculas para la comparación
+  const categoryLower = category ? category.toLowerCase() : '';
+  const tagCapitalized = tag ? capitalizeWords(tag) : '';
+  
+  // Obtener el color según la categoría
+  const backgroundColor = CATEGORY_COLORS[categoryLower] || '#9E9E9E';
+  
+  // Obtener el icono según la etiqueta
+  const icon = tagIcons[tagCapitalized] || tagIcons['Medio Ambiente'];
+
+  // Renderizar el componente FontAwesomeIcon a HTML
+  const iconHtml = ReactDOMServer.renderToString(
+    <FontAwesomeIcon 
+      icon={icon} 
+      style={{ color: 'white', fontSize: '16px' }} 
+    />
+  );
+  
+  return L.divIcon({
+    className: 'custom-div-icon',
+    html: `
+      <div style="
+        background-color: ${backgroundColor}; 
+        width: 30px; 
+        height: 30px; 
+        border-radius: 50%; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      ">
+        ${iconHtml}
+      </div>
+    `,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15]
+  });
+};
 
 function MapClickHandler({ onClick }) {
   useMapEvents({
@@ -59,6 +107,7 @@ export default function MapInteractive() {
           bookmark.location.latitude && 
           bookmark.location.longitude
         );
+        
         setMarkers(validBookmarks);
 
         // Extraer categorías y tags únicos de los bookmarks
@@ -209,6 +258,7 @@ export default function MapInteractive() {
               <Marker 
                 key={marker.id || idx} 
                 position={[marker.location?.latitude || marker.position[0], marker.location?.longitude || marker.position[1]]}
+                icon={createCustomIcon(marker.category, marker.tag)}
               >
                 <BookmarkPopup marker={marker} />
               </Marker>
