@@ -15,33 +15,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { tagIcons, categoryColors } from '../../config/categoryIcons';
 import ReactDOMServer from 'react-dom/server';
 
-// Función auxiliar para capitalizar la primera letra de cada palabra
 const capitalizeWords = (str) => {
   return str.split(' ')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
 };
 
-// Colores para las categorías
 const CATEGORY_COLORS = {
   'conflictos': '#FF4444',    // Rojo
   'propuestas': '#00C853',    // Verde
   'iniciativas': '#FFD700'    // Dorado
 };
 
-// Definir los estilos base para los iconos
 const createCustomIcon = (category, tag) => {
-  // Convertir categoría y tag a minúsculas para la comparación
   const categoryLower = category ? category.toLowerCase() : '';
   const tagCapitalized = tag ? capitalizeWords(tag) : '';
   
-  // Obtener el color según la categoría
   const backgroundColor = CATEGORY_COLORS[categoryLower] || '#9E9E9E';
   
-  // Obtener el icono según la etiqueta
   const icon = tagIcons[tagCapitalized] || tagIcons['Medio Ambiente'];
 
-  // Renderizar el componente FontAwesomeIcon a HTML
   const iconHtml = ReactDOMServer.renderToString(
     <FontAwesomeIcon 
       icon={icon} 
@@ -90,7 +83,6 @@ export default function MapInteractive() {
   const [error, setError] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
 
-  // Estados para los filtros
   const [selectedCategories, setSelectedCategories] = useState(new Set());
   const [selectedTags, setSelectedTags] = useState(new Set());
   const [categories, setCategories] = useState([]);
@@ -101,7 +93,6 @@ export default function MapInteractive() {
     const fetchBookmarks = async () => {
       try {
         const bookmarksData = await getAllBookmarks();
-        // Filtrar solo los bookmarks que tienen ubicación
         const validBookmarks = bookmarksData.filter(bookmark => 
           bookmark.location && 
           bookmark.location.latitude && 
@@ -110,7 +101,6 @@ export default function MapInteractive() {
         
         setMarkers(validBookmarks);
 
-        // Extraer categorías y tags únicos de los bookmarks
         const uniqueCategories = Array.from(new Set(validBookmarks.map(bookmark => bookmark.category)))
           .filter(category => category)
           .map(category => ({ id: category, name: category }));
@@ -149,7 +139,6 @@ export default function MapInteractive() {
       };
       setMarkers([...markers, newMarker]);
 
-      // Actualizar categorías y tags si son nuevos
       if (data.category && !categories.find(c => c.name === data.category)) {
         setCategories([...categories, { id: data.category, name: data.category }]);
       }
@@ -170,7 +159,6 @@ export default function MapInteractive() {
     const newSelectedCategories = new Set(selectedCategories);
     
     if (categoryName === "") {
-      // Si selecciona "Todas", limpia la selección
       newSelectedCategories.clear();
     } else if (newSelectedCategories.has(categoryName)) {
       newSelectedCategories.delete(categoryName);
