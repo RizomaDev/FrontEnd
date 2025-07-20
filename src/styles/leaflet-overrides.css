@@ -1,0 +1,22 @@
+.custom-div-icon {
+  background: none !important;
+  border: none !important;
+}
+
+.custom-div-icon div {
+  transition: transform 0.2s ease-in-out;
+}
+
+.custom-div-icon div:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+/* Override default marker icon paths */
+.leaflet-default-icon-path {
+  background-image: url(https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png);
+}
+
+.leaflet-default-shadow-path {
+  background-image: url(https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png);
+} 
