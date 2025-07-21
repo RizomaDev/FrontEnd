@@ -1,15 +1,22 @@
 import React from 'react';
 import { Popup } from 'react-leaflet';      
 import Buttons from '../Buttons/Buttons';
-
+import CategoryIcon from './CategoryIcon';
 
 export default function BookmarkPopup({ marker }) {
   return (
     <Popup>
       <div className="max-w-sm">
-      <div className="mt-2">
-          <span className="badge badge-secondary">{marker.category}</span>
-          <span className="badge badge-primary ml-2">{marker.tag}</span>
+        <div className="flex items-center gap-3 mb-3">
+          <CategoryIcon 
+            category={marker.category} 
+            tag={marker.tag} 
+            size="md"
+          />
+          <div>
+            <span className="badge badge-secondary">{marker.category}</span>
+            <span className="badge badge-primary ml-2">{marker.tag}</span>
+          </div>
         </div>
         <h3 className="font-bold text-lg">{marker.title}</h3>
         <p className="text-sm mt-2">{marker.description}</p>
