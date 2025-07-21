@@ -6,8 +6,8 @@ import FormDeleteBookmark from "../../components/Forms/FormDeleteBookmark/FormDe
 import Header from "../../components/Header/Header";
 import HeaderLogged from "../../components/HeaderLogged/HeaderLogged";
 import Footer from "../../components/Footer/Footer";
-import { tagIcons, categoryColors } from '../../config/categoryIcons'; // ajusta la ruta
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import CategoryIcon from '../../components/MapInteractive/CategoryIcon';
+import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 
 export default function BookmarkDetails() {
   const { id } = useParams();
@@ -54,23 +54,44 @@ export default function BookmarkDetails() {
 
   if (!bookmark) return null;
 
-  const tagIcon = tagIcons[bookmark.tag];
-  const categoryColor = categoryColors[bookmark.category];
+  const categoryLower = bookmark.category ? bookmark.category.toLowerCase() : '';
+  const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
 
   return (
     <>
       {user ? <HeaderLogged /> : <Header />}
-      <div className="card bg-base-100 shadow-xl rounded-lg ">
+      <div className="card bg-base-100 shadow-xl rounded-lg">
         <div className="card-body p-0">
           <div className="p-6 md:p-8">
-          <div className="flex items-center gap-2 mb-2">
-  {tagIcon && (
-    <FontAwesomeIcon icon={tagIcon} className={`text-${categoryColor} text-2xl`} />
-  )}
-  <p className="text-lg text-accent-content font-medium">
-    {bookmark.category} — {bookmark.tag}
-  </p>
-</div>
+            <div className="flex items-center gap-3 mb-3">
+              <CategoryIcon 
+                category={bookmark.category} 
+                tag={bookmark.tag} 
+                size="lg"
+              />
+              <div>
+                <span 
+                  className="badge"
+                  style={{ 
+                    backgroundColor: backgroundColor,
+                    color: 'white',
+                    border: 'none'
+                  }}
+                >
+                  {bookmark.category}
+                </span>
+                <span 
+                  className="badge ml-2"
+                  style={{ 
+                    backgroundColor: 'oklch(0.7036 0.0814 186.26)',
+                    color: 'white',
+                    border: 'none'
+                  }}
+                >
+                  {bookmark.tag}
+                </span>
+              </div>
+            </div>
 
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-2 leading-tight">
               {bookmark.title}
@@ -181,19 +202,21 @@ export default function BookmarkDetails() {
                   <div className="text-base text-base-content leading-relaxed flex flex-col gap-1">
                     <p>Nombre: {creator ? creator.name : "Desconocido"}</p>
                     <p>Email: {creator ? creator.email : "Desconocido"}</p>
-                 
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-4 w-11/12 mx-auto lg:w-64 flex-shrink-0 self-start order-1 lg:order-2 ">
-             
-           
+            <div className="flex flex-col gap-4 w-11/12 mx-auto lg:w-64 flex-shrink-0 self-start order-1 lg:order-2">
               {user && bookmark.userId === user.id && (
                 <div className="flex flex-col gap-3">
                   <div className="">
                     <div className="card-body p-0 flex items-center justify-center">
-                      <button className="btn btn-primary text-primary-content w-full" onClick={() => navigate(`/EditBookmark/${bookmark.id}`)}>Edit this Bookmark</button>
+                      <button 
+                        className="btn btn-primary text-white w-full" 
+                        onClick={() => navigate(`/EditBookmark/${bookmark.id}`)}
+                      >
+                        Edit this Bookmark
+                      </button>
                     </div>
                   </div>
                   <FormDeleteBookmark id_bookmark={bookmark.id} />
