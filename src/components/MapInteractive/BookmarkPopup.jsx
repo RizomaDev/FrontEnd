@@ -2,8 +2,12 @@ import React from 'react';
 import { Popup } from 'react-leaflet';      
 import Buttons from '../Buttons/Buttons';
 import CategoryIcon from './CategoryIcon';
+import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 
 export default function BookmarkPopup({ marker }) {
+  const categoryLower = marker.category ? marker.category.toLowerCase() : '';
+  const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
+
   return (
     <Popup>
       <div className="max-w-sm">
@@ -14,8 +18,26 @@ export default function BookmarkPopup({ marker }) {
             size="md"
           />
           <div>
-            <span className="badge badge-secondary">{marker.category}</span>
-            <span className="badge badge-primary ml-2">{marker.tag}</span>
+            <span 
+              className="badge"
+              style={{ 
+                backgroundColor: backgroundColor,
+                color: 'white',
+                border: 'none'
+              }}
+            >
+              {marker.category}
+            </span>
+            <span 
+              className="badge ml-2"
+              style={{ 
+                backgroundColor: 'oklch(0.7036 0.0814 186.26)', // color-secondary
+                color: 'white',
+                border: 'none'
+              }}
+            >
+              {marker.tag}
+            </span>
           </div>
         </div>
         <h3 className="font-bold text-lg">{marker.title}</h3>

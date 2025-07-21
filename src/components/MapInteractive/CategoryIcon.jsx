@@ -5,7 +5,6 @@ import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapCons
 import { normalizeString } from '../../utils/stringUtils';
 
 /**
- * Componente reutilizable para mostrar iconos de categorías
  * @param {Object} props
  * @param {string} props.category - Categoría del marcador
  * @param {string} props.tag - Etiqueta del marcador
@@ -15,13 +14,44 @@ import { normalizeString } from '../../utils/stringUtils';
  */
 export default function CategoryIcon({ category, tag, size = 'md', style = {}, className = '' }) {
   const categoryLower = category ? category.toLowerCase() : '';
-  const normalizedTag = tag ? normalizeString(tag) : '';
   
-  // Buscar el icono primero por tag normalizado, luego por tag original, y finalmente por categoría
-  const icon = tagIcons[normalizedTag] || tagIcons[tag] || tagIcons[category] || tagIcons['Medio Ambiente'];
+  let icon;
+  if (tag) {
+    icon = tagIcons[tag];
+    if (!icon) {
+
+      const normalizedTag = normalizeString(tag);
+      const matchingTag = Object.keys(tagIcons).find(
+        availableTag => normalizeString(availableTag) === normalizedTag
+      );
+      if (matchingTag) {
+        icon = tagIcons[matchingTag];
+      }
+    }
+  }
+  
+
+  if (!icon && category) {
+    icon = tagIcons[category];
+    if (!icon) {
+      const normalizedCategory = normalizeString(category);
+      const matchingCategory = Object.keys(tagIcons).find(
+        availableTag => normalizeString(availableTag) === normalizedCategory
+      );
+      if (matchingCategory) {
+        icon = tagIcons[matchingCategory];
+      }
+    }
+  }
+  
+
+  if (!icon) {
+    icon = tagIcons['Medio Ambiente'];
+  }
+
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
 
-  // Configuración de tamaños
+
   const sizes = {
     sm: {
       container: 'w-6 h-6',
@@ -49,13 +79,11 @@ export default function CategoryIcon({ category, tag, size = 'md', style = {}, c
         ...style
       }}
     >
-      {icon && (
-        <FontAwesomeIcon 
-          icon={icon} 
-          className={`text-white ${sizeClasses.icon}`}
-          fixedWidth
-        />
-      )}
+      <FontAwesomeIcon 
+        icon={icon} 
+        className={`text-white ${sizeClasses.icon}`}
+        fixedWidth
+      />
     </div>
   );
 } 
