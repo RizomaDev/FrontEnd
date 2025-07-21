@@ -8,7 +8,6 @@ export default function BookmarkPopup({ marker }) {
   const categoryLower = marker.category ? marker.category.toLowerCase() : '';
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
 
-  // Mapear categorías a clases de botones del tema
   const getButtonClass = (category) => {
     switch (category?.toLowerCase()) {
       case 'conflictos':
@@ -45,7 +44,7 @@ export default function BookmarkPopup({ marker }) {
             <span 
               className="badge ml-2"
               style={{ 
-                backgroundColor: 'oklch(0.7036 0.0814 186.26)', // color-secondary
+                backgroundColor: 'oklch(0.7036 0.0814 186.26)', 
                 color: 'white',
                 border: 'none'
               }}
