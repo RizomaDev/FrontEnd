@@ -23,7 +23,6 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     "Memoria democrática"
   ];
 
-  // Obtener las etiquetas de tagIcons
   const availableTags = Object.keys(tagIcons);
 
   const handleInputChange = (e) => {

@@ -76,8 +76,6 @@ export default function MapInteractive() {
       }
     } catch (error) {
       console.error('Error en la búsqueda:', error);
-      // Aquí podrías manejar el error de una manera más amigable para el usuario
-      // Por ejemplo, mostrando una notificación o un mensaje de error en la UI
     }
   };
 
