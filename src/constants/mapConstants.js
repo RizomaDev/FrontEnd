@@ -2,7 +2,7 @@ export const DEFAULT_MAP_CENTER = [36.7213, -4.4214];
 export const DEFAULT_ZOOM = 13;
 
 export const CATEGORY_COLORS = {
-  'conflictos': 'oklch(59% 0.249 0.584)',    // color-error
+  'conflictos': 'oklch(0.6789 0.1477 35.23)',    // color-primary (naranja)
   'propuestas': 'oklch(0.7036 0.0814 186.26)',    // color-success/secondary
   'iniciativas': 'oklch(0.8663 0.1867 99.58)'    // color-warning
 };

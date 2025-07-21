@@ -5,7 +5,6 @@ import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapCons
 import { normalizeString } from '../../utils/stringUtils';
 
 /**
- * @param {Object} props
  * @param {string} props.category - Categoría del marcador
  * @param {string} props.tag - Etiqueta del marcador
  * @param {string} [props.size='md'] - Tamaño del icono ('sm', 'md', 'lg')

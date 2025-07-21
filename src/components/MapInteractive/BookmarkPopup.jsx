@@ -8,6 +8,20 @@ export default function BookmarkPopup({ marker }) {
   const categoryLower = marker.category ? marker.category.toLowerCase() : '';
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
 
+  // Mapear categorías a clases de botones del tema
+  const getButtonClasses = (category) => {
+    switch (category?.toLowerCase()) {
+      case 'conflictos':
+        return 'btn-primary text-primary-content';
+      case 'propuestas':
+        return 'btn-success text-success-content';
+      case 'iniciativas':
+        return 'btn-warning text-warning-content';
+      default:
+        return 'btn-neutral text-neutral-content';
+    }
+  };
+
   return (
     <Popup>
       <div className="max-w-sm">
@@ -57,16 +71,12 @@ export default function BookmarkPopup({ marker }) {
           />
         )}
         {marker.id && (
-          <div className="mt-4 flex justify-end text-black">
+          <div className="mt-4 flex justify-end">
             <Buttons
               to={`/BookmarkDetails/${marker.id}`}
-              className="border-none sm:btn-sm"
-              style={{
-                backgroundColor: "info",
-                color: "black",
-              }}
+              className={`btn btn-sm ${getButtonClasses(marker.category)}`}
             >
-              {"Ver más detalles"}
+              Ver más detalles
             </Buttons>
           </div>
         )}
