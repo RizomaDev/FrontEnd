@@ -104,22 +104,51 @@ export default function BookmarkDetails() {
           </div>
 
           {bookmark.imageUrls && bookmark.imageUrls.length > 0 && (
-            <div className="carousel w-full mb-8 relative [filter:sepia(40%)]">
-              {bookmark.imageUrls.map((imgPath, idx) => (
-                <div key={idx} id={`slide${idx + 1}`} className="carousel-item relative w-full">
-                  <img
-                    src={`http://localhost:8080/api/images/${imgPath.split('/').pop()}`}
-                    className="w-full object-cover h-auto"
-                    alt={`Bookmark Image ${idx + 1}`}
-                  />
-                  <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                    <a href={`#slide${idx === 0 ? bookmark.imageUrls.length : idx}`}
-                      className="btn btn-circle btn-ghost bg-base-200 bg-opacity-50 hover:bg-opacity-75">❮</a>
-                    <a href={`#slide${idx === bookmark.imageUrls.length - 1 ? 1 : idx + 2}`}
-                      className="btn btn-circle btn-ghost bg-base-200 bg-opacity-50 hover:bg-opacity-75">❯</a>
+            <div className="w-full [filter:sepia(40%)]">
+              <div className="carousel w-full">
+                {bookmark.imageUrls.map((imgPath, idx) => (
+                  <div 
+                    key={idx} 
+                    id={`slide${idx + 1}`} 
+                    className="carousel-item relative w-full"
+                  >
+                    <div className="w-full aspect-[16/9] relative overflow-hidden">
+                      <img
+                        src={`http://localhost:8080/api/images/${imgPath.split('/').pop()}`}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        alt={`Bookmark Image ${idx + 1}`}
+                      />
+                    </div>
+                    <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                      <a 
+                        href={`#slide${idx === 0 ? bookmark.imageUrls.length : idx}`}
+                        className="btn btn-circle btn-ghost bg-base-200 bg-opacity-50 hover:bg-opacity-75"
+                      >
+                        ❮
+                      </a>
+                      <a 
+                        href={`#slide${idx === bookmark.imageUrls.length - 1 ? 1 : idx + 2}`}
+                        className="btn btn-circle btn-ghost bg-base-200 bg-opacity-50 hover:bg-opacity-75"
+                      >
+                        ❯
+                      </a>
+                    </div>
                   </div>
+                ))}
+              </div>
+              {bookmark.imageUrls.length > 1 && (
+                <div className="flex justify-center w-full py-2 gap-2">
+                  {bookmark.imageUrls.map((_, idx) => (
+                    <a 
+                      key={idx} 
+                      href={`#slide${idx + 1}`}
+                      className="btn btn-xs"
+                    >
+                      {idx + 1}
+                    </a>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           )}
 
