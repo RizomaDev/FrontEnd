@@ -8,7 +8,8 @@ import {
   faPalette,       // Cultura
   faBriefcase,     // Economía y empleo
   faFutbol,        // Deporte
-  faMonument       // Memoria democrática
+  faMonument,      // Memoria democrática
+  faTransgender    // Transfeminismo
 } from '@fortawesome/free-solid-svg-icons';
 
 // Exportar las constantes para poder usarlas en otros componentes
@@ -20,7 +21,7 @@ export const categoryColors = {
 
 export const tagIcons = {
   'Medio Ambiente': faLeaf,
-  'Feminismos': faVenusMars,
+  'Feminismos': faTransgender,
   'Servicios Públicos': faBuilding,
   'Vivienda': faHome,
   'Urbanismo': faCity,
