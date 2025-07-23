@@ -4,6 +4,18 @@ import { tagIcons } from '../../config/categoryIcons';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 import { normalizeString } from '../../utils/stringUtils';
 
+const TAG_MAPPING = {
+  'feminismo': 'Feminismos',
+  'feminismos': 'Feminismos',
+  'economia': 'Economía y empleo',
+  'economia y empleo': 'Economía y empleo',
+  'economía': 'Economía y empleo',
+  'economía y empleo': 'Economía y empleo',
+  'empleo': 'Economía y empleo',
+  'servicios publicos': 'Servicios Públicos',
+  'memoria democratica': 'Memoria democrática'
+};
+
 /**
  * @param {string} props.category - Categoría del marcador
  * @param {string} props.tag - Etiqueta del marcador
@@ -14,42 +26,69 @@ import { normalizeString } from '../../utils/stringUtils';
 export default function CategoryIcon({ category, tag, size = 'md', style = {}, className = '' }) {
   const categoryLower = category ? category.toLowerCase() : '';
   
-  let icon;
-  if (tag) {
-    icon = tagIcons[tag];
-    if (!icon) {
+  const getIconForName = (name) => {
+    if (!name) return null;
+    
+    // Debug: ver el nombre que llega
+    console.log('Buscando icono para:', name);
+    
+    // 1. Intentar directamente
+    let icon = tagIcons[name];
+    if (icon) {
+      console.log('Encontrado directamente');
+      return icon;
+    }
 
-      const normalizedTag = normalizeString(tag);
-      const matchingTag = Object.keys(tagIcons).find(
-        availableTag => normalizeString(availableTag) === normalizedTag
-      );
-      if (matchingTag) {
-        icon = tagIcons[matchingTag];
+    // 2. Intentar con el mapeo directo
+    const mappedName = TAG_MAPPING[name.toLowerCase()];
+    if (mappedName) {
+      icon = tagIcons[mappedName];
+      if (icon) {
+        console.log('Encontrado por mapeo:', mappedName);
+        return icon;
       }
     }
-  }
-  
 
+    // 3. Intentar con normalización
+    const normalizedName = normalizeString(name);
+    console.log('Nombre normalizado:', normalizedName);
+    
+    // Intentar primero con el mapeo normalizado
+    const normalizedMappedName = TAG_MAPPING[normalizedName];
+    if (normalizedMappedName) {
+      icon = tagIcons[normalizedMappedName];
+      if (icon) {
+        console.log('Encontrado por mapeo normalizado:', normalizedMappedName);
+        return icon;
+      }
+    }
+
+    // Buscar en las claves de tagIcons
+    const matchingKey = Object.keys(tagIcons).find(
+      key => normalizeString(key) === normalizedName
+    );
+    if (matchingKey) {
+      console.log('Encontrado por coincidencia normalizada:', matchingKey);
+      return tagIcons[matchingKey];
+    }
+
+    console.log('No se encontró icono');
+    return null;
+  };
+
+  // Intentar obtener el icono primero del tag, luego de la categoría
+  let icon = tag ? getIconForName(tag) : null;
   if (!icon && category) {
-    icon = tagIcons[category];
-    if (!icon) {
-      const normalizedCategory = normalizeString(category);
-      const matchingCategory = Object.keys(tagIcons).find(
-        availableTag => normalizeString(availableTag) === normalizedCategory
-      );
-      if (matchingCategory) {
-        icon = tagIcons[matchingCategory];
-      }
-    }
+    icon = getIconForName(category);
   }
   
-
+  // Si aún no hay icono, usar el default
   if (!icon) {
+    console.log('Usando icono por defecto');
     icon = tagIcons['Medio Ambiente'];
   }
 
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
-
 
   const sizes = {
     sm: {
