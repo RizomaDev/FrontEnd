@@ -4,7 +4,7 @@ import Buttons from '../Buttons/Buttons';
 import CategoryIcon from './CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVideo, faLink, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faVideo, faLink } from '@fortawesome/free-solid-svg-icons';
 
 export default function BookmarkPopup({ marker }) {
   const categoryLower = marker.category ? marker.category.toLowerCase() : '';
@@ -21,16 +21,6 @@ export default function BookmarkPopup({ marker }) {
       default:
         return 'btn-neutral';
     }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
   };
 
   return (
@@ -67,13 +57,6 @@ export default function BookmarkPopup({ marker }) {
         </div>
         <h3 className="font-bold text-lg">{marker.title}</h3>
         <p className="text-sm mt-2">{marker.description}</p>
-
-        {marker.publicationDate && (
-          <div className="flex items-center gap-2 text-sm text-gray-600 mt-2">
-            <FontAwesomeIcon icon={faCalendar} />
-            <span>{formatDate(marker.publicationDate)}</span>
-          </div>
-        )}
         
         {marker.videoUrl && (
           <div className="mt-2">
