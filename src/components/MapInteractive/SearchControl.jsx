@@ -92,20 +92,20 @@ const SearchControl = ({ className = '', onSearch }) => {
         <button
           onClick={toggleSearch}
           className={`
-            btn btn-secondary rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300
+            bg-secondary rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300
             flex items-center justify-center w-12 h-12
             ${isExpanded ? 'rotate-180' : ''}
           `}
         >
-          <FontAwesomeIcon icon={faSearch} className="text-gray-600" />
+          <FontAwesomeIcon icon={faSearch} className="text-white" />
         </button>
 
         {/* Search Panel */}
         <div className={`
           absolute top-16 left-0
-          bg-secondary rounded-lg shadow-lg p-4
+          bg-white rounded-lg shadow-lg p-6
           transition-all duration-300 origin-top-left
-          min-w-[250px]
+          min-w-[280px]
           ${isExpanded 
             ? 'opacity-100 transform scale-100 translate-y-0' 
             : 'opacity-0 transform scale-95 -translate-y-4 pointer-events-none'}
@@ -119,13 +119,13 @@ const SearchControl = ({ className = '', onSearch }) => {
                   value={searchValue}
                   onChange={handleInputChange}
                   placeholder="🗺️ Buscar en el mapa..."
-                  className="input input-bordered input-secondary w-full"
+                  className="input input-bordered w-full"
                 />
               </div>
             </div>
             
             {(isLoading || suggestions.length > 0) && (
-              <div className="mt-2 bg-base-100 rounded-lg shadow-lg overflow-hidden">
+              <div className="mt-2 bg-base-100 rounded-lg shadow overflow-hidden">
                 {isLoading && (
                   <div className="p-2 text-center text-gray-500">Buscando lugares...</div>
                 )}

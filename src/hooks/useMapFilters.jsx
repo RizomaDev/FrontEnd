@@ -1,40 +1,48 @@
 import { useState } from 'react';
 
 export const useMapFilters = () => {
-  const [selectedCategories, setSelectedCategories] = useState(new Set());
-  const [selectedTags, setSelectedTags] = useState(new Set());
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   const handleCategoryChange = (e) => {
-    const categoryName = e.target.value;
-    const newSelectedCategories = new Set(selectedCategories);
-    
-    if (categoryName === "") {
-      newSelectedCategories.clear();
-    } else if (newSelectedCategories.has(categoryName)) {
-      newSelectedCategories.delete(categoryName);
+    const value = e.target.value;
+    if (Array.isArray(value)) {
+      setSelectedCategories(value);
+    } else if (value === "") {
+      setSelectedCategories([]);
     } else {
-      newSelectedCategories.add(categoryName);
+      const newSelectedCategories = selectedCategories.includes(value)
+        ? selectedCategories.filter(cat => cat !== value)
+        : [...selectedCategories, value];
+      setSelectedCategories(newSelectedCategories);
     }
-    
-    setSelectedCategories(newSelectedCategories);
   };
 
   const handleTagChange = (e) => {
-    const newSelectedTags = new Set(Array.isArray(e.target.value) ? e.target.value : [e.target.value]);
-    setSelectedTags(newSelectedTags);
+    const value = e.target.value;
+    if (Array.isArray(value)) {
+      setSelectedTags(value);
+    } else if (value === "") {
+      setSelectedTags([]);
+    } else {
+      const newSelectedTags = selectedTags.includes(value)
+        ? selectedTags.filter(tag => tag !== value)
+        : [...selectedTags, value];
+      setSelectedTags(newSelectedTags);
+    }
   };
 
   const filterMarkers = (markers) => {
     return markers.filter(marker => {
-      const matchCategory = selectedCategories.size === 0 || selectedCategories.has(marker.category);
-      const matchTag = selectedTags.size === 0 || selectedTags.has(marker.tag);
+      const matchCategory = selectedCategories.length === 0 || selectedCategories.includes(marker.category);
+      const matchTag = selectedTags.length === 0 || selectedTags.includes(marker.tag);
       return matchCategory && matchTag;
     });
   };
 
   return {
-    selectedCategories: Array.from(selectedCategories),
-    selectedTags: Array.from(selectedTags),
+    selectedCategories,
+    selectedTags,
     handleCategoryChange,
     handleTagChange,
     filterMarkers
