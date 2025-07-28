@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useAuth } from '../../context/AuthContext';
@@ -14,6 +14,7 @@ import { useMapMarkers } from '../../hooks/useMapMarkers';
 import { useMapFilters } from '../../hooks/useMapFilters';
 import { DEFAULT_MAP_CENTER, DEFAULT_ZOOM } from '../../constants/mapConstants';
 import { searchLocation } from '../../service/mapService';
+import { getAllBookmarks } from '../../service/apiService';
 
 function MapClickHandler({ onClick }) {
   useMapEvents({
@@ -26,18 +27,11 @@ function MapClickHandler({ onClick }) {
 
 export default function MapInteractive() {
   const { user } = useAuth();
-  const [isClient, setIsClient] = useState(false);
   const [formPosition, setFormPosition] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
-
-  const {
-    markers,
-    loading,
-    error,
-    categories,
-    tags,
-    addMarker
-  } = useMapMarkers();
+  const [markers, setMarkers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const {
     selectedCategories,
@@ -47,8 +41,20 @@ export default function MapInteractive() {
     filterMarkers
   } = useMapFilters();
 
-  useState(() => {
-    setIsClient(true);
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        const bookmarksData = await getAllBookmarks();
+        setMarkers(bookmarksData);
+      } catch (err) {
+        setError('Error al cargar los marcadores');
+        console.error('Error fetching bookmarks:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookmarks();
   }, []);
 
   const handleMapClick = (position) => {
@@ -57,10 +63,14 @@ export default function MapInteractive() {
     }
   };
 
-  const handleFormSubmit = (data) => {
-    if (formPosition && user) {
-      addMarker(formPosition, data);
-      setFormPosition(null);
+  const handleFormSubmit = async () => {
+    setFormPosition(null);
+    // Recargar los marcadores después de crear uno nuevo
+    try {
+      const bookmarksData = await getAllBookmarks();
+      setMarkers(bookmarksData);
+    } catch (err) {
+      console.error('Error recargando marcadores:', err);
     }
   };
 
@@ -80,8 +90,6 @@ export default function MapInteractive() {
   };
 
   const filteredMarkers = filterMarkers(markers);
-
-  if (!isClient) return null;
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen">
@@ -105,8 +113,8 @@ export default function MapInteractive() {
         <div className="absolute inset-0 z-[900]">
           <SearchControl onSearch={handleSearch} />
           <MapFilters
-            categories={categories}
-            tags={tags}
+            categories={Array.from(new Set(markers.map(m => m.category))).map(c => ({ id: c, name: c }))}
+            tags={Array.from(new Set(markers.map(m => m.tag))).map(t => ({ id: t, name: t }))}
             selectedCategories={selectedCategories}
             selectedTags={selectedTags}
             onCategoryChange={handleCategoryChange}
@@ -126,10 +134,10 @@ export default function MapInteractive() {
             />
             <LocationMarker />
             <MapClickHandler onClick={handleMapClick} />
-            {filteredMarkers.map((marker, idx) => (
+            {filteredMarkers.map((marker) => (
               <Marker 
-                key={marker.id || idx} 
-                position={[marker.location?.latitude || marker.position[0], marker.location?.longitude || marker.position[1]]}
+                key={marker.id} 
+                position={[marker.location.latitude, marker.location.longitude]}
                 icon={createCustomIcon(marker.category, marker.tag)}
               >
                 <BookmarkPopup marker={marker} />
@@ -138,14 +146,12 @@ export default function MapInteractive() {
           </MapContainer>
         </div>
         
-        {user && formPosition && (
-          <div className="absolute inset-0 z-[901]">
-            <MarkerForm
-              position={formPosition}
-              onSubmit={handleFormSubmit}
-              onCancel={handleFormCancel}
-            />
-          </div>
+        {formPosition && (
+          <MarkerForm
+            position={formPosition}
+            onSubmit={handleFormSubmit}
+            onCancel={handleFormCancel}
+          />
         )}
       </div>
     </div>
