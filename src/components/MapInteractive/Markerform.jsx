@@ -3,14 +3,13 @@ import { useForm } from "react-hook-form";
 import { useAddBookmarkForm } from '../../hooks/useAddBookmarkForm';
 import CategoryIcon from './CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
-import BookmarkSuccessModal from '../Forms/FormAddBookmark/BookmarkSuccessModal';
 import BookmarkErrorModal from '../Forms/FormAddBookmark/BookmarkErrorModal';
 import { buildBookmarkPayload } from '../Forms/FormAddBookmark/bookmarkPayloadBuilder';
 import { getLocationName } from '../../service/mapService';
 
 export default function MarkerForm({ position, onSubmit, onCancel }) {
   const [locationName, setLocationName] = useState('Cargando ubicación...');
-  
+
   const { 
     register, 
     handleSubmit: formHandleSubmit, 
@@ -36,8 +35,6 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     categories,
     loadingTags,
     loadingCategories,
-    showSuccessModal,
-    setShowSuccessModal,
     showErrorModal,
     setShowErrorModal,
     errorMessage,
@@ -62,27 +59,31 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
         longitude: position[1].toString()
       });
       await submitBookmark(payload, reset);
+      if (onSubmit) {
+        onSubmit();
+      }
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
       setShowErrorModal(true);
     }
   };
 
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
-    onCancel();
-  };
-
   if (!position) return null;
 
-  const categoryLower = categories.find(c => c.id === getValues()?.categoryId)?.name.toLowerCase() || '';
+  const categoryId = getValues()?.categoryId ? parseInt(getValues().categoryId, 10) : null;
+  const tagId = getValues()?.tagId ? parseInt(getValues().tagId, 10) : null;
+
+  const category = categories.find(c => c.id === categoryId);
+  const tag = tags.find(t => t.id === tagId);
+
+  const categoryLower = category?.name.toLowerCase() || '';
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
 
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4 z-[9999]">
       <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"></div>
       <div className="bg-base-100 rounded-lg shadow-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto relative z-[10000]">
-        <h3 className="text-2xl font-bold mb-4 text-primary">Agregar Marcador</h3>
+        <h3 className="text-2xl font-bold text-primary mb-6">Agregar Marcador</h3>
         <p className="text-sm text-base-content/70 mb-4">
           {locationName}
         </p>
@@ -250,11 +251,6 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
         </form>
       </div>
 
-      <BookmarkSuccessModal
-        show={showSuccessModal}
-        onClose={handleCloseSuccessModal}
-      />
-      
       <BookmarkErrorModal
         show={showErrorModal}
         onClose={() => setShowErrorModal(false)}
