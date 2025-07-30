@@ -3,6 +3,7 @@ import { Popup } from 'react-leaflet';
 import Buttons from '../Buttons/Buttons';
 import CategoryIcon from './CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
+import { ENDPOINTS } from '../../config/apiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo, faLink } from '@fortawesome/free-solid-svg-icons';
 
@@ -88,7 +89,7 @@ export default function BookmarkPopup({ marker }) {
        
         {(marker.imageUrls && marker.imageUrls.length > 0) ? (
           <img
-            src={`http://localhost:8080/api/images/${marker.imageUrls[0].split('/').pop()}`}
+            src={`${ENDPOINTS.IMAGES}/${marker.imageUrls[0].split('/').pop()}`}
             alt={marker.title}
             className="w-full h-32 object-cover mt-2 rounded"
           />
