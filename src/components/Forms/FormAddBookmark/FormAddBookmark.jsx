@@ -10,6 +10,7 @@ import BookmarkErrorModal from "./BookmarkErrorModal";
 import BookmarkHostContact from "./BookmarkHostContact";
 import { useAddBookmarkForm } from "../../../hooks/useAddBookmarkForm";
 import { buildBookmarkPayload } from "./bookmarkPayloadBuilder";
+import BookmarkSummary from "./BookmarkSummary";
 
 export default function FormAddBookmark() {
   const navigate = useNavigate();
@@ -168,9 +169,18 @@ export default function FormAddBookmark() {
 
             {currentStep === 4 && (
               <div className="flex flex-col items-center">
-                <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Host Contact</h3>
-                <BookmarkHostContact />
-                <p className="mb-4">Revisa tu información y haz clic en <b>Añadir marcador</b> para enviarlo.</p>
+                <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Confirmación</h3>
+                {console.log('Form Values:', getValues())}
+                {console.log('Categories:', categories)}
+                {console.log('Tags:', tags)}
+                <BookmarkSummary 
+                  data={getValues()} 
+                  categories={categories} 
+                  tags={tags || []}
+                />
+                <p className="mt-6 text-base-content/70">
+                  Revisa tu información y haz clic en <b>Añadir marcador</b> para enviarlo.
+                </p>
               </div>
             )}
 
