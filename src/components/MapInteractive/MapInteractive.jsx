@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useAuth } from '../../context/AuthContext';
 import HeaderLogged from '../HeaderLogged/HeaderLogged';
@@ -32,6 +32,8 @@ export default function MapInteractive() {
   const [markers, setMarkers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [temporaryMarker, setTemporaryMarker] = useState(null);
+  const [isPositionConfirmed, setIsPositionConfirmed] = useState(false);
 
   const {
     selectedCategories,
@@ -59,12 +61,28 @@ export default function MapInteractive() {
 
   const handleMapClick = (position) => {
     if (user) {
-      setFormPosition(position);
+      setTemporaryMarker(position);
+      setIsPositionConfirmed(false);
     }
+  };
+
+  const handleMarkerDrag = (e) => {
+    const newPosition = [e.target.getLatLng().lat, e.target.getLatLng().lng];
+    setTemporaryMarker(newPosition);
+    setIsPositionConfirmed(false);
+  };
+
+  const handlePositionConfirm = () => {
+    console.log('Confirmando posición:', temporaryMarker);
+    setFormPosition(temporaryMarker);
+    setIsPositionConfirmed(true);
+    console.log('Estado después de confirmar:', { formPosition: temporaryMarker, isPositionConfirmed: true });
   };
 
   const handleFormSubmit = async () => {
     setFormPosition(null);
+    setTemporaryMarker(null);
+    setIsPositionConfirmed(false);
     // Recargar los marcadores después de crear uno nuevo
     try {
       const bookmarksData = await getAllBookmarks();
@@ -76,6 +94,8 @@ export default function MapInteractive() {
 
   const handleFormCancel = () => {
     setFormPosition(null);
+    setTemporaryMarker(null);
+    setIsPositionConfirmed(false);
   };
 
   const handleSearch = async (searchValue) => {
@@ -134,6 +154,33 @@ export default function MapInteractive() {
             />
             <LocationMarker />
             <MapClickHandler onClick={handleMapClick} />
+            {temporaryMarker && !isPositionConfirmed && (
+              <Marker
+                position={temporaryMarker}
+                icon={createCustomIcon('temp', 'temp')}
+                draggable={true}
+                eventHandlers={{
+                  dragend: handleMarkerDrag
+                }}
+              >
+                <Popup closeButton={false}>
+                  <div className="flex flex-col items-center gap-2 p-2">
+                    <p className="text-sm">Arrastra el marcador para ajustar la posición</p>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handlePositionConfirm();
+                      }}
+                      className="btn btn-primary btn-sm normal-case"
+                    >
+                      Confirmar ubicación
+                    </button>
+                  </div>
+                </Popup>
+              </Marker>
+            )}
             {filteredMarkers.map((marker) => (
               <Marker 
                 key={marker.id} 
@@ -146,7 +193,8 @@ export default function MapInteractive() {
           </MapContainer>
         </div>
         
-        {formPosition && (
+        {console.log('Estado actual:', { isPositionConfirmed, formPosition })}
+        {isPositionConfirmed && formPosition && (
           <MarkerForm
             position={formPosition}
             onSubmit={handleFormSubmit}

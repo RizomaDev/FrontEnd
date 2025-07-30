@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { tagIcons } from '../../config/categoryIcons';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 import { normalizeString } from '../../utils/stringUtils';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 const TAG_MAPPING = {
   'feminismo': 'Feminismos',
@@ -16,6 +17,21 @@ const TAG_MAPPING = {
   'memoria democratica': 'Memoria democrática'
 };
 
+const sizes = {
+  sm: {
+    container: 'w-6 h-6',
+    icon: 'text-xs'
+  },
+  md: {
+    container: 'w-8 h-8',
+    icon: 'text-sm'
+  },
+  lg: {
+    container: 'w-10 h-10',
+    icon: 'text-base'
+  }
+};
+
 /**
  * @param {string} props.category - Categoría del marcador
  * @param {string} props.tag - Etiqueta del marcador
@@ -26,6 +42,28 @@ const TAG_MAPPING = {
 export default function CategoryIcon({ category, tag, size = 'md', style = {}, className = '' }) {
   const categoryLower = category ? category.toLowerCase() : '';
   
+  // Special case for temporary markers
+  if (category === 'temp') {
+    const sizeClasses = sizes[size] || sizes.md;
+    return (
+      <div 
+        className={`rounded-full flex items-center justify-center animate-pulse ${sizeClasses.container} ${className}`}
+        style={{ 
+          backgroundColor: '#4CAF50',
+          border: '3px solid white',
+          boxShadow: '0 0 10px rgba(76, 175, 80, 0.5)',
+          ...style
+        }}
+      >
+        <FontAwesomeIcon 
+          icon={faLocationDot}
+          className={`text-white ${sizeClasses.icon}`}
+          fixedWidth
+        />
+      </div>
+    );
+  }
+
   const getIconForName = (name) => {
     if (!name) return null;
     
@@ -89,22 +127,6 @@ export default function CategoryIcon({ category, tag, size = 'md', style = {}, c
   }
 
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
-
-  const sizes = {
-    sm: {
-      container: 'w-6 h-6',
-      icon: 'text-xs'
-    },
-    md: {
-      container: 'w-8 h-8',
-      icon: 'text-sm'
-    },
-    lg: {
-      container: 'w-10 h-10',
-      icon: 'text-base'
-    }
-  };
-
   const sizeClasses = sizes[size] || sizes.md;
 
   return (
