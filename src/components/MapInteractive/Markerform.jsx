@@ -1,12 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useForm } from "react-hook-form";
 import { useAddBookmarkForm } from '../../hooks/useAddBookmarkForm';
 import CategoryIcon from './CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 import BookmarkSuccessModal from '../Forms/FormAddBookmark/BookmarkSuccessModal';
 import BookmarkErrorModal from '../Forms/FormAddBookmark/BookmarkErrorModal';
 import { buildBookmarkPayload } from '../Forms/FormAddBookmark/bookmarkPayloadBuilder';
+import { getLocationName } from '../../service/mapService';
 
 export default function MarkerForm({ position, onSubmit, onCancel }) {
+  const [locationName, setLocationName] = useState('Cargando ubicación...');
+  
+  const { 
+    register, 
+    handleSubmit: formHandleSubmit, 
+    formState: { errors }, 
+    reset,
+    getValues 
+  } = useForm({
+    defaultValues: {
+      title: '',
+      description: '',
+      tagId: '',
+      categoryId: '',
+      images: [],
+      video: '',
+      url: '',
+      latitude: position ? position[0].toString() : '',
+      longitude: position ? position[1].toString() : ''
+    }
+  });
+
   const {
     tags,
     categories,
@@ -20,46 +44,24 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     handleSubmit: submitBookmark
   } = useAddBookmarkForm(onSubmit);
 
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    tagId: '',
-    categoryId: '',
-    images: [],
-    video: '',
-    url: '',
-    latitude: position ? position[0].toString() : '',
-    longitude: position ? position[1].toString() : ''
-  });
+  useEffect(() => {
+    const fetchLocationName = async () => {
+      if (position) {
+        const name = await getLocationName(position[0], position[1]);
+        setLocationName(name);
+      }
+    };
+    fetchLocationName();
+  }, [position]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files) {
-      setFormData(prev => ({ ...prev, images: Array.from(e.target.files) }));
-    }
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+  const handleFormSubmit = async (data) => {
     try {
-      const payload = await buildBookmarkPayload(formData);
-      await submitBookmark(payload, () => {
-        setFormData({
-          title: '',
-          description: '',
-          tagId: '',
-          categoryId: '',
-          images: [],
-          video: '',
-          url: '',
-          latitude: position ? position[0].toString() : '',
-          longitude: position ? position[1].toString() : ''
-        });
+      const payload = await buildBookmarkPayload({
+        ...data,
+        latitude: position[0].toString(),
+        longitude: position[1].toString()
       });
+      await submitBookmark(payload, reset);
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
       setShowErrorModal(true);
@@ -73,56 +75,59 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
 
   if (!position) return null;
 
-  const categoryLower = formData.categoryId ? categories.find(c => c.id === formData.categoryId)?.name.toLowerCase() : '';
+  const categoryLower = categories.find(c => c.id === getValues()?.categoryId)?.name.toLowerCase() || '';
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center p-4 z-[1003]">
+    <div className="absolute inset-0 flex items-center justify-center p-4 z-[9999]">
       <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"></div>
-      <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-200 drop-shadow-2xl">
-        <h3 className="text-2xl font-bold mb-4">Agregar Marcador</h3>
-        <p className="text-sm text-gray-600 mb-4">
-          Coordenadas: {position[0].toFixed(6)}, {position[1].toFixed(6)}
+      <div className="bg-base-100 rounded-lg shadow-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto relative z-[10000]">
+        <h3 className="text-2xl font-bold mb-4 text-primary">Agregar Marcador</h3>
+        <p className="text-sm text-base-content/70 mb-4">
+          {locationName}
         </p>
         
-        <form onSubmit={handleFormSubmit} className="space-y-4">
+        <form onSubmit={formHandleSubmit(handleFormSubmit)} className="space-y-4">
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Título</span>
+              <span className="label-text font-semibold">Título <span className="text-error">*</span></span>
             </label>
             <input
               type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              className="input input-bordered w-full bg-white"
-              required
+              className="input input-bordered w-full"
+              {...register("title", { 
+                required: "El título es requerido",
+                minLength: { value: 3, message: "El título debe tener al menos 3 caracteres" }
+              })}
             />
+            {errors.title && (
+              <span className="text-error text-sm mt-1">{errors.title.message}</span>
+            )}
           </div>
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Descripción</span>
+              <span className="label-text font-semibold">Descripción <span className="text-error">*</span></span>
             </label>
             <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="textarea textarea-bordered w-full h-24 bg-white"
-              required
+              className="textarea textarea-bordered w-full h-24"
+              {...register("description", { 
+                required: "La descripción es requerida",
+                minLength: { value: 100, message: "La descripción debe tener al menos 100 caracteres" }
+              })}
             />
+            {errors.description && (
+              <span className="text-error text-sm mt-1">{errors.description.message}</span>
+            )}
           </div>
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Categoría</span>
+              <span className="label-text font-semibold">Categoría <span className="text-error">*</span></span>
             </label>
             <select
-              name="categoryId"
-              value={formData.categoryId}
-              onChange={handleInputChange}
               className="select select-bordered w-full"
-              required
+              {...register("categoryId", { required: "Debes seleccionar una categoría" })}
               disabled={loadingCategories}
             >
               <option value="">Selecciona una categoría</option>
@@ -132,18 +137,18 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
                 </option>
               ))}
             </select>
+            {errors.categoryId && (
+              <span className="text-error text-sm mt-1">{errors.categoryId.message}</span>
+            )}
           </div>
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Etiqueta</span>
+              <span className="label-text font-semibold">Etiqueta <span className="text-error">*</span></span>
             </label>
             <select
-              name="tagId"
-              value={formData.tagId}
-              onChange={handleInputChange}
               className="select select-bordered w-full"
-              required
+              {...register("tagId", { required: "Debes seleccionar una etiqueta" })}
               disabled={loadingTags}
             >
               <option value="">Selecciona una etiqueta</option>
@@ -153,53 +158,76 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
                 </option>
               ))}
             </select>
+            {errors.tagId && (
+              <span className="text-error text-sm mt-1">{errors.tagId.message}</span>
+            )}
           </div>
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text">URL del Video (opcional)</span>
+              <span className="label-text font-semibold">URL del Video (opcional)</span>
             </label>
             <input
               type="url"
-              name="video"
-              value={formData.video}
-              onChange={handleInputChange}
               className="input input-bordered w-full"
               placeholder="https://www.youtube.com/watch?v=..."
+              {...register("video", {
+                pattern: {
+                  value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/,
+                  message: "Debe ser una URL válida de YouTube"
+                }
+              })}
             />
+            {errors.video && (
+              <span className="text-error text-sm mt-1">{errors.video.message}</span>
+            )}
           </div>
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text">URL Adicional (opcional)</span>
+              <span className="label-text font-semibold">URL Adicional (opcional)</span>
             </label>
             <input
               type="url"
-              name="url"
-              value={formData.url}
-              onChange={handleInputChange}
               className="input input-bordered w-full"
               placeholder="https://..."
+              {...register("url", {
+                pattern: {
+                  value: /^https?:\/\/.+/,
+                  message: "Debe ser una URL válida"
+                }
+              })}
             />
+            {errors.url && (
+              <span className="text-error text-sm mt-1">{errors.url.message}</span>
+            )}
           </div>
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Imágenes (mínimo 3)</span>
+              <span className="label-text font-semibold">Imágenes <span className="text-error">*</span></span>
+              <span className="label-text-alt">(mínimo 3)</span>
             </label>
             <input
               type="file"
-              onChange={handleFileChange}
               className="file-input file-input-bordered w-full"
               multiple
               accept="image/*"
-              required
-              min="3"
+              {...register("images", {
+                required: "Debes subir al menos 3 imágenes",
+                validate: {
+                  minFiles: files => !files || files.length >= 3 || "Debes subir al menos 3 imágenes",
+                  fileType: files => {
+                    if (!files) return true;
+                    return Array.from(files).every(file => 
+                      file.type === "image/jpeg" || file.type === "image/png"
+                    ) || "Solo se permiten archivos JPG y PNG";
+                  }
+                }
+              })}
             />
-            {formData.images.length > 0 && (
-              <p className="text-sm text-gray-600 mt-1">
-                {formData.images.length} {formData.images.length === 1 ? 'imagen seleccionada' : 'imágenes seleccionadas'}
-              </p>
+            {errors.images && (
+              <span className="text-error text-sm mt-1">{errors.images.message}</span>
             )}
           </div>
 
@@ -207,7 +235,7 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
             <button
               type="button"
               onClick={onCancel}
-              className="btn btn-ghost bg-white/50 hover:bg-white/80"
+              className="btn btn-ghost"
             >
               Cancelar
             </button>
