@@ -77,8 +77,9 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[1003]">
-      <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="absolute inset-0 flex items-center justify-center p-4 z-[1003]">
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"></div>
+      <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-200 drop-shadow-2xl">
         <h3 className="text-2xl font-bold mb-4">Agregar Marcador</h3>
         <p className="text-sm text-gray-600 mb-4">
           Coordenadas: {position[0].toFixed(6)}, {position[1].toFixed(6)}
@@ -94,7 +95,7 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-white"
               required
             />
           </div>
@@ -107,7 +108,7 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              className="textarea textarea-bordered w-full h-24"
+              className="textarea textarea-bordered w-full h-24 bg-white"
               required
             />
           </div>
@@ -206,7 +207,7 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
             <button
               type="button"
               onClick={onCancel}
-              className="btn btn-ghost"
+              className="btn btn-ghost bg-white/50 hover:bg-white/80"
             >
               Cancelar
             </button>
