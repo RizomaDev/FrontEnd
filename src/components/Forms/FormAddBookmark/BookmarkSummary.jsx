@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../../constants/mapConstants';
 import { getLocationName } from '../../../service/mapService';
 
-export default function BookmarkSummary({ data, categories, tags }) {
+export default function BookmarkSummary({ data, categories, tags, register, errors, setValue }) {
   const [locationName, setLocationName] = useState('Cargando ubicación...');
 
   useEffect(() => {
@@ -27,17 +27,23 @@ export default function BookmarkSummary({ data, categories, tags }) {
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="bg-base-200 rounded-lg p-6">
-        <h3 className="text-2xl font-bold text-primary mb-6 text-center">Resumen del Marcador</h3>
+        <h3 className="text-2xl font-bold text-primary mb-6">Resumen del Marcador</h3>
         
         <div className="space-y-4">
           <div>
             <h4 className="font-semibold text-base-content mb-1">Título</h4>
             <p className="text-base-content/70">{data.title}</p>
+            {errors.title && (
+              <span className="text-error text-sm mt-1">{errors.title.message}</span>
+            )}
           </div>
 
           <div>
             <h4 className="font-semibold text-base-content mb-1">Descripción</h4>
             <p className="text-base-content/70 whitespace-pre-wrap">{data.description}</p>
+            {errors.description && (
+              <span className="text-error text-sm mt-1">{errors.description.message}</span>
+            )}
           </div>
 
           <div className="flex justify-center items-center gap-6">
@@ -53,6 +59,9 @@ export default function BookmarkSummary({ data, categories, tags }) {
               >
                 {category?.name || 'No seleccionada'}
               </span>
+              {errors.categoryId && (
+                <span className="text-error text-sm block mt-1">{errors.categoryId.message}</span>
+              )}
             </div>
 
             <div className="text-center">
@@ -67,6 +76,9 @@ export default function BookmarkSummary({ data, categories, tags }) {
               >
                 {tag?.name || 'No seleccionada'}
               </span>
+              {errors.tagId && (
+                <span className="text-error text-sm block mt-1">{errors.tagId.message}</span>
+              )}
             </div>
           </div>
 
@@ -82,6 +94,9 @@ export default function BookmarkSummary({ data, categories, tags }) {
             <p className="text-base-content/70">
               {data.images?.length || 0} imágenes seleccionadas
             </p>
+            {errors.images && (
+              <span className="text-error text-sm mt-1">{errors.images.message}</span>
+            )}
           </div>
 
           {data.video && (
@@ -91,6 +106,9 @@ export default function BookmarkSummary({ data, categories, tags }) {
                  className="text-primary hover:underline break-all">
                 {data.video}
               </a>
+              {errors.video && (
+                <span className="text-error text-sm mt-1">{errors.video.message}</span>
+              )}
             </div>
           )}
 
@@ -101,15 +119,14 @@ export default function BookmarkSummary({ data, categories, tags }) {
                  className="text-primary hover:underline break-all">
                 {data.url}
               </a>
+              {errors.url && (
+                <span className="text-error text-sm mt-1">{errors.url.message}</span>
+              )}
             </div>
           )}
         </div>
 
-        <div className="mt-6 pt-4 border-t border-base-300">
-          <p className="text-sm text-base-content/60 text-center">
-            Por favor, revisa que toda la información sea correcta antes de crear el marcador.
-          </p>
-        </div>
+
       </div>
     </div>
   );
