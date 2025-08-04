@@ -6,6 +6,7 @@ import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapCons
 import BookmarkErrorModal from '../Forms/FormAddBookmark/BookmarkErrorModal';
 import { buildBookmarkPayload } from '../Forms/FormAddBookmark/bookmarkPayloadBuilder';
 import { getLocationName } from '../../service/mapService';
+import VideoUpload from '../VideoUpload/VideoUpload';
 
 export default function MarkerForm({ position, onSubmit, onCancel }) {
   const [locationName, setLocationName] = useState('Cargando ubicación...');
@@ -15,7 +16,8 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     handleSubmit: formHandleSubmit, 
     formState: { errors }, 
     reset,
-    getValues 
+    getValues,
+    setValue 
   } = useForm({
     defaultValues: {
       title: '',
@@ -66,6 +68,10 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
       console.error('Error al procesar el formulario:', error);
       setShowErrorModal(true);
     }
+  };
+
+  const handleVideoUrlReceived = (url) => {
+    setValue("video", url);
   };
 
   if (!position) return null;
@@ -166,18 +172,12 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">URL del Video (opcional)</span>
+              <span className="label-text font-semibold">Video (opcional)</span>
             </label>
+            <VideoUpload onVideoUrlReceived={handleVideoUrlReceived} />
             <input
-              type="url"
-              className="input input-bordered w-full"
-              placeholder="https://www.youtube.com/watch?v=..."
-              {...register("video", {
-                pattern: {
-                  value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/,
-                  message: "Debe ser una URL válida de YouTube"
-                }
-              })}
+              type="hidden"
+              {...register("video")}
             />
             {errors.video && (
               <span className="text-error text-sm mt-1">{errors.video.message}</span>
