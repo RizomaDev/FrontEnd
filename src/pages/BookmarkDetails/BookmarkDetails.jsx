@@ -8,6 +8,9 @@ import HeaderLogged from "../../components/HeaderLogged/HeaderLogged";
 import Footer from "../../components/Footer/Footer";
 import CategoryIcon from '../../components/MapInteractive/CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
+import MapInteractive from '../../components/MapInteractive/MapInteractive';
+import { createCustomIcon } from '../../components/MapInteractive/CustomMarkerIcon';
+import 'leaflet/dist/leaflet.css';
 
 export default function BookmarkDetails() {
   const { id } = useParams();
@@ -154,7 +157,6 @@ export default function BookmarkDetails() {
 
           <div className="p-6 md:p-8 pt-0 flex flex-col lg:flex-row gap-6">
             <div className="flex-1 order-2 lg:order-1">
-              
               <div className="bg-base-200 pb-10 pt-4">
                 <h3 className="text-2xl font-semibold text-secondary ml-5 mb-4">
                   Qué esperar
@@ -230,7 +232,26 @@ export default function BookmarkDetails() {
                   </div>
                 )}
               </div>
-              <div className="bg-base-300 pt-8 pb-6 [filter:sepia(40%)]">
+
+              {/* Mapa Interativo */}
+              {bookmark.location && bookmark.location.latitude && bookmark.location.longitude && (
+                <div className="mt-6 bg-base-200 rounded-lg overflow-hidden">
+                  <h3 className="text-2xl font-semibold text-secondary p-5 pb-0">
+                    Ubicación
+                  </h3>
+                  <div className="p-5">
+                    <MapInteractive 
+                      showHeader={false}
+                      showFilters={false}
+                      focusedMarker={bookmark}
+                      height="500px"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Creado por - Agora depois do mapa */}
+              <div className="mt-6 bg-base-300 pt-8 pb-6 [filter:sepia(40%)] rounded-lg">
                 <h3 className="text-2xl font-semibold text-primary mb-4 ml-5">
                   Creado por
                 </h3>
@@ -250,6 +271,7 @@ export default function BookmarkDetails() {
                 </div>
               </div>
             </div>
+
             <div className="flex flex-col gap-4 w-11/12 mx-auto lg:w-64 flex-shrink-0 self-start order-1 lg:order-2">
               {user && bookmark.userId === user.id && (
                 <div className="flex flex-col gap-3">

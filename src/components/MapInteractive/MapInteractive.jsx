@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useAuth } from '../../context/AuthContext';
 import HeaderLogged from '../HeaderLogged/HeaderLogged';
@@ -16,6 +16,19 @@ import { DEFAULT_MAP_CENTER, DEFAULT_ZOOM } from '../../constants/mapConstants';
 import { searchLocation } from '../../service/mapService';
 import { getAllBookmarks } from '../../service/apiService';
 
+// Componente para centralizar o mapa em um marcador específico
+function CenterMarker({ position }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (position) {
+      map.setView(position, 15);
+    }
+  }, [map, position]);
+
+  return null;
+}
+
 function MapClickHandler({ onClick }) {
   useMapEvents({
     click(e) {
@@ -25,7 +38,12 @@ function MapClickHandler({ onClick }) {
   return null;
 }
 
-export default function MapInteractive() {
+export default function MapInteractive({ 
+  showHeader = true, 
+  showFilters = true,
+  focusedMarker = null,
+  height = '100%'
+}) {
   const { user } = useAuth();
   const [formPosition, setFormPosition] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
@@ -124,22 +142,28 @@ export default function MapInteractive() {
   }
 
   return (
-    <div className="flex flex-col h-screen relative">
-      <div className="z-50">
-        {user ? <HeaderLogged /> : <Header />}
-      </div>
+    <div className="flex flex-col h-full relative">
+      {showHeader && (
+        <div className="z-50">
+          {user ? <HeaderLogged /> : <Header />}
+        </div>
+      )}
       
-      <div className="flex-grow relative">
+      <div className="flex-grow relative" style={{ height }}>
         <div className="absolute inset-0 z-0">
-          <SearchControl onSearch={handleSearch} />
-          <MapFilters
-            categories={Array.from(new Set(markers.map(m => m.category))).map(c => ({ id: c, name: c }))}
-            tags={Array.from(new Set(markers.map(m => m.tag))).map(t => ({ id: t, name: t }))}
-            selectedCategories={selectedCategories}
-            selectedTags={selectedTags}
-            onCategoryChange={handleCategoryChange}
-            onTagChange={handleTagChange}
-          />
+          {showFilters && (
+            <>
+              <SearchControl onSearch={handleSearch} />
+              <MapFilters
+                categories={Array.from(new Set(markers.map(m => m.category))).map(c => ({ id: c, name: c }))}
+                tags={Array.from(new Set(markers.map(m => m.tag))).map(t => ({ id: t, name: t }))}
+                selectedCategories={selectedCategories}
+                selectedTags={selectedTags}
+                onCategoryChange={handleCategoryChange}
+                onTagChange={handleTagChange}
+              />
+            </>
+          )}
           <MapContainer
             center={DEFAULT_MAP_CENTER}
             zoom={DEFAULT_ZOOM}
@@ -154,6 +178,9 @@ export default function MapInteractive() {
             />
             <LocationMarker />
             <MapClickHandler onClick={handleMapClick} />
+            {focusedMarker && (
+              <CenterMarker position={[focusedMarker.location.latitude, focusedMarker.location.longitude]} />
+            )}
             {temporaryMarker && !isPositionConfirmed && (
               <Marker
                 position={temporaryMarker}
@@ -193,7 +220,6 @@ export default function MapInteractive() {
           </MapContainer>
         </div>
         
-        {console.log('Estado actual:', { isPositionConfirmed, formPosition })}
         {isPositionConfirmed && formPosition && (
           <MarkerForm
             position={formPosition}
