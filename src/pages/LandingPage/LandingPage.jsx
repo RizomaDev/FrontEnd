@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import heroWelcome from "../../assets/heroWelcome.jpg";
 import Verdiales from "../../assets/Verdiales.jpg";
 import ButtonMap from "../../components/Buttons/ButtonMap";
+import MapInteractive from "../../components/MapInteractive/MapInteractive";
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
@@ -60,10 +61,12 @@ export default function LandingPage() {
         <h2 className="text-5xl font-bold text-primary mb-4">
           ¿Cómo funciona el mapa?
         </h2>
-        <p className="text-xl text-neutral">
+        <p className="text-xl text-neutral mb-8">
           Cada marcador en el mapa representa una iniciativa ciudadana. Haz clic para ver más información, filtra por categoría o barrio, y contribuye sumando nuevos marcadores. ¡Construyamos juntas una ciudad más justa, inclusiva y descentralizada!
         </p>
-        
+        <div className="w-full h-[500px] rounded-lg overflow-hidden shadow-lg">
+          <MapInteractive showHeader={false} showFilters={false} height="100%" isPreview={true} />
+        </div>
       </div>
      
       <div className="flex justify-center gap-4 my-8"></div>

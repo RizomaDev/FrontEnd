@@ -7,6 +7,7 @@ import imageTemporal from "../../assets/imageTemporal.png";
 import Verdiales from "../../assets/Verdiales.jpg";
 import heroWelcome from "../../assets/heroWelcome.jpg";
 import ButtonMap from "../../components/Buttons/ButtonMap";
+import MapInteractive from "../../components/MapInteractive/MapInteractive";
 
 export default function HomePage() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -111,8 +112,8 @@ export default function HomePage() {
         <p className="text-xl text-neutral">
           Cada marcador en el mapa representa una iniciativa ciudadana. Haz clic para ver más información, filtra por categoría o barrio, y contribuye sumando nuevos marcadores. ¡Construyamos juntas una ciudad más justa, inclusiva y descentralizada!
         </p>
-        <div className="flex justify-right mt-4">
-          <ButtonMap />
+        <div className="w-full h-[500px] mt-8 rounded-lg overflow-hidden shadow-lg">
+          <MapInteractive showHeader={false} showFilters={false} height="100%" isPreview={true} />
         </div>
       </div>
 

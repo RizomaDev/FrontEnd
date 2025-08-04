@@ -15,11 +15,17 @@ import { useMapFilters } from '../../hooks/useMapFilters';
 import { DEFAULT_MAP_CENTER, DEFAULT_ZOOM } from '../../constants/mapConstants';
 import { searchLocation } from '../../service/mapService';
 import { getAllBookmarks } from '../../service/apiService';
+import { useNavigate } from 'react-router-dom';
 
-function MapClickHandler({ onClick }) {
+function MapClickHandler({ onClick, isPreview }) {
+  const navigate = useNavigate();
   useMapEvents({
     click(e) {
-      onClick([e.latlng.lat, e.latlng.lng]);
+      if (isPreview) {
+        navigate('/MapView');
+      } else {
+        onClick([e.latlng.lat, e.latlng.lng]);
+      }
     },
   });
   return null;
@@ -34,7 +40,8 @@ export default function MapInteractive({
   onMapInstance = null,
   initialCenter = null,
   initialZoom = null,
-  focusedBookmarkId = null
+  focusedBookmarkId = null,
+  isPreview = false
 }) {
   const { user } = useAuth();
   const [formPosition, setFormPosition] = useState(null);
@@ -83,10 +90,11 @@ export default function MapInteractive({
   }, []);
 
   const handleMapClick = (position) => {
-    if (user) {
-      setTemporaryMarker(position);
-      setIsPositionConfirmed(false);
+    if (!user) {
+      return; // Solo ignoramos el click si no hay usuario
     }
+    setTemporaryMarker(position);
+    setIsPositionConfirmed(false);
   };
 
   const handleMarkerDrag = (e) => {
@@ -182,7 +190,7 @@ export default function MapInteractive({
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             />
             <LocationMarker />
-            <MapClickHandler onClick={handleMapClick} />
+            <MapClickHandler onClick={handleMapClick} isPreview={isPreview} />
             {temporaryMarker && !isPositionConfirmed && (
               <Marker
                 position={temporaryMarker}
