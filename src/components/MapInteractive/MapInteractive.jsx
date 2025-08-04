@@ -25,7 +25,17 @@ function MapClickHandler({ onClick }) {
   return null;
 }
 
-export default function MapInteractive() {
+export default function MapInteractive({ 
+  showHeader = true, 
+  showFilters = true,
+  focusedMarker = null,
+  height = '100%',
+  customComponents = null,
+  onMapInstance = null,
+  initialCenter = null,
+  initialZoom = null,
+  focusedBookmarkId = null
+}) {
   const { user } = useAuth();
   const [formPosition, setFormPosition] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
@@ -34,6 +44,19 @@ export default function MapInteractive() {
   const [error, setError] = useState(null);
   const [temporaryMarker, setTemporaryMarker] = useState(null);
   const [isPositionConfirmed, setIsPositionConfirmed] = useState(false);
+
+  // Efeito para focar no bookmark específico quando os marcadores são carregados
+  useEffect(() => {
+    if (focusedBookmarkId && markers.length > 0) {
+      const focusedBookmark = markers.find(m => m.id === focusedBookmarkId);
+      if (focusedBookmark && mapInstance) {
+        mapInstance.setView(
+          [focusedBookmark.location.latitude, focusedBookmark.location.longitude],
+          15
+        );
+      }
+    }
+  }, [focusedBookmarkId, markers, mapInstance]);
 
   const {
     selectedCategories,
@@ -125,24 +148,30 @@ export default function MapInteractive() {
 
   return (
     <div className="flex flex-col h-screen relative">
-      <div className="z-50">
-        {user ? <HeaderLogged /> : <Header />}
-      </div>
+      {showHeader && (
+        <div className="z-50">
+          {user ? <HeaderLogged /> : <Header />}
+        </div>
+      )}
       
       <div className="flex-grow relative">
         <div className="absolute inset-0 z-0">
-          <SearchControl onSearch={handleSearch} />
-          <MapFilters
-            categories={Array.from(new Set(markers.map(m => m.category))).map(c => ({ id: c, name: c }))}
-            tags={Array.from(new Set(markers.map(m => m.tag))).map(t => ({ id: t, name: t }))}
-            selectedCategories={selectedCategories}
-            selectedTags={selectedTags}
-            onCategoryChange={handleCategoryChange}
-            onTagChange={handleTagChange}
-          />
+          {showFilters && (
+            <>
+              <SearchControl onSearch={handleSearch} />
+              <MapFilters
+                categories={Array.from(new Set(markers.map(m => m.category))).map(c => ({ id: c, name: c }))}
+                tags={Array.from(new Set(markers.map(m => m.tag))).map(t => ({ id: t, name: t }))}
+                selectedCategories={selectedCategories}
+                selectedTags={selectedTags}
+                onCategoryChange={handleCategoryChange}
+                onTagChange={handleTagChange}
+              />
+            </>
+          )}
           <MapContainer
-            center={DEFAULT_MAP_CENTER}
-            zoom={DEFAULT_ZOOM}
+            center={initialCenter || DEFAULT_MAP_CENTER}
+            zoom={initialZoom || DEFAULT_ZOOM}
             style={{ height: '100%', width: '100%' }}
             ref={setMapInstance}
             zoomControl={false}

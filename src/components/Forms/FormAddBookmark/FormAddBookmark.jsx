@@ -14,6 +14,8 @@ import BookmarkSummary from "./BookmarkSummary";
 
 export default function FormAddBookmark() {
   const navigate = useNavigate();
+  const [newBookmarkId, setNewBookmarkId] = useState(null);
+  const [newBookmarkLocation, setNewBookmarkLocation] = useState(null);
 
   const { register, handleSubmit: formHandleSubmit, formState: { errors }, reset, setError, clearErrors, setValue, getValues } = useForm();
   const {
@@ -83,13 +85,25 @@ export default function FormAddBookmark() {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-    navigate("/HomePage");
+    if (newBookmarkLocation && newBookmarkId) {
+      navigate("/MapView", { 
+        state: { 
+          center: [newBookmarkLocation.latitude, newBookmarkLocation.longitude],
+          zoom: 15,
+          focusedBookmarkId: newBookmarkId
+        } 
+      });
+    } else {
+      navigate("/HomePage");
+    }
   };
 
   const onSubmit = async (data) => {
     try {
       const payload = await buildBookmarkPayload(data);
-      await createBookmark(payload);
+      const response = await createBookmark(payload);
+      setNewBookmarkId(response.id); // Guardamos o ID do bookmark criado
+      setNewBookmarkLocation(payload.location);
       setShowSuccessModal(true);
       reset();
     } catch (error) {
@@ -211,8 +225,16 @@ export default function FormAddBookmark() {
           </form>
         </div>
       </div>
-      <BookmarkSuccessModal show={showSuccessModal} onClose={handleCloseSuccessModal} />
-      <BookmarkErrorModal show={showErrorModal} errorMessage={errorMessage} onClose={() => setShowErrorModal(false)} />
+      <BookmarkSuccessModal 
+        show={showSuccessModal} 
+        onClose={handleCloseSuccessModal}
+        hasLocation={!!newBookmarkLocation}
+      />
+      <BookmarkErrorModal 
+        show={showErrorModal} 
+        errorMessage={errorMessage} 
+        onClose={() => setShowErrorModal(false)} 
+      />
     </div>
   );
 }
