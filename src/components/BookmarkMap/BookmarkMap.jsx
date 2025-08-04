@@ -1,8 +1,12 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, ZoomControl, Popup, useMap } from 'react-leaflet';
+import { useNavigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import { createCustomIcon } from '../MapInteractive/CustomMarkerIcon';
-import BookmarkPopup from '../MapInteractive/BookmarkPopup';
+import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
+import { ENDPOINTS } from '../../config/apiConfig';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVideo, faLink } from '@fortawesome/free-solid-svg-icons';
 
 // Componente para centralizar o mapa no marcador
 function CenterMarker({ location }) {
@@ -15,6 +19,100 @@ function CenterMarker({ location }) {
   }, [map, location]);
 
   return null;
+}
+
+function DetailedBookmarkPopup({ marker }) {
+  const navigate = useNavigate();
+  const categoryLower = marker.category ? marker.category.toLowerCase() : '';
+  const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
+
+  const handleViewInMap = () => {
+    navigate('/MapView', {
+      state: {
+        center: [marker.location.latitude, marker.location.longitude],
+        zoom: 15,
+        focusedBookmarkId: marker.id
+      }
+    });
+  };
+
+  return (
+    <Popup>
+      <div className="max-w-sm">
+        <div className="flex items-center gap-3 mb-3">
+          <div>
+            <span 
+              className="badge"
+              style={{ 
+                backgroundColor: backgroundColor,
+                color: 'white',
+                border: 'none'
+              }}
+            >
+              {marker.category}
+            </span>
+            <span 
+              className="badge ml-2"
+              style={{ 
+                backgroundColor: 'oklch(0.7036 0.0814 186.26)', 
+                color: 'white',
+                border: 'none'
+              }}
+            >
+              {marker.tag}
+            </span>
+          </div>
+        </div>
+        <h3 className="font-bold text-lg">{marker.title}</h3>
+        <p className="text-sm mt-2">{marker.description}</p>
+        
+        {marker.videoUrl && (
+          <div className="mt-2">
+            <a 
+              href={marker.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-primary hover:text-primary-focus flex items-center gap-2"
+            >
+              <FontAwesomeIcon icon={faVideo} />
+              Ver video
+            </a>
+          </div>
+        )}
+
+        {marker.infoAdicional && (
+          <div className="mt-2">
+            <a 
+              href={marker.infoAdicional}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-primary hover:text-primary-focus flex items-center gap-2"
+            >
+              <FontAwesomeIcon icon={faLink} />
+              Más información
+            </a>
+          </div>
+        )}
+       
+        {marker.imageUrls && marker.imageUrls.length > 0 && (
+          <img
+            src={`${ENDPOINTS.IMAGES}/${marker.imageUrls[0].split('/').pop()}`}
+            alt={marker.title}
+            className="w-full h-32 object-cover mt-2 rounded"
+          />
+        )}
+
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={handleViewInMap}
+            className="btn btn-primary btn-sm text-white"
+          >
+            Ver en el mapa
+          </button>
+        </div>
+      </div>
+    </Popup>
+  );
 }
 
 export default function BookmarkMap({ bookmark }) {
@@ -38,7 +136,7 @@ export default function BookmarkMap({ bookmark }) {
           position={[bookmark.location.latitude, bookmark.location.longitude]}
           icon={createCustomIcon(bookmark.category, bookmark.tag)}
         >
-          <BookmarkPopup marker={bookmark} />
+          <DetailedBookmarkPopup marker={bookmark} />
         </Marker>
       </MapContainer>
     </div>

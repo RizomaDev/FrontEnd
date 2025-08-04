@@ -87,19 +87,14 @@ export default function BookmarkPopup({ marker }) {
           </div>
         )}
        
-        {(marker.imageUrls && marker.imageUrls.length > 0) ? (
+        {marker.imageUrls && marker.imageUrls.length > 0 && (
           <img
             src={`${ENDPOINTS.IMAGES}/${marker.imageUrls[0].split('/').pop()}`}
             alt={marker.title}
             className="w-full h-32 object-cover mt-2 rounded"
           />
-        ) : marker.imageFile && (
-          <img
-            src={URL.createObjectURL(marker.imageFile)}
-            alt={marker.title}
-            className="w-full h-32 object-cover mt-2 rounded"
-          />
         )}
+
         {marker.id && (
           <div className="mt-4 flex justify-end">
             <Buttons

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useAuth } from '../../context/AuthContext';
@@ -51,19 +51,7 @@ export default function MapInteractive({
   const [error, setError] = useState(null);
   const [temporaryMarker, setTemporaryMarker] = useState(null);
   const [isPositionConfirmed, setIsPositionConfirmed] = useState(false);
-
-  // Efeito para focar no bookmark específico quando os marcadores são carregados
-  useEffect(() => {
-    if (focusedBookmarkId && markers.length > 0) {
-      const focusedBookmark = markers.find(m => m.id === focusedBookmarkId);
-      if (focusedBookmark && mapInstance) {
-        mapInstance.setView(
-          [focusedBookmark.location.latitude, focusedBookmark.location.longitude],
-          15
-        );
-      }
-    }
-  }, [focusedBookmarkId, markers, mapInstance]);
+  const markerRefs = useRef({});
 
   const {
     selectedCategories,
@@ -89,6 +77,28 @@ export default function MapInteractive({
     fetchBookmarks();
   }, []);
 
+  // Efecto para manejar el marcador enfocado
+  useEffect(() => {
+    if (focusedBookmarkId && markers.length > 0 && mapInstance) {
+      const focusedMarker = markers.find(m => m.id === focusedBookmarkId);
+      if (focusedMarker) {
+        // Centrar el mapa en el marcador
+        mapInstance.setView(
+          [focusedMarker.location.latitude, focusedMarker.location.longitude],
+          15
+        );
+        
+        // Abrir el popup del marcador correspondiente
+        const markerRef = markerRefs.current[focusedBookmarkId];
+        if (markerRef) {
+          setTimeout(() => {
+            markerRef.openPopup();
+          }, 100);
+        }
+      }
+    }
+  }, [focusedBookmarkId, markers, mapInstance]);
+
   const handleMapClick = (position) => {
     if (!user) {
       return; // Solo ignoramos el click si no hay usuario
@@ -104,17 +114,14 @@ export default function MapInteractive({
   };
 
   const handlePositionConfirm = () => {
-    console.log('Confirmando posición:', temporaryMarker);
     setFormPosition(temporaryMarker);
     setIsPositionConfirmed(true);
-    console.log('Estado después de confirmar:', { formPosition: temporaryMarker, isPositionConfirmed: true });
   };
 
   const handleFormSubmit = async () => {
     setFormPosition(null);
     setTemporaryMarker(null);
     setIsPositionConfirmed(false);
-    // Recargar los marcadores después de crear uno nuevo
     try {
       const bookmarksData = await getAllBookmarks();
       setMarkers(bookmarksData);
@@ -223,6 +230,11 @@ export default function MapInteractive({
                 key={marker.id} 
                 position={[marker.location.latitude, marker.location.longitude]}
                 icon={createCustomIcon(marker.category, marker.tag)}
+                ref={(ref) => {
+                  if (ref) {
+                    markerRefs.current[marker.id] = ref;
+                  }
+                }}
               >
                 <BookmarkPopup marker={marker} />
               </Marker>

@@ -2,6 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../../constants/mapConstants';
 import { getLocationName } from '../../../service/mapService';
 
+function getVideoEmbedUrl(url) {
+  if (!url) return null;
+  
+  // YouTube
+  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const youtubeMatch = url.match(youtubeRegex);
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+  }
+  
+  // Vimeo
+  const vimeoRegex = /vimeo\.com\/(?:.*#|.*)\/?([\d]+)/;
+  const vimeoMatch = url.match(vimeoRegex);
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+  
+  return null;
+}
+
 export default function BookmarkSummary({ data, categories, tags, register, errors, setValue }) {
   const [locationName, setLocationName] = useState('Cargando ubicación...');
 
@@ -91,9 +111,21 @@ export default function BookmarkSummary({ data, categories, tags, register, erro
 
           <div>
             <h4 className="font-semibold text-base-content mb-1">Imágenes</h4>
-            <p className="text-base-content/70">
-              {data.images?.length || 0} imágenes seleccionadas
-            </p>
+            {data.images && data.images.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+                {Array.from(data.images).map((image, index) => (
+                  <div key={index} className="relative aspect-square">
+                    <img
+                      src={URL.createObjectURL(image)}
+                      alt={`Imagen ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-base-content/70">No hay imágenes seleccionadas</p>
+            )}
             {errors.images && (
               <span className="text-error text-sm mt-1">{errors.images.message}</span>
             )}
@@ -101,11 +133,23 @@ export default function BookmarkSummary({ data, categories, tags, register, erro
 
           {data.video && (
             <div>
-              <h4 className="font-semibold text-base-content mb-1">Video URL</h4>
-              <a href={data.video} target="_blank" rel="noopener noreferrer" 
-                 className="text-primary hover:underline break-all">
-                {data.video}
-              </a>
+              <h4 className="font-semibold text-base-content mb-1">Video</h4>
+              {getVideoEmbedUrl(data.video) ? (
+                <div className="relative aspect-video w-full mt-2">
+                  <iframe
+                    src={getVideoEmbedUrl(data.video)}
+                    className="absolute top-0 left-0 w-full h-full rounded-lg"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              ) : (
+                <a href={data.video} target="_blank" rel="noopener noreferrer" 
+                   className="text-primary hover:underline break-all">
+                  {data.video}
+                </a>
+              )}
               {errors.video && (
                 <span className="text-error text-sm mt-1">{errors.video.message}</span>
               )}
