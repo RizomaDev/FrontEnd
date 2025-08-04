@@ -156,7 +156,7 @@ export default function FormAddBookmark() {
             {currentStep === 2 && (
               <div className="flex flex-col items-center">
                 <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Additional Information</h3>
-                <BookmarkAdditionalInfo register={register} errors={errors} />
+                <BookmarkAdditionalInfo register={register} errors={errors} setValue={setValue} />
               </div>
             )}
 

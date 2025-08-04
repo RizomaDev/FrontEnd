@@ -175,9 +175,11 @@ export default function BookmarkDetails() {
                   <div className="mb-6 ml-5">
                     <h4 className="text-lg font-semibold text-primary mb-2">Video</h4>
                     {(() => {
-                      // Soporte para YouTube y Vimeo
+                      // Suporte para YouTube, Vimeo e Cloudinary
                       const ytMatch = bookmark.video.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([\w-]{11})/);
                       const vimeoMatch = bookmark.video.match(/vimeo\.com\/(\d+)/);
+                      const cloudinaryMatch = bookmark.video.match(/cloudinary\.com/);
+                      
                       if (ytMatch) {
                         return (
                           <div className="aspect-video w-full max-w-xl">
@@ -204,6 +206,19 @@ export default function BookmarkDetails() {
                               allowFullScreen
                               title="Vimeo video player"
                             ></iframe>
+                          </div>
+                        );
+                      } else if (cloudinaryMatch) {
+                        return (
+                          <div className="aspect-video w-full max-w-xl">
+                            <video
+                              className="w-full rounded-lg shadow-lg"
+                              controls
+                              preload="metadata"
+                            >
+                              <source src={bookmark.video} type="video/mp4" />
+                              Tu navegador no soporta el elemento de video.
+                            </video>
                           </div>
                         );
                       } else {

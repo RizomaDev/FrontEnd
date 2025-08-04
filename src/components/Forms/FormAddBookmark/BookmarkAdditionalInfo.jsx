@@ -1,6 +1,11 @@
 import React from "react";
+import VideoUpload from "../../VideoUpload/VideoUpload";
 
-export default function BookmarkAdditionalInfo({ register, errors }) {
+export default function BookmarkAdditionalInfo({ register, errors, setValue }) {
+  const handleVideoUrlReceived = (url) => {
+    setValue("video", url);
+  };
+
   return (
     <>
       <div className="form-control w-full max-w-md mb-4 text-left">
@@ -44,18 +49,12 @@ export default function BookmarkAdditionalInfo({ register, errors }) {
       </div>
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
-          <span className="label-text font-semibold">Video (URL)</span>
+          <span className="label-text font-semibold">Video</span>
         </label>
+        <VideoUpload onVideoUrlReceived={handleVideoUrlReceived} />
         <input
-          type="url"
-          className="input input-bordered w-full"
-          placeholder="https://youtube.com/..."
-          {...register("video", {
-            pattern: {
-              value: /^(https?:\/\/)?([\w\d-]+\.)+[\w\d]{2,}(\/.*)?$/i,
-              message: "Introduce una URL válida."
-            }
-          })}
+          type="hidden"
+          {...register("video")}
         />
         {errors.video && (
           <span className="text-error text-sm mt-1">{errors.video.message}</span>
