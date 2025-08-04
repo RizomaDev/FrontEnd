@@ -1,8 +1,13 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:8080/api/bookmarks";
-const categoriesUrl = "http://localhost:8080/api/categories/all";
-const tagsUrl = "http://localhost:8080/api/tags/all";
+// Base API URL
+const API_BASE = "http://localhost:8080/api";
+
+// API endpoints
+const baseUrl = `${API_BASE}/bookmarks`;
+const categoriesUrl = `${API_BASE}/categories/all`;
+const tagsUrl = `${API_BASE}/tags/all`;
+const usersUrl = `${API_BASE}/user`; // Cambiado de 'users' a 'user' para coincidir con el patrón del backend
 
 // Constantes para las claves del caché
 const CACHE_KEYS = {
@@ -190,33 +195,67 @@ export function getTags() {
 }
 
 export function getUserById(id) {
-  // Intentar obtener del caché primero
   const cacheKey = `${CACHE_KEYS.USERS}_${id}`;
-  const cachedData = getCacheItem(cacheKey);
-  if (cachedData) {
-    return Promise.resolve(cachedData);
+  localStorage.removeItem(cacheKey);
+  
+  // Primero intentamos obtener el usuario del localStorage
+  const bookmarkUser = JSON.parse(localStorage.getItem("user"));
+  if (bookmarkUser && bookmarkUser.id === parseInt(id)) {
+    console.log("Using current user data:", bookmarkUser);
+    return Promise.resolve({
+      id: bookmarkUser.id,
+      name: bookmarkUser.name || bookmarkUser.username || "Usuario Anónimo"
+    });
   }
-
-  const url = `http://localhost:8080/api/users/${id}`;
+  
+  const url = `${API_BASE}/auth/user/${id}`;  // Cambiamos a usar el endpoint de auth
+  console.log("Fetching user from API:", url);
+  
   return axios
-    .get(url, getRequestOptions())
+    .get(url, {
+      ...getRequestOptions(),
+      headers: {
+        ...getRequestOptions().headers,
+        'Accept': 'application/json'
+      }
+    })
     .then((response) => {
+      console.log("Raw API response:", response);
       const data = response.data;
-      setCacheItem(cacheKey, data);
-      return data;
+      
+      const userData = {
+        id: data.id,
+        name: data.name || data.username || "Usuario Anónimo",
+      };
+      
+      console.log("Processed user data:", userData);
+      setCacheItem(cacheKey, userData);
+      return userData;
     })
     .catch((error) => {
-      // Si hay un error 500, devolver un usuario por defecto
-      if (error.response?.status === 500) {
+      console.error("Error in getUserById. Status:", error.response?.status);
+      console.error("Error details:", {
+        message: error.response?.data?.message,
+        data: error.response?.data,
+        config: error.config
+      });
+
+      // Intentar obtener el nombre del usuario del bookmark si está disponible
+      if (bookmarkUser) {
         const defaultUser = {
           id: id,
-          name: "Usuario",
-          email: "No disponible"
+          name: bookmarkUser.name || "Usuario Anónimo"
         };
-        setCacheItem(cacheKey, defaultUser);
+        console.log("Using bookmark user name as fallback");
         return defaultUser;
       }
-      throw error;
+
+      const defaultUser = {
+        id: id,
+        name: "Usuario Anónimo"
+      };
+      console.log("Using default user due to API error");
+      return defaultUser;
     });
 }
 

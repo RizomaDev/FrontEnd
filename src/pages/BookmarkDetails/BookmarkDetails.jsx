@@ -25,15 +25,36 @@ export default function BookmarkDetails() {
     setLoading(true);
     getBookmarkById(id)
       .then((data) => {
+        console.log("Full bookmark data:", data);
         setBookmark(data);
         setLoading(false);
         if (data.userId) {
+          console.log("Attempting to fetch user with ID:", data.userId);
+          // Si el bookmark tiene el nombre del creador, lo usamos como fallback
+          if (data.creatorName) {
+            setCreator({ id: data.userId, name: data.creatorName });
+          }
           getUserById(data.userId)
-            .then((userData) => setCreator(userData))
-            .catch(() => setCreator(null));
+            .then((userData) => {
+              console.log("Final user data to display:", userData);
+              setCreator(userData);
+            })
+            .catch((error) => {
+              console.error("Failed to fetch user:", error);
+              // Si no pudimos obtener el usuario pero tenemos el nombre del creador, lo mantenemos
+              if (!creator && data.creatorName) {
+                setCreator({ id: data.userId, name: data.creatorName });
+              } else {
+                setCreator({ id: data.userId, name: "Usuario Anónimo" });
+              }
+            });
+        } else {
+          console.log("No userId found in bookmark, using default creator");
+          setCreator({ name: "Usuario Anónimo" });
         }
       })
       .catch((err) => {
+        console.error("Error loading bookmark:", err);
         setError("Error al cargar los detalles del marcador");
         setLoading(false);
       });
@@ -261,9 +282,10 @@ export default function BookmarkDetails() {
                       />
                     </div>
                   </div>
-                  <div className="text-base text-base-content leading-relaxed flex flex-col gap-1">
-                    <p>Nombre: {creator ? creator.name : "Desconocido"}</p>
-                    <p>Email: {creator ? creator.email : "Desconocido"}</p>
+                  <div className="text-base text-base-content leading-relaxed">
+                    <p className="font-medium text-lg">
+                      {creator?.name || "Usuario Anónimo"}
+                    </p>
                   </div>
                 </div>
               </div>
