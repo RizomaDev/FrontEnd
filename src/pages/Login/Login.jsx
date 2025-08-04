@@ -21,7 +21,7 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       await login(data);
-      navigate("/homepage");
+      navigate("/MapView");
     } catch (error) {
       setError(
         error.response?.data?.message ||

@@ -17,12 +17,16 @@ import { searchLocation } from '../../service/mapService';
 import { getAllBookmarks } from '../../service/apiService';
 import { useNavigate } from 'react-router-dom';
 
-function MapClickHandler({ onClick, isPreview }) {
+function MapClickHandler({ onClick, isPreview, showLoginPrompt }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  
   useMapEvents({
     click(e) {
       if (isPreview) {
         navigate('/MapView');
+      } else if (!user) {
+        showLoginPrompt();
       } else {
         onClick([e.latlng.lat, e.latlng.lng]);
       }
@@ -44,6 +48,7 @@ export default function MapInteractive({
   isPreview = false
 }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [formPosition, setFormPosition] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
   const [markers, setMarkers] = useState([]);
@@ -51,6 +56,7 @@ export default function MapInteractive({
   const [error, setError] = useState(null);
   const [temporaryMarker, setTemporaryMarker] = useState(null);
   const [isPositionConfirmed, setIsPositionConfirmed] = useState(false);
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
   const markerRefs = useRef({});
 
   const {
@@ -101,7 +107,7 @@ export default function MapInteractive({
 
   const handleMapClick = (position) => {
     if (!user) {
-      return; // Solo ignoramos el click si no hay usuario
+      return;
     }
     setTemporaryMarker(position);
     setIsPositionConfirmed(false);
@@ -149,6 +155,11 @@ export default function MapInteractive({
 
   const filteredMarkers = filterMarkers(markers);
 
+  const showLoginPrompt = () => {
+    setShowLoginAlert(true);
+    setTimeout(() => setShowLoginAlert(false), 3000);
+  };
+
   if (loading) {
     return <div className="flex justify-center items-center h-screen">
       <span className="loading loading-spinner loading-lg"></span>
@@ -170,7 +181,38 @@ export default function MapInteractive({
       )}
       
       <div className="flex-grow relative">
+        {showLoginAlert && (
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] alert alert-info shadow-lg w-auto">
+            <div className="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <span className="font-medium">Necesitas iniciar sesión para crear marcadores. </span>
+                <button 
+                  className="btn btn-link btn-sm pl-1 normal-case"
+                  onClick={() => navigate('/login')}
+                >
+                  Iniciar sesión
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="absolute inset-0 z-0">
+          {!user && !isPreview && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-[1000] bg-base-100 p-4 rounded-lg shadow-lg text-center">
+              <p className="text-sm mb-2">Para crear nuevos marcadores necesitas iniciar sesión</p>
+              <button 
+                className="btn btn-primary btn-sm"
+                onClick={() => navigate('/login')}
+              >
+                Iniciar sesión
+              </button>
+            </div>
+          )}
+          
           {showFilters && (
             <>
               <SearchControl onSearch={handleSearch} />
@@ -197,7 +239,11 @@ export default function MapInteractive({
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             />
             <LocationMarker />
-            <MapClickHandler onClick={handleMapClick} isPreview={isPreview} />
+            <MapClickHandler 
+              onClick={handleMapClick} 
+              isPreview={isPreview} 
+              showLoginPrompt={showLoginPrompt}
+            />
             {temporaryMarker && !isPositionConfirmed && (
               <Marker
                 position={temporaryMarker}

@@ -32,7 +32,7 @@ export default function LandingPage() {
         <div className="hero-content text-neutral-content justify-start w-full">
           <div className="max-w-md text-left">
             <h1 className="mb-5 text-5xl font-bold">
-              Encuentra tu siguiente marcador y únete a la comunidad
+              ¿Quieres crear marcadores y contribuir al mapa colaborativo?
             </h1>
           </div>
         </div>

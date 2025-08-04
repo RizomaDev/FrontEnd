@@ -26,6 +26,19 @@ function DetailedBookmarkPopup({ marker }) {
   const categoryLower = marker.category ? marker.category.toLowerCase() : '';
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
 
+  const getButtonClass = (category) => {
+    switch (category?.toLowerCase()) {
+      case 'conflictos':
+        return 'btn-primary';
+      case 'propuestas':
+        return 'btn-success';
+      case 'iniciativas':
+        return 'btn-warning';
+      default:
+        return 'btn-neutral';
+    }
+  };
+
   const handleViewInMap = () => {
     navigate('/MapView', {
       state: {
@@ -105,7 +118,7 @@ function DetailedBookmarkPopup({ marker }) {
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleViewInMap}
-            className="btn btn-primary btn-sm text-white"
+            className={`btn ${getButtonClass(marker.category)} btn-sm text-white`}
           >
             Ver en el mapa
           </button>
