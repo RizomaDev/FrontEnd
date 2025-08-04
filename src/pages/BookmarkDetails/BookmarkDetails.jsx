@@ -8,7 +8,7 @@ import HeaderLogged from "../../components/HeaderLogged/HeaderLogged";
 import Footer from "../../components/Footer/Footer";
 import CategoryIcon from '../../components/MapInteractive/CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
-import MapInteractive from '../../components/MapInteractive/MapInteractive';
+import BookmarkMap from '../../components/BookmarkMap/BookmarkMap';
 import { createCustomIcon } from '../../components/MapInteractive/CustomMarkerIcon';
 import 'leaflet/dist/leaflet.css';
 
@@ -233,24 +233,21 @@ export default function BookmarkDetails() {
                 )}
               </div>
 
-              {/* Mapa Interativo */}
+              {/* Mapa do Bookmark */}
               {bookmark.location && bookmark.location.latitude && bookmark.location.longitude && (
                 <div className="mt-6 bg-base-200 rounded-lg overflow-hidden">
                   <h3 className="text-2xl font-semibold text-secondary p-5 pb-0">
                     Ubicación
                   </h3>
                   <div className="p-5">
-                    <MapInteractive 
-                      showHeader={false}
-                      showFilters={false}
-                      focusedMarker={bookmark}
-                      height="500px"
-                    />
+                    <div className="h-[400px] relative rounded-lg overflow-hidden">
+                      <BookmarkMap bookmark={bookmark} />
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* Creado por - Agora depois do mapa */}
+              {/* Creado por */}
               <div className="mt-6 bg-base-300 pt-8 pb-6 [filter:sepia(40%)] rounded-lg">
                 <h3 className="text-2xl font-semibold text-primary mb-4 ml-5">
                   Creado por

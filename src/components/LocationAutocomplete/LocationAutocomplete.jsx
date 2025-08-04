@@ -1,21 +1,53 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-
-import iconUrl from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-const DefaultIcon = L.icon({ iconUrl, shadowUrl: iconShadow });
-L.Marker.prototype.options.icon = DefaultIcon;
+import { createCustomIcon } from '../MapInteractive/CustomMarkerIcon';
 
 const NOMINATIM_URL = 'https://corsproxy.io/?https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=';
 
-const LocationAutocomplete = ({ onSelect }) => {
-  const [query, setQuery] = useState('');
+// Função auxiliar para fazer geocoding reverso
+const reverseGeocode = async (lat, lon) => {
+  try {
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+    const data = await response.json();
+    return {
+      lat,
+      lon,
+      display_name: data.display_name || `${lat}, ${lon}`
+    };
+  } catch (error) {
+    console.error('Error in reverse geocoding:', error);
+    return {
+      lat,
+      lon,
+      display_name: `${lat}, ${lon}`
+    };
+  }
+};
+
+// Componente para capturar cliques no mapa
+function MapClickHandler({ onLocationSelect }) {
+  useMapEvents({
+    click: async (e) => {
+      const { lat, lng } = e.latlng;
+      const location = await reverseGeocode(lat, lng);
+      onLocationSelect(location);
+    }
+  });
+  return null;
+}
+
+const LocationAutocomplete = ({ onSelect, showMap = true, initialValue = '' }) => {
+  const [query, setQuery] = useState(initialValue);
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const debounceTimeout = useRef();
+
+  // Atualizar o query quando o initialValue mudar
+  useEffect(() => {
+    setQuery(initialValue);
+  }, [initialValue]);
 
   const fetchSuggestions = async (input) => {
     if (input.length < 3) {
@@ -45,19 +77,25 @@ const LocationAutocomplete = ({ onSelect }) => {
     }, 300);
   };
 
-  const handleSelect = (suggestion) => {
-    setQuery(suggestion.display_name);
+  const handleSelect = (location) => {
+    setQuery(location.display_name);
     setSuggestions([]);
     setSelectedLocation({
-      lat: parseFloat(suggestion.lat),
-      lon: parseFloat(suggestion.lon),
-      display_name: suggestion.display_name,
+      lat: parseFloat(location.lat),
+      lon: parseFloat(location.lon),
+      display_name: location.display_name,
     });
     onSelect({
-      lat: parseFloat(suggestion.lat),
-      lon: parseFloat(suggestion.lon),
-      display_name: suggestion.display_name,
+      lat: parseFloat(location.lat),
+      lon: parseFloat(location.lon),
+      display_name: location.display_name,
     });
+  };
+
+  const handleMarkerDrag = async (e) => {
+    const { lat, lng } = e.target.getLatLng();
+    const location = await reverseGeocode(lat, lng);
+    handleSelect(location);
   };
 
   useEffect(() => {
@@ -85,62 +123,61 @@ const LocationAutocomplete = ({ onSelect }) => {
         value={query}
         onChange={handleInputChange}
         placeholder="Buscar ubicación..."
-        className="w-full px-3 py-2 text-sm md:text-base rounded-l-lg focus:outline-none focus:ring-2 focus:ring-[#004f59]"
+        className="input input-bordered w-full"
       />
       {(isLoading || suggestions.length > 0) && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            zIndex: 9999,
-            maxHeight: 200,
-            overflowY: 'auto',
-            background: 'white',
-            border: '1px solid #ddd',
-            borderRadius: 6,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-          }}
-        >
+        <div className="absolute top-full left-0 right-0 z-50 max-h-60 overflow-y-auto bg-base-100 rounded-lg shadow-lg mt-1">
           {isLoading && (
-            <div className="p-2 text-center text-gray-500">Buscando...</div>
+            <div className="p-3 text-center text-base-content/60">
+              Buscando...
+            </div>
           )}
           {!isLoading && suggestions.length > 0 && (
-            <ul className="suggestions-list m-0 p-0">
+            <ul className="menu menu-compact p-0">
               {suggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleSelect(suggestion)}
-                  className="hover:bg-gray-100 cursor-pointer p-2"
-                  style={{ listStyle: 'none' }}
-                >
-                  {suggestion.display_name}
+                <li key={index}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelect(suggestion)}
+                    className="py-2 px-4 hover:bg-base-200 text-left"
+                  >
+                    {suggestion.display_name}
+                  </button>
                 </li>
               ))}
             </ul>
           )}
         </div>
       )}
-      <div className="mt-4" style={{ height: '250px', width: '100%' }}>
-        <MapContainer
-          center={selectedLocation ? [selectedLocation.lat, selectedLocation.lon] : [40.4168, -3.7038]}
-          zoom={selectedLocation ? 15 : 5}
-          scrollWheelZoom={true}
-          style={{ height: '100%', width: '100%' }}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          />
-          {selectedLocation && (
-            <Marker position={[selectedLocation.lat, selectedLocation.lon]}>
-              <Popup>{selectedLocation.display_name}</Popup>
-            </Marker>
-          )}
-          <MapUpdater location={selectedLocation} />
-        </MapContainer>
-      </div>
+      {showMap && (
+        <div className="mt-4" style={{ height: '250px', width: '100%' }}>
+          <MapContainer
+            center={selectedLocation ? [selectedLocation.lat, selectedLocation.lon] : [40.4168, -3.7038]}
+            zoom={selectedLocation ? 15 : 5}
+            scrollWheelZoom={true}
+            style={{ height: '100%', width: '100%' }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            />
+            <MapClickHandler onLocationSelect={handleSelect} />
+            {selectedLocation && (
+              <Marker 
+                position={[selectedLocation.lat, selectedLocation.lon]}
+                icon={createCustomIcon('temp', 'temp')}
+                draggable={true}
+                eventHandlers={{
+                  dragend: handleMarkerDrag
+                }}
+              >
+                <Popup>{selectedLocation.display_name}</Popup>
+              </Marker>
+            )}
+            <MapUpdater location={selectedLocation} />
+          </MapContainer>
+        </div>
+      )}
     </div>
   );
 };

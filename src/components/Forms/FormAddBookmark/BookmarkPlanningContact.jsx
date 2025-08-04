@@ -15,19 +15,29 @@ export default function BookmarkPlanningContact({ register, errors, setValue, ge
     <>
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
-          <span className="label-text font-semibold">Ubicación <span className="text-error">*</span></span>
+          <span className="label-text font-semibold">
+            Ubicación <span className="text-error">*</span>
+          </span>
         </label>
-        <LocationAutocomplete onSelect={handleSelect} />
-        {errors.latitude && (
-          <span className="text-error text-sm mt-1">{errors.latitude.message}</span>
-        )}
-        {errors.longitude && (
-          <span className="text-error text-sm mt-1">{errors.longitude.message}</span>
-        )}
-        {/* Mostrar valores actuales si existen */}
-        {(currentLat || currentLon) && (
-          <div className="mt-2 text-xs text-gray-500">Lat: {currentLat} | Lon: {currentLon}</div>
-        )}
+        <div className="space-y-4">
+          <LocationAutocomplete 
+            onSelect={handleSelect}
+          />
+
+          {errors.latitude && (
+            <span className="text-error text-sm">{errors.latitude.message}</span>
+          )}
+          {errors.longitude && (
+            <span className="text-error text-sm">{errors.longitude.message}</span>
+          )}
+          
+          {/* Mostrar coordenadas atuais */}
+          {currentLat && currentLon && (
+            <div className="text-sm text-gray-500">
+              Coordenadas seleccionadas: {parseFloat(currentLat).toFixed(6)}, {parseFloat(currentLon).toFixed(6)}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
