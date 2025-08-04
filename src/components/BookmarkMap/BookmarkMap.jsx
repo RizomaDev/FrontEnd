@@ -40,6 +40,7 @@ function DetailedBookmarkPopup({ marker }) {
   };
 
   const handleViewInMap = () => {
+    console.log('Navigating with bookmark:', marker); // Para debug
     navigate('/MapView', {
       state: {
         center: [marker.location.latitude, marker.location.longitude],

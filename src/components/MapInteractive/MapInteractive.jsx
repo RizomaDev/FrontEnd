@@ -88,19 +88,27 @@ export default function MapInteractive({
     if (focusedBookmarkId && markers.length > 0 && mapInstance) {
       const focusedMarker = markers.find(m => m.id === focusedBookmarkId);
       if (focusedMarker) {
-        // Centrar el mapa en el marcador
-        mapInstance.setView(
-          [focusedMarker.location.latitude, focusedMarker.location.longitude],
-          15
+        // Primero centramos el mapa
+        const markerLatLng = [focusedMarker.location.latitude, focusedMarker.location.longitude];
+        
+        // Ajustar el centro para compensar el popup
+        const popupOffset = mapInstance.getSize().x * 0.15; // 15% del ancho del mapa
+        const adjustedCenter = mapInstance.layerPointToLatLng(
+          mapInstance.latLngToLayerPoint(markerLatLng).add([popupOffset, 0])
         );
         
-        // Abrir el popup del marcador correspondiente
-        const markerRef = markerRefs.current[focusedBookmarkId];
-        if (markerRef) {
-          setTimeout(() => {
+        mapInstance.setView(adjustedCenter, 15, {
+          animate: true,
+          duration: 1
+        });
+
+        // Esperar a que termine la animación antes de abrir el popup
+        setTimeout(() => {
+          const markerRef = markerRefs.current[focusedBookmarkId];
+          if (markerRef) {
             markerRef.openPopup();
-          }, 100);
-        }
+          }
+        }, 100);
       }
     }
   }, [focusedBookmarkId, markers, mapInstance]);

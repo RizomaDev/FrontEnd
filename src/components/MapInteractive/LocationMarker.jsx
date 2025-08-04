@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
-import { useMap } from 'react-leaflet';
+import { useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
+import { useLocation } from 'react-router-dom';
 
 const LocationMarker = () => {
   const map = useMap();
   const markerRef = useRef(null);
-  const initialSetViewRef = useRef(true);
+  const location = useLocation();
+  const hasInitialState = location.state?.center && location.state?.focusedBookmarkId;
 
   useEffect(() => {
     // Crear el icono personalizado
@@ -26,8 +28,6 @@ const LocationMarker = () => {
 
     // Manejador para cuando se encuentra la ubicación
     const handleLocationFound = (e) => {
-      console.log('Ubicación encontrada:', e.latlng);
-      
       // Eliminar marcador anterior si existe
       if (markerRef.current) {
         markerRef.current.remove();
@@ -42,17 +42,15 @@ const LocationMarker = () => {
       // Guardar referencia al marcador
       markerRef.current = marker;
 
-      // Solo centrar el mapa en la primera ubicación encontrada
-      if (initialSetViewRef.current) {
+      // Solo centrar el mapa si no venimos de un marcador específico
+      if (!hasInitialState) {
         map.setView(e.latlng, 16);
-        initialSetViewRef.current = false;
       }
     };
 
     // Manejador de errores
     const handleLocationError = (e) => {
       console.error('Error de geolocalización:', e.message);
-      alert('No se pudo obtener tu ubicación. Por favor, verifica que has dado los permisos necesarios.');
     };
 
     // Suscribirse a los eventos
@@ -67,7 +65,7 @@ const LocationMarker = () => {
         markerRef.current.remove();
       }
     };
-  }, [map]);
+  }, [map, hasInitialState]);
 
   return null;
 };
