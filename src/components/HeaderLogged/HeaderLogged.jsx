@@ -160,28 +160,31 @@ export default function HeaderLogged() {
 
         </div>
 
-        <div className="dropdown dropdown-end relative">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-square btn-ghost"
-            onClick={() => setDropdownOpen((open) => !open)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="inline-block h-5 w-5 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
+        {user && (
+          <div className="dropdown dropdown-end relative">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-square btn-ghost"
+              onClick={() => setDropdownOpen((open) => !open)}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="inline-block h-5 w-5 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </div>
           </div>
-          {true && (
+        )}
+          {user && (
             <ul
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[2000] mt-3 p-2 shadow min-w-max absolute right-0"
             >

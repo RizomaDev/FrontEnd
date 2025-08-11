@@ -30,34 +30,13 @@ function Header() {
             {"Registrarse"}
           </Buttons>
         </div>
-        <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn btn-square btn-ghost">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="inline-block h-5 w-5 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </div>
-          <ul
-            tabIndex={0}
-            className="md:hidden menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 p-2 shadow min-w-max"
-          >
-
-            <li className="md:hidden">
-              <a>Login</a>
-            </li>
-            <li className="md:hidden">
-              <a>Register</a>
-            </li>
-          </ul>
+        <div className="md:hidden flex items-center gap-2 mr-4">
+          <Link to="/Login" className="btn btn-ghost text-base-content">
+            Iniciar sesión
+          </Link>
+          <Link to="/Register" className="btn btn-primary [filter:sepia(40%)]">
+            Registrarse
+          </Link>
         </div>
       </div>
     </div>
