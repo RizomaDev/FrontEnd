@@ -1,160 +1,131 @@
-# Travel4Real
+# 🌿 Rizoma - Otra Málaga
 
-Travel4Real is a web application dedicated to connecting travelers with authentic local experiences. Our platform enables locals to share and manage their unique cultural experiences while allowing travelers to discover genuine, off-the-beaten-path adventures.
+Rizoma es una aplicación web que permite descubrir y compartir lugares únicos y experiencias auténticas. La plataforma conecta a los usuarios con espacios culturales, artísticos y sociales que representan la verdadera esencia de la ciudad.
 
-![Project Overview](src/assets/overview_readme.png "A general overview of the project's interface")
+## 🌟 Características Principales
 
+- **Descubrimiento de Lugares**
+  - Exploración interactiva a través de mapas
+  - Búsqueda y filtrado por categorías
+  - Detalles completos de cada ubicación
 
-## 🌟 Features
+- **Gestión de Marcadores**
+  - Crear y compartir nuevos lugares
+  - Añadir fotos y descripciones detalladas
+  - Categorización por tipos de espacios
+  - Geolocalización precisa
 
-- **User Authentication**
-  - Register and login functionality
-  - Secure session management
-  - Profile management
+- **Experiencia de Usuario**
+  - Interfaz intuitiva y moderna
+  - Diseño responsive para todos los dispositivos
+  - Sistema de autenticación seguro
+  - Búsqueda avanzada de lugares
 
-- **Experience Management**
-  - Create and share local experiences
-  - Rich media support for experience photos
-  - Detailed experience descriptions and itineraries
-  - Location-based experience discovery
-  - Categories for different types of experiences
+## 🛠 Stack Tecnológico
 
-- **Interactive Interface**
-  - Responsive design for all devices
-  - User-friendly navigation
-  - Search and filter capabilities
-  - Interactive maps integration
+### Frontend
+- React.js + Vite
+- React Router para navegación
+- Leaflet para mapas interactivos
+- Tailwind CSS + DaisyUI para estilos
+- Cloudinary para gestión de imágenes
 
-## 🛠 Tech Stack
+### Backend
+- Spring Boot
+- PostgreSQL
+- JWT para autenticación
+- API RESTful
 
-- **Frontend**
-  - React.js with Vite
-  - React Router for navigation
-  - React Hook Form for form management
-  - Tailwind CSS & DaisyUI for styling
-  - Axios for API communication
+## 🚀 Inicio Rápido
 
-- **Development Tools**
-  - ESLint for code quality
-  - PostCSS for CSS processing
-  - Modern JavaScript (ES6+)
+### Prerrequisitos
+- Node.js (v18 o superior)
+- npm o yarn
 
-## 🚀 Getting Started
+### Instalación
 
-### Prerequisites
+1. Clonar el repositorio:
+\`\`\`bash
+git clone https://github.com/RizomaDev/FrontEnd.git
+\`\`\`
 
-- Node.js (v18 or higher recommended)
-- npm or yarn package manager
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone [repository-url]
-```
-
-2. Navigate to the frontend directory:
-```bash
+2. Instalar dependencias:
+\`\`\`bash
 cd FrontEnd
-```
-
-3. Install dependencies:
-```bash
 npm install
-```
+\`\`\`
 
-4. Start the development server:
-```bash
+3. Configurar variables de entorno:
+Crear archivo \`.env\` con:
+\`\`\`
+VITE_API_URL=http://localhost:8080/api
+VITE_CLOUDINARY_CLOUD_NAME=tu_cloud_name
+VITE_CLOUDINARY_API_KEY=tu_api_key
+VITE_CLOUDINARY_API_SECRET=tu_api_secret
+\`\`\`
+
+4. Iniciar el servidor de desarrollo:
+\`\`\`bash
 npm run dev
-```
+\`\`\`
 
-## 🔧 Available Scripts
+## 📝 Scripts Disponibles
 
-- `npm run dev` - Starts the development server
-- `npm run build` - Builds the app for production
-- `npm run lint` - Runs ESLint for code quality checks
-- `npm run preview` - Preview the production build locally
+- \`npm run dev\` - Inicia el servidor de desarrollo
+- \`npm run build\` - Construye la aplicación para producción
+- \`npm run preview\` - Vista previa de la build de producción
+- \`npm run lint\` - Ejecuta el linter
 
-## 🎨 Theme Customization
+## 📁 Estructura del Proyecto
 
-The application uses a custom theme called "caramellatte" with DaisyUI, featuring:
-- Custom color palette
-- Responsive design components
-- Consistent styling across components
-
-## 📁 Project Structure
-
-```
+\`\`\`
 FrontEnd/
 ├── src/
-│   ├── assets/          # Static assets
-│   ├── components/      # Reusable components
-│   ├── config/         # Configuration files
-│   ├── pages/          # Page components
-│   ├── service/        # API services
-│   └── main.jsx        # Application entry point
-```
+│   ├── assets/          # Recursos estáticos
+│   ├── components/      # Componentes reutilizables
+│   ├── config/          # Configuraciones
+│   ├── context/         # Contextos de React
+│   ├── hooks/           # Hooks personalizados
+│   ├── pages/           # Componentes de páginas
+│   ├── service/         # Servicios y API
+│   └── utils/           # Utilidades
+\`\`\`
 
-## 🤝 Contributing
+## 🌐 Despliegue
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### Frontend (Netlify)
+1. Conectar con repositorio de GitHub
+2. Configurar variables de entorno
+3. Build command: \`npm run build\`
+4. Publish directory: \`dist\`
 
-## 📝 License
+### Backend (Railway)
+1. Configurar base de datos PostgreSQL
+2. Establecer variables de entorno
+3. Conectar con repositorio de GitHub
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🤝 Contribuir
 
-## 🌐 Browser Support
+1. Fork del repositorio
+2. Crear rama de feature (\`git checkout -b feature/NuevaCaracteristica\`)
+3. Commit de cambios (\`git commit -m 'Añade nueva característica'\`)
+4. Push a la rama (\`git push origin feature/NuevaCaracteristica\`)
+5. Crear Pull Request
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+## 👥 Equipo
 
+- **Larissa Saud** - Desarrollador Full Stack
+  - [GitHub](https://github.com/saudlari)
+  - [LinkedIn](https://www.linkedin.com/in/larissasaud)
 
-## 🙏 Acknowledgments
+## 📄 Licencia
 
-- DaisyUI for the component library
-- Tailwind CSS for the utility-first CSS framework
-- React community for the excellent tools and libraries
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
 
+## 🙏 Agradecimientos
 
-## 👥 Authors
-
-
-<table style="border-collapse: collapse; border: none;">
-  <tr>
-  <td align="center" style="border: none;">
-      <br><b> Larissa Saud </b>
-      <br>
-      <a href="https://www.linkedin.com/in/larissasaud/">LinkedIn</a> |
-      <a href="https://github.com/saudlari")">GitHub</a>
-    </td>
-    <td align="center" style="border: none;">
-      <br><b> Mariuxi Olaya </b>
-      <br>
-      <a href="https://www.linkedin.com/in/molaya">LinkedIn</a> |
-      <a href="https://github.com/catmaluci">GitHub</a>
-    <td align="center" style="border: none;">
-      <br><b>Milena Ocoro</b>
-      <br>
-      <a href="https://www.linkedin.com/in/mariabongoll">LinkedIn</a> |
-      <a href="https://github.com/Femcom-Mari">GitHub</a>
-    </td>
-    <td align="center" style="border: none;">
-      <br><b>Paola Morales</b>
-      <br>
-      <a href="https://www.linkedin.com/in/paola-morales-/"/>LinkedIn</a> |
-      <a href="https://github.com/PaolaAMoralesP">GitHub</a>
-    </td>    </td>
-      <td align="center" style="border: none;">
-      <br><b>Tetiana Vashchenko </b>
-      <br>
-      <a href="https://www.linkedin.com/in/priscilaguillen/">LinkedIn</a> |
-      <a href="https://github.com/pgoliv-code">GitHub</a>
-    </td>
-  </tr>
-</table>
+- [DaisyUI](https://daisyui.com/) por los componentes de UI
+- [Leaflet](https://leafletjs.com/) por la integración de mapas
+- [Cloudinary](https://cloudinary.com/) por el manejo de imágenes
+- [Railway](https://railway.app/) por el hosting del backend
+- [Netlify](https://www.netlify.com/) por el hosting del frontend
