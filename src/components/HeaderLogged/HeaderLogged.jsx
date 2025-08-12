@@ -91,7 +91,7 @@ export default function HeaderLogged() {
       setDropdownOpen(true);
     } else {
       setDropdownOpen(false);
-      setExperiences([]);
+      setBookmarks([]);
       setMessage("");
       setError(null);
     }
@@ -118,7 +118,7 @@ export default function HeaderLogged() {
   const handleInputFocus = () => {
     if (
       searchTerm.trim().length >= 2 ||
-      (searchTerm.trim().length > 0 && (message || experiences.length > 0))
+      (searchTerm.trim().length > 0 && (message || bookmarks.length > 0))
     ) {
       setDropdownOpen(true);
     } else if (searchTerm.trim().length === 0) {
@@ -156,9 +156,6 @@ export default function HeaderLogged() {
             </div>
           </div>
         </div>
-        <div className="flex-1 md:order-first">
-
-        </div>
 
         {user && (
           <div className="dropdown dropdown-end relative">
@@ -182,28 +179,24 @@ export default function HeaderLogged() {
                 />
               </svg>
             </div>
+            {user && (
+              <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[2000] mt-3 p-2 shadow min-w-max absolute right-0">
+                <li>
+                  <Link to="/HomePage">Inicio</Link>
+                </li>
+                <li>
+                  <Link to="/AddBookmark">Añadir marcador</Link>
+                </li>
+                <li>
+                  <Link to="/MyBookmark">Mis marcadores</Link>
+                </li>
+                <li>
+                  <button onClick={onClick}>Cerrar sesión</button>
+                </li>
+              </ul>
+            )}
           </div>
         )}
-          {user && (
-            <ul
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[2000] mt-3 p-2 shadow min-w-max absolute right-0"
-            >
-              <li>
-                <Link to="/HomePage">Inicio</Link>
-              </li>
-              <li>
-                <Link to="/AddBookmark">Añadir marcador</Link>
-              </li>
-              <li>
-                <Link to="/MyBookmark">Mis marcadores</Link>
-              </li>
-              <li>
-                <button onClick={onClick}>Cerrar sesión</button>
-              </li>
-            </ul>
-          )}
-        </div>
-      </div>
 
       <div
         className="flex items-center mx-4 my-2 flex-grow w-full md:w-auto md:my-0 md:order-none relative"
@@ -268,6 +261,7 @@ export default function HeaderLogged() {
           </ul>
         )}
       </div>
+    </div>
     </div>
   );
 }
