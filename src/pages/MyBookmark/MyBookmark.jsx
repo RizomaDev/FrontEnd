@@ -3,6 +3,7 @@ import { getAllBookmarks } from "../../service/apiService";
 import Cards from "../../components/Cards/Cards";
 import Buttons from "../../components/Buttons/Buttons";
 import imageTemporal from "../../assets/imageTemporal.png";
+import { getImageUrl } from '../../utils/imageUtils';
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -81,7 +82,7 @@ export default function MyBookmark(){
             address={bookmark.address}
             img={
               bookmark.imageUrls && bookmark.imageUrls.length > 0
-                ? {getImageUrl(bookmark.imageUrls[0])}
+                ? getImageUrl(bookmark.imageUrls[0])
                 : imageTemporal
             }
           />
