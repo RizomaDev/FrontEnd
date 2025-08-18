@@ -156,47 +156,51 @@ export default function HeaderLogged() {
             </div>
           </div>
         </div>
+        <div className="flex-1 md:order-first">
 
-        {user && (
-          <div className="dropdown dropdown-end relative">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-square btn-ghost"
-              onClick={() => setDropdownOpen((open) => !open)}
+        </div>
+
+        <div className="dropdown dropdown-end relative">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-square btn-ghost"
+            onClick={() => setDropdownOpen((open) => !open)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="inline-block h-5 w-5 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="inline-block h-5 w-5 stroke-current"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </div>
-            {user && (
-              <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[2000] mt-3 p-2 shadow min-w-max absolute right-0">
-                <li>
-                  <Link to="/HomePage">Inicio</Link>
-                </li>
-                <li>
-                  <Link to="/AddBookmark">Añadir marcador</Link>
-                </li>
-                <li>
-                  <Link to="/MyBookmark">Mis marcadores</Link>
-                </li>
-                <li>
-                  <button onClick={onClick}>Cerrar sesión</button>
-                </li>
-              </ul>
-            )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
           </div>
-        )}
+          {true && (
+            <ul
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[2000] mt-3 p-2 shadow min-w-max absolute right-0"
+            >
+              <li>
+                <Link to="/HomePage">Inicio</Link>
+              </li>
+              <li>
+                <Link to="/AddBookmark">Añadir marcador</Link>
+              </li>
+              <li>
+                <Link to="/MyBookmark">Mis marcadores</Link>
+              </li>
+              <li>
+                <button onClick={onClick}>Cerrar sesión</button>
+              </li>
+            </ul>
+          )}
+        </div>
+      </div>
 
       <div
         className="flex items-center mx-4 my-2 flex-grow w-full md:w-auto md:my-0 md:order-none relative"
@@ -261,7 +265,6 @@ export default function HeaderLogged() {
           </ul>
         )}
       </div>
-    </div>
     </div>
   );
 }
