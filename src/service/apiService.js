@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// Base API URL
-const API_BASE = "http://localhost:8080/api";
+import { API_BASE_URL } from '../config/apiConfig';
+const API_BASE = API_BASE_URL;
 
 // API endpoints
 const baseUrl = `${API_BASE}/bookmarks`;
