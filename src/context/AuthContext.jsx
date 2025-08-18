@@ -2,7 +2,8 @@ import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
-const baseUrl = "http://localhost:8080/api/auth";
+import { API_BASE_URL } from '../config/apiConfig';
+const baseUrl = `${API_BASE_URL}/auth`;
 const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

@@ -81,7 +81,7 @@ export default function MyBookmark(){
             address={bookmark.address}
             img={
               bookmark.imageUrls && bookmark.imageUrls.length > 0
-                ? `http://localhost:8080/api/images/${bookmark.imageUrls[0].split('/').pop()}`
+                ? {getImageUrl(bookmark.imageUrls[0])}
                 : imageTemporal
             }
           />

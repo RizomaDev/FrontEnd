@@ -4,6 +4,7 @@ import Cards from "../../components/Cards/Cards";
 import Buttons from "../../components/Buttons/Buttons";
 import FilterCategoryTag from "../../components/FilterCategoryTag";
 import imageTemporal from "../../assets/imageTemporal.png";
+import { getImageUrl } from '../../utils/imageUtils';
 import Verdiales from "../../assets/Verdiales.jpg";
 import heroWelcome from "../../assets/heroWelcome.jpg";
 import ButtonMap from "../../components/Buttons/ButtonMap";
@@ -147,7 +148,7 @@ export default function HomePage() {
             address={bookmark.address}
             img={
               bookmark.imageUrls && bookmark.imageUrls.length > 0
-                ? `http://localhost:8080/api/images/${bookmark.imageUrls[0].split('/').pop()}`
+                ? getImageUrl(bookmark.imageUrls[0])
                 : imageTemporal
             }
           />
