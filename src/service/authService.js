@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:8080/api/auth";
+import { API_BASE_URL } from '../config/apiConfig';
+const baseUrl = `${API_BASE_URL}/auth`;
 
 export async function login(credentials) {
   const response = await axios.post(`${baseUrl}/login`, credentials);
