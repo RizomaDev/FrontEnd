@@ -1,5 +1,4 @@
-const isProd = window.location.hostname !== "localhost";
-export const API_BASE_URL = isProd ? "https://backend-itbo.onrender.com/api" : "http://localhost:8080/api";
+export const API_BASE_URL = "https://backend-itbo.onrender.com/api";
 
 export const ENDPOINTS = {
     IMAGES: `${API_BASE_URL}/images`,

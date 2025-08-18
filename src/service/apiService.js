@@ -76,7 +76,7 @@ export function getAllBookmarks() {
   }
   
   return axios
-    .get(baseUrl, getRequestOptions())
+    .get(baseUrl)
     .then((response) => {
       const data = response.data;
       setCacheItem(CACHE_KEYS.BOOKMARKS, data);
