@@ -1,4 +1,5 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+const isProd = window.location.hostname !== "localhost";
+export const API_BASE_URL = isProd ? "https://backend-itbo.onrender.com/api" : "http://localhost:8080/api";
 
 export const ENDPOINTS = {
     IMAGES: `${API_BASE_URL}/images`,
