@@ -13,14 +13,22 @@ export async function login(credentials) {
 }
 
 export async function register(userData) {
-  const requestData = {
-    name: userData.name,
-    email: userData.email,
-    password: userData.password,
-    countryCode: userData.countryCode || "ES",
-  };
-  const response = await axios.post(`${baseUrl}/register`, requestData);
-  return response.data;
+  try {
+    const requestData = {
+      name: userData.name,
+      email: userData.email,
+      password: userData.password,
+      countryCode: userData.countryCode || "ES",
+    };
+    console.log('Sending registration request to:', `${baseUrl}/register`);
+    console.log('Request data:', requestData);
+    const response = await axios.post(`${baseUrl}/register`, requestData);
+    console.log('Registration response:', response);
+    return response.data;
+  } catch (error) {
+    console.error('Registration error:', error.response || error);
+    throw error;
+  }
 }
 
 export function logout() {
