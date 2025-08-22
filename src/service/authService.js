@@ -4,12 +4,19 @@ import { API_BASE_URL } from '../config/apiConfig';
 const baseUrl = `${API_BASE_URL}/auth`;
 
 export async function login(credentials) {
-  const response = await axios.post(`${baseUrl}/login`, credentials);
-  if (response.data.token) {
-    localStorage.setItem("user", JSON.stringify(response.data));
-    return response.data;
+  try {
+    console.log('Sending login request to:', `${baseUrl}/login`);
+    const response = await axios.post(`${baseUrl}/login`, credentials);
+    console.log('Login response:', response);
+    if (response.data.token) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+      return response.data;
+    }
+    return null;
+  } catch (error) {
+    console.error('Login error:', error.response || error);
+    throw error;
   }
-  return null;
 }
 
 export async function register(userData) {
