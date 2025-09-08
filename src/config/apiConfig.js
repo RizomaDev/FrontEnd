@@ -1,4 +1,4 @@
-export const API_BASE_URL = "https://backend-itbo.onrender.com/api";
+export const API_BASE_URL = "https://backend-prod-towy.onrender.com/api";
 
 export const ENDPOINTS = {
     IMAGES: `${API_BASE_URL}/images`,
