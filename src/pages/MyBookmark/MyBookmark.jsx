@@ -35,7 +35,7 @@ export default function MyBookmark(){
   }, [user]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Cargando...</div>;
   }
 
   const indexOfLastCard = currentPage * cardsPerPage;
@@ -95,14 +95,14 @@ export default function MyBookmark(){
           onClick={handlePrevPage}
           disabled={currentPage === 1}
         >
-          {"< Prev"}
+          {"< Anterior"}
         </Buttons>
         <Buttons
           color="btn-secondary"
           onClick={handleNextPage}
           disabled={currentPage === Math.ceil(myBookmarks.length / cardsPerPage)}
         >
-          {"Next >"}
+          {"Siguiente >"}
         </Buttons>
       </div>
     </>

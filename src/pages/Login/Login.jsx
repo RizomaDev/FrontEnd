@@ -25,7 +25,7 @@ export default function Login() {
     } catch (error) {
       setError(
         error.response?.data?.message ||
-          "Login failed. Please check your credentials."
+          "Error en el inicio de sesión. Por favor, verifica tus credenciales."
       );
     }
   };
@@ -42,7 +42,7 @@ export default function Login() {
         <div className="card w-96 bg-base-100 shadow-xl p-4">
           <div className="card-body items-center text-left">
             <h2 className="card-title text-4xl font-bold text-primary mb-6">
-              Login
+              Iniciar sesión
             </h2>
             {error && (
               <div role="alert" className="alert alert-error mb-4 w-full">
@@ -66,17 +66,17 @@ export default function Login() {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Email</span>
+                  <span className="label-text">Correo electrónico</span>
                 </label>
                 <input
                   type="email"
                   placeholder="Email"
                   className="input input-bordered w-full"
                   {...register("email", {
-                    required: "Email is required",
+                    required: "El correo electrónico es requerido",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      message: "Dirección de correo electrónico inválida.",
                     },
                   })}
                 />
@@ -89,26 +89,26 @@ export default function Login() {
 
               <div className="form-control w-full max-w-xs mb-4">
                 <label className="label">
-                  <span className="label-text">Password</span>
+                  <span className="label-text">Contraseña</span>
                 </label>
                 <input
                   type="password"
                   placeholder="Password"
                   className="input input-bordered w-full"
                   {...register("password", {
-                    required: "Password is required",
+                    required: "La contraseña es requerida",
                     minLength: {
                       value: 8,
-                      message: "Password isn't valid",
+                      message: "La contraseña no es válida. Incluye mayúsculas, minúsculas, números y caracteres especiales.  ",
                     },
                     maxLength: {
                       value: 120,
-                      message: "Password isn't valid",
+                      message: "La contraseña no es válida. Incluye mayúsculas, minúsculas, números y caracteres especiales.",
                     },
                     pattern: {
                       value:
                         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&^()_+=-]).{8,}$/,
-                      message: "Password isn't valid",
+                      message: "La contraseña no es válida. Incluye mayúsculas, minúsculas, números y caracteres especiales.",
                     },
                   })}
                 />
@@ -122,17 +122,17 @@ export default function Login() {
                 type="submit"
                 className="btn btn-primary w-full text-lg py-3 rounded-lg mb-4"
               >
-                Login
+                Iniciar sesión
               </button>
             </form>
             <div className="text-sm">
               <p className="mb-1">
-                Not registered yet?{" "}
+                ¿No estás registrado?{" "}
                 <a
                   href="./Register"
                   className="link link-hover text-primary font-semibold"
                 >
-                  Sign up here
+                  Regístrate aquí
                 </a>
               </p>
             </div>

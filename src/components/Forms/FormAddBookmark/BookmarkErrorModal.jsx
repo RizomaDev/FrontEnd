@@ -12,7 +12,7 @@ export default function BookmarkErrorModal({ show, errorMessage, onClose }) {
             className="btn btn-neutral text-white px-6 py-2 rounded-lg"
             onClick={onClose}
           >
-            Close
+            Cerrar
           </button>
         </div>
       </div>

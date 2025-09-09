@@ -78,7 +78,7 @@ export default function FormEditBookmark() {
           const fetchedCategories = await getCategories();
           setCategories(fetchedCategories);
         } catch (error) {
-          setCategoriesError("Failed to load categories. Please try again.");
+          setCategoriesError("Error al cargar las categorías. Por favor, inténtalo de nuevo.");
         } finally {
           setLoadingCategories(false);
         }
@@ -89,7 +89,7 @@ export default function FormEditBookmark() {
           const sortedTags = [...fetchedTags].sort((a, b) => a.name.localeCompare(b.name));
           setTags(sortedTags);
         } catch (error) {
-          setTagsError("Failed to load tags. Please try again.");
+          setTagsError("Error al cargar las etiquetas. Por favor, inténtalo de nuevo.");
         } finally {
           setLoadingTags(false);
         }
@@ -101,10 +101,10 @@ export default function FormEditBookmark() {
           } else if (err.response.data && err.response.data.message) {
             setErrorMessage(err.response.data.message);
           } else {
-            setErrorMessage("Failed to load bookmark details. Please try again.");
+            setErrorMessage("Error al cargar los detalles del marcador. Por favor, inténtalo de nuevo.");
           }
         } else {
-          setErrorMessage("Network error or server unreachable. Please check your connection.");
+          setErrorMessage("Error de red o servidor inaccesible. Por favor, verifica tu conexión.");
         }
         setShowErrorModal(true);
       } finally {
@@ -129,12 +129,12 @@ export default function FormEditBookmark() {
   const onSubmit = async (formData) => {
     try {
       if (!formData.title || !formData.description || !formData.tag || !formData.category) {
-        setErrorMessage("Please fill in all required fields correctly.");
+        setErrorMessage("Por favor, completa todos los campos requeridos correctamente.");
         setShowErrorModal(true);
         return;
       }
       if (formData.description.length < 10) {
-        setErrorMessage("Description must be at least 10 characters long.");
+        setErrorMessage("La descripción debe tener al menos 10 caracteres.");
         setShowErrorModal(true);
         return;
       }
@@ -170,7 +170,7 @@ export default function FormEditBookmark() {
       if (error.response && error.response.data && error.response.data.message) {
         setErrorMessage("Error: " + error.response.data.message);
       } else {
-        setErrorMessage("Failed to update bookmark. Please try again.");
+        setErrorMessage("Error al actualizar el marcador. Por favor, inténtalo de nuevo.");
       }
       setShowErrorModal(true);
     }
@@ -190,7 +190,7 @@ export default function FormEditBookmark() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-base-200">
         <span className="loading loading-spinner loading-lg text-primary"></span>
-        <p className="ml-4 text-primary text-lg">Loading bookmark data...</p>
+        <p className="ml-4 text-primary text-lg">Cargando datos del marcador...</p>
       </div>
     );
   }
@@ -226,7 +226,7 @@ export default function FormEditBookmark() {
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
                 <span className="label-text font-semibold">
-                  Title <span className="text-error">*</span>
+                  Título <span className="text-error">*</span>
                 </span>
               </label>
               <input
@@ -259,7 +259,7 @@ export default function FormEditBookmark() {
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
                 <span className="label-text font-semibold">
-                  Tag <span className="text-error">*</span>
+                  Etiqueta <span className="text-error">*</span>
                 </span>
               </label>
               <select
@@ -270,7 +270,7 @@ export default function FormEditBookmark() {
                   Selecciona una etiqueta
                 </option>
                 {loadingTags ? (
-                  <option>Loading tags...</option>
+                  <option>Cargando etiquetas...</option>
                 ) : tagsError ? (
                   <option className="text-error">{tagsError}</option>
                 ) : (
@@ -290,7 +290,7 @@ export default function FormEditBookmark() {
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
                 <span className="label-text font-semibold">
-                  Category <span className="text-error">*</span>
+                  Categoría <span className="text-error">*</span>
                 </span>
               </label>
               <select

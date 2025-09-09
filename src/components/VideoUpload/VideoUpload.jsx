@@ -27,7 +27,7 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
 
         const maxSize = 100 * 1024 * 1024;
         if (file.size > maxSize) {
-            setError('O arquivo é muito grande. O tamanho máximo é 100MB.');
+            setError('El archivo es muy grande. El tamaño máximo es 100MB.');
             return;
         }
 
@@ -98,10 +98,10 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
             setUploadSuccess(true);
         } catch (err) {
             if (err.name === 'AbortError') {
-                setError('Upload cancelado');
+                setError('Subida cancelada');
             } else {
                 setError(err.message);
-                console.error('Erro no upload:', err);
+                console.error('Error en la subida:', err);
             }
         } finally {
             setUploading(false);
@@ -119,7 +119,7 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
                         className="file-input file-input-bordered w-full"
                     />
                     <p className="text-sm text-gray-500 mt-2">
-                        Tamanho máximo: 100MB
+                        Tamaño máximo: 100MB
                     </p>
                 </div>
             ) : (
@@ -141,7 +141,7 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
                                 }}
                                 className="btn btn-ghost btn-sm"
                             >
-                                Remover
+                                Eliminar
                             </button>
                         )}
                     </div>
@@ -151,7 +151,7 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
                             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span>Vídeo enviado com sucesso!</span>
+                            <span>¡Vídeo enviado con éxito!</span>
                         </div>
                     )}
 
@@ -167,7 +167,7 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
                                 onClick={handleUpload}
                                 className="btn btn-primary w-full"
                             >
-                                Iniciar Upload
+                                Iniciar subida
                             </button>
                         ) : (
                             <div className="space-y-2">

@@ -19,14 +19,14 @@ export default function Register() {
   const onSubmit = async (data) => {
     try {
       await registerUser(data);
-      setSuccess("Registration successful!");
+      setSuccess("¡Registro exitoso!");
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error) {
       setError(
         error.response?.data?.message ||
-          "Error during registration. Please try again."
+          "Error durante el registro. Por favor, inténtalo de nuevo."
       );
     }
   };
@@ -44,7 +44,7 @@ export default function Register() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="card-body items-center text-left">
               <h2 className="card-title text-4xl font-bold text-primary mb-6">
-                Register
+                Registrarse
               </h2>
               {error && (
                 <div role="alert" className="alert alert-warning text-neutral">
@@ -85,22 +85,22 @@ export default function Register() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Name</span>
+                  <span className="label-text">Nombre</span>
                 </label>
                 <input
                   type="text"
                   {...register("name", {
-                    required: "Name is required",
+                    required: "El nombre es requerido",
                     minLength: {
                       value: 2,
-                      message: "Name must be at least 2 characters long",
+                      message: "El nombre debe tener al menos 2 caracteres",
                     },
                     maxLength: {
                       value: 50,
-                      message: "Name must be at most 50 characters long",
+                      message: "El nombre debe tener como máximo 50 caracteres",
                     },
                   })}
-                  placeholder="Name"
+                  placeholder="Nombre"
                   className="input input-bordered w-full"
                 />
                 {errors.name && (
@@ -112,19 +112,19 @@ export default function Register() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Email</span>
+                  <span className="label-text">Correo electrónico</span>
                 </label>
                 <input
                   type="email"
                   {...register("email", {
-                    required: "Email is required",
+                    required: "El correo electrónico es requerido",
                     maxLength: {
                       value: 120,
-                      message: "Email must be at most 120 characters long",
+                      message: "El correo electrónico debe tener como máximo 120 caracteres",
                     },
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      message: "Dirección de correo electrónico inválida",
                     },
                   })}
                   placeholder="Email"
@@ -139,27 +139,27 @@ export default function Register() {
 
               <div className="form-control w-full max-w-xs mb-4">
                 <label className="label">
-                  <span className="label-text">Password</span>
+                  <span className="label-text">Contraseña</span>
                 </label>
                 <input
                   type="password"
                   {...register("password", {
-                    required: "Password is required",
+                    required: "La contraseña es requerida",
                     minLength: {
                       value: 8,
                       message:
-                        "Password must be at least 8 characters.",
+                        "La contraseña debe tener al menos 8 caracteres.",
                     },
                     maxLength: {
                       value: 120,
-                      message: "Password must be at most 120 characters long",
+                      message: "La contraseña debe tener como máximo 120 caracteres",
                     },
                     pattern: {
                       value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&^()_+=-]).{8,}$/,
-                      message: "Password must include uppercase, lowercase, number, and special character",
+                      message: "La contraseña debe incluir mayúsculas, minúsculas, números y caracteres especiales",
                     },
                   })}
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   className="input input-bordered w-full"
                 />
                 {errors.password && (
@@ -173,17 +173,17 @@ export default function Register() {
                 type="submit"
                 className="btn btn-primary w-full text-lg py-3 rounded-lg mb-4"
               >
-                Register
+                Registrarse
               </button>
 
               <div className="text-sm">
                 <p className="mb-1">
-                  Already registered?{" "}
+                  ¿Ya estás registrado?{" "}
                   <a
                     href="./Login"
                     className="link link-hover text-primary font-semibold"
                   >
-                    Log in here
+                    Inicia sesión aquí
                   </a>
                 </p>
                

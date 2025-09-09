@@ -41,7 +41,7 @@ export default function FormDeleteBookmark({id_bookmark}) {
                 </div>
             </dialog>
             <div className="card-body p-0 flex items-center justify-center">
-                <button className="btn btn-neutral text-error-content w-full" onClick={() => {setShowDeleteModal(true)} }>Delete this Bookmark</button>
+                <button className="btn btn-neutral text-error-content w-full" onClick={() => {setShowDeleteModal(true)} }>Eliminar este marcador</button>
             </div>
         </div>
     );

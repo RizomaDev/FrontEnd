@@ -26,7 +26,7 @@ export default function HeaderLogged() {
         setBookmarks([]);
         setMessage(
           currentSearchTerm.trim().length > 0
-            ? "Type at least 2 characters"
+            ? "Escribe al menos 2 caracteres"
             : ""
         );
         setLoading(false);
@@ -47,12 +47,12 @@ export default function HeaderLogged() {
           setMessage("");
         } else {
           setBookmarks([]);
-          setMessage(`No bookmarks found for "${currentSearchTerm}".`);
+          setMessage(`No se encontraron marcadores para "${currentSearchTerm}".`);
         }
       } catch (err) {
         if (err.response && err.response.status === 204) {
           setBookmarks([]);
-          setMessage(`No bookmarks found for "${currentSearchTerm}".`);
+          setMessage(`No se encontraron marcadores para "${currentSearchTerm}".`);
         } else if (
           err.response &&
           err.response.data &&
@@ -60,7 +60,7 @@ export default function HeaderLogged() {
         ) {
           setError(`Error: ${err.response.data.message}`);
         } else {
-          setError("An unexpected error occurred while searching bookmarks.");
+          setError("Ocurrió un error inesperado al buscar marcadores.");
         }
         setBookmarks([]);
       } finally {

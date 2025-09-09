@@ -140,7 +140,7 @@ export default function BookmarkDetails() {
                       <img
                                                   src={getImageUrl(imgPath)}
                         className="absolute inset-0 w-full h-full object-cover"
-                        alt={`Bookmark Image ${idx + 1}`}
+                        alt={`Imagen del marcador ${idx + 1}`}
                       />
                     </div>
                     <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
@@ -278,7 +278,7 @@ export default function BookmarkDetails() {
                     <div className="w-20 h-20 rounded-full">
                       <img
                         src="https://placehold.co/80x80/dddddd/000000?text=Host"
-                        alt="Host Profile"
+                        alt="Perfil host"
                       />
                     </div>
                   </div>
@@ -300,7 +300,7 @@ export default function BookmarkDetails() {
                         className="btn btn-primary text-white w-full" 
                         onClick={() => navigate(`/EditBookmark/${bookmark.id}`)}
                       >
-                        Edit this Bookmark
+                        Editar este marcador
                       </button>
                     </div>
                   </div>
