@@ -4,7 +4,7 @@ import { useAddBookmarkForm } from '../../hooks/useAddBookmarkForm';
 import CategoryIcon from './CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 import BookmarkErrorModal from '../Forms/FormAddBookmark/BookmarkErrorModal';
-import { buildBookmarkPayload } from '../Forms/FormAddBookmark/bookmarkPayloadBuilder';
+import { buildBookmarkPayload } from '../../utils/bookmarkPayloadBuilder';
 import { getLocationName } from '../../service/mapService';
 import VideoUpload from '../VideoUpload/VideoUpload';
 

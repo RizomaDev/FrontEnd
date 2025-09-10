@@ -7,15 +7,16 @@ import BookmarkAdditionalInfo from "./BookmarkAdditionalInfo";
 import BookmarkPlanningContact from "./BookmarkPlanningContact";
 import BookmarkSuccessModal from "./BookmarkSuccessModal";
 import BookmarkErrorModal from "./BookmarkErrorModal";
-import BookmarkHostContact from "./BookmarkHostContact";
 import { useAddBookmarkForm } from "../../../hooks/useAddBookmarkForm";
-import { buildBookmarkPayload } from "./bookmarkPayloadBuilder";
+import { buildBookmarkPayloadSimple } from "../../../utils/bookmarkPayloadBuilder";
+import ImageUpload from "../../ImageUpload/ImageUpload";
 import BookmarkSummary from "./BookmarkSummary";
 
 export default function FormAddBookmark() {
   const navigate = useNavigate();
   const [newBookmarkId, setNewBookmarkId] = useState(null);
   const [newBookmarkLocation, setNewBookmarkLocation] = useState(null);
+  const [imageUrls, setImageUrls] = useState([]);
 
   const { register, handleSubmit: formHandleSubmit, formState: { errors }, reset, setError, clearErrors, setValue, getValues } = useForm();
   const {
@@ -35,16 +36,7 @@ export default function FormAddBookmark() {
     if (!data.title) valid = false;
     if (!data.tagId) valid = false;
     if (!data.categoryId) valid = false;
-    const files = data.images;
-    if (!files || files.length < 3) valid = false;
-    else {
-      for (let i = 0; i < files.length; i++) {
-        if (files[i].type !== "image/png" && files[i].type !== "image/jpeg") {
-          valid = false;
-          break;
-        }
-      }
-    }
+    if (imageUrls.length < 3) valid = false;
     return valid;
   };
 
@@ -66,7 +58,7 @@ export default function FormAddBookmark() {
   const onNext = (data) => {
     let isValid = false;
     if (currentStep === 1) {
-      if (!data.images || data.images.length < 3) {
+      if (imageUrls.length < 3) {
         setError("images", { type: "manual", message: "At least 3 images are required." });
         isValid = false;
       } else {
@@ -100,12 +92,16 @@ export default function FormAddBookmark() {
 
   const onSubmit = async (data) => {
     try {
-      const payload = await buildBookmarkPayload(data);
+      const payload = buildBookmarkPayloadSimple({
+        ...data,
+        images: imageUrls 
+      });
       const response = await createBookmark(payload);
       setNewBookmarkId(response.id); // Guardamos o ID do bookmark criado
       setNewBookmarkLocation(payload.location);
       setShowSuccessModal(true);
       reset();
+      setImageUrls([]); 
     } catch (error) {
       setErrorMessage(error.message || "Error adding bookmark");
       setShowErrorModal(true);
@@ -148,17 +144,9 @@ export default function FormAddBookmark() {
                   categoriesError={categoriesError}
                 />
                 <div className="form-control w-full max-w-md mb-6 text-left">
-                  <label className="label">
-                    <span className="label-text font-semibold">
-                      Añadir imágenes (mínimo 3) <span className="text-error">*</span>
-                    </span>
-                  </label>
-                  <input
-                    type="file"
-                    className="file-input file-input-bordered w-full"
-                    multiple
-                    accept=".png, .jpg, .jpeg"
-                    {...register("images")}
+                  <ImageUpload 
+                    onImagesReceived={setImageUrls}
+                    maxImages={10}
                   />
                   {errors.images && (
                     <span className="text-error text-sm mt-1">{errors.images.message}</span>
