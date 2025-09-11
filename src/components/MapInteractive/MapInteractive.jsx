@@ -70,11 +70,20 @@ export default function MapInteractive({
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const bookmarksData = await getAllBookmarks();
-        setMarkers(bookmarksData);
+        
+        // Filtrar marcadores válidos con coordenadas
+        const validBookmarks = bookmarksData.filter(bookmark => 
+          bookmark.location && 
+          bookmark.location.latitude && 
+          bookmark.location.longitude
+        );
+        
+        setMarkers(validBookmarks);
       } catch (err) {
         setError('Error al cargar los marcadores');
-        console.error('Error fetching bookmarks:', err);
       } finally {
         setLoading(false);
       }
@@ -83,16 +92,13 @@ export default function MapInteractive({
     fetchBookmarks();
   }, []);
 
-  // Efecto para manejar el marcador enfocado
   useEffect(() => {
     if (focusedBookmarkId && markers.length > 0 && mapInstance) {
       const focusedMarker = markers.find(m => m.id === focusedBookmarkId);
       if (focusedMarker) {
-        // Primero centramos el mapa
         const markerLatLng = [focusedMarker.location.latitude, focusedMarker.location.longitude];
         
-        // Ajustar el centro para compensar el popup
-        const popupOffset = mapInstance.getSize().x * 0.15; // 15% del ancho del mapa
+        const popupOffset = mapInstance.getSize().x * 0.15;
         const adjustedCenter = mapInstance.layerPointToLatLng(
           mapInstance.latLngToLayerPoint(markerLatLng).add([popupOffset, 0])
         );
@@ -102,7 +108,6 @@ export default function MapInteractive({
           duration: 1
         });
 
-        // Esperar a que termine la animación antes de abrir el popup
         setTimeout(() => {
           const markerRef = markerRefs.current[focusedBookmarkId];
           if (markerRef) {
@@ -138,9 +143,13 @@ export default function MapInteractive({
     setIsPositionConfirmed(false);
     try {
       const bookmarksData = await getAllBookmarks();
-      setMarkers(bookmarksData);
+      const validBookmarks = bookmarksData.filter(bookmark => 
+        bookmark.location && 
+        bookmark.location.latitude && 
+        bookmark.location.longitude
+      );
+      setMarkers(validBookmarks);
     } catch (err) {
-      console.error('Error recargando marcadores:', err);
     }
   };
 
@@ -157,7 +166,6 @@ export default function MapInteractive({
         mapInstance.setView([coordinates.lat, coordinates.lon], 16);
       }
     } catch (error) {
-      console.error('Error en la búsqueda:', error);
     }
   };
 

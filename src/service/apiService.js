@@ -3,13 +3,12 @@ import axios from "axios";
 import { API_BASE_URL } from '../config/apiConfig';
 const API_BASE = API_BASE_URL;
 
-// API endpoints
+
 const baseUrl = `${API_BASE}/bookmarks`;
 const categoriesUrl = `${API_BASE}/categories/all`;
 const tagsUrl = `${API_BASE}/tags/all`;
-const usersUrl = `${API_BASE}/user`; // Cambiado de 'users' a 'user' para coincidir con el patrón del backend
+const usersUrl = `${API_BASE}/user`; 
 
-// Constantes para las claves del caché
 const CACHE_KEYS = {
   BOOKMARKS: 'cached_bookmarks',
   CATEGORIES: 'cached_categories',
@@ -18,7 +17,6 @@ const CACHE_KEYS = {
   TIMESTAMP: '_timestamp'
 };
 
-// Tiempo de expiración del caché (en minutos)
 const CACHE_EXPIRATION = 5;
 
 function getRequestOptions() {
@@ -31,7 +29,6 @@ function getRequestOptions() {
   };
 }
 
-// Funciones auxiliares para el manejo del caché
 const getCacheItem = (key) => {
   try {
     const item = localStorage.getItem(key);
@@ -40,7 +37,6 @@ const getCacheItem = (key) => {
     const { data, timestamp } = JSON.parse(item);
     const now = new Date().getTime();
     
-    // Verificar si el caché ha expirado
     if (now - timestamp > CACHE_EXPIRATION * 60 * 1000) {
       localStorage.removeItem(key);
       return null;
@@ -60,7 +56,6 @@ const setCacheItem = (key, data) => {
     };
     localStorage.setItem(key, JSON.stringify(cacheData));
   } catch (error) {
-    console.warn('Error caching data:', error);
   }
 };
 
@@ -69,7 +64,6 @@ const clearCache = () => {
 };
 
 export function getAllBookmarks() {
-  // Intentar obtener del caché primero
   const cachedData = getCacheItem(CACHE_KEYS.BOOKMARKS);
   if (cachedData) {
     return Promise.resolve(cachedData);
@@ -119,7 +113,7 @@ export function createBookmark(bookmarkData) {
       },
     })
     .then((response) => {
-      clearCache(); // Limpiar caché cuando se crea un nuevo bookmark
+      clearCache();
       return response.data;
     })
     .catch((error) => {
@@ -132,7 +126,7 @@ export function updateBookmark(id, updatedExperiences) {
   return axios
     .put(url, updatedExperiences, getRequestOptions())
     .then((response) => {
-      clearCache(); // Limpiar caché cuando se actualiza un bookmark
+      clearCache(); 
       return response.data;
     })
     .catch((error) => {
@@ -145,7 +139,7 @@ export function deleteBookmark(id) {
   return axios
     .delete(url, getRequestOptions())
     .then((response) => {
-      clearCache(); // Limpiar caché cuando se elimina un bookmark
+      clearCache();
       if (response.status === 204) {
         
         return true;
@@ -198,18 +192,15 @@ export function getUserById(id) {
   const cacheKey = `${CACHE_KEYS.USERS}_${id}`;
   localStorage.removeItem(cacheKey);
   
-  // Primero intentamos obtener el usuario del localStorage
   const bookmarkUser = JSON.parse(localStorage.getItem("user"));
   if (bookmarkUser && bookmarkUser.id === parseInt(id)) {
-    console.log("Using current user data:", bookmarkUser);
     return Promise.resolve({
       id: bookmarkUser.id,
       name: bookmarkUser.name || bookmarkUser.username || "Usuario Anónimo"
     });
   }
   
-  const url = `${API_BASE}/auth/user/${id}`;  // Cambiamos a usar el endpoint de auth
-  console.log("Fetching user from API:", url);
+  const url = `${API_BASE}/auth/user/${id}`;
   
   return axios
     .get(url, {
@@ -220,7 +211,6 @@ export function getUserById(id) {
       }
     })
     .then((response) => {
-      console.log("Raw API response:", response);
       const data = response.data;
       
       const userData = {
@@ -228,25 +218,15 @@ export function getUserById(id) {
         name: data.name || data.username || "Usuario Anónimo",
       };
       
-      console.log("Processed user data:", userData);
       setCacheItem(cacheKey, userData);
       return userData;
     })
     .catch((error) => {
-      console.error("Error in getUserById. Status:", error.response?.status);
-      console.error("Error details:", {
-        message: error.response?.data?.message,
-        data: error.response?.data,
-        config: error.config
-      });
-
-      // Intentar obtener el nombre del usuario del bookmark si está disponible
       if (bookmarkUser) {
         const defaultUser = {
           id: id,
           name: bookmarkUser.name || "Usuario Anónimo"
         };
-        console.log("Using bookmark user name as fallback");
         return defaultUser;
       }
 
@@ -254,13 +234,11 @@ export function getUserById(id) {
         id: id,
         name: "Usuario Anónimo"
       };
-      console.log("Using default user due to API error");
       return defaultUser;
     });
 }
 
 
-// Función para forzar una actualización de los datos
 export function refreshData() {
   clearCache();
   return Promise.all([

@@ -101,7 +101,6 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
                 setError('Upload cancelado');
             } else {
                 setError(err.message);
-                console.error('Erro no upload:', err);
             }
         } finally {
             setUploading(false);

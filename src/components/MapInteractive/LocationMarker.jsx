@@ -10,7 +10,6 @@ const LocationMarker = () => {
   const hasInitialState = location.state?.center && location.state?.focusedBookmarkId;
 
   useEffect(() => {
-    // Crear el icono personalizado
     const locationIcon = L.divIcon({
       html: '<div class="location-marker"></div>',
       className: 'location-marker-container',
@@ -18,7 +17,6 @@ const LocationMarker = () => {
       iconAnchor: [10, 10]
     });
 
-    // Activar la geolocalización
     map.locate({
       setView: false,
       maxZoom: 16,
@@ -26,38 +24,27 @@ const LocationMarker = () => {
       watch: false
     });
 
-    // Manejador para cuando se encuentra la ubicación
     const handleLocationFound = (e) => {
-      // Eliminar marcador anterior si existe
       if (markerRef.current) {
         markerRef.current.remove();
       }
-
-      // Crear nuevo marcador
       const marker = L.marker(e.latlng, {
         icon: locationIcon,
         title: 'Tu ubicación'
       }).addTo(map);
 
-      // Guardar referencia al marcador
       markerRef.current = marker;
-
-      // Solo centrar el mapa si no venimos de un marcador específico
       if (!hasInitialState) {
         map.setView(e.latlng, 16);
       }
     };
 
-    // Manejador de errores
     const handleLocationError = (e) => {
-      console.error('Error de geolocalización:', e.message);
     };
 
-    // Suscribirse a los eventos
     map.on('locationfound', handleLocationFound);
     map.on('locationerror', handleLocationError);
 
-    // Limpieza al desmontar
     return () => {
       map.off('locationfound', handleLocationFound);
       map.off('locationerror', handleLocationError);

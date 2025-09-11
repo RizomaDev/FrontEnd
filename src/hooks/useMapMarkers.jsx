@@ -38,7 +38,6 @@ export const useMapMarkers = () => {
         setTags(uniqueTags);
       } catch (err) {
         setError('Error al cargar los marcadores');
-        console.error('Error fetching bookmarks:', err);
       } finally {
         setLoading(false);
       }

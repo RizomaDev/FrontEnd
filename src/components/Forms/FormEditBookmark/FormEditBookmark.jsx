@@ -66,10 +66,7 @@ export default function FormEditBookmark() {
           return;
         }
         
-        // Guardar los datos del bookmark
         setBookmarkData(bookmarkData);
-        
-        // Cargar datos del formulario
         setValue("title", bookmarkData.title || "");
         setValue("description", bookmarkData.description || "");
         setValue("tag", bookmarkData.tag || "");
@@ -80,8 +77,6 @@ export default function FormEditBookmark() {
         setValue("location_longitude", bookmarkData.location?.longitude || "");
         setValue("publicationDate", bookmarkData.publicationDate ? new Date(bookmarkData.publicationDate).toISOString().slice(0, 16) : "");
         setImageUrls(bookmarkData.imageUrls || []);
-        
-        // Cargar categorías y tags
         setLoadingCategories(true);
         setCategoriesError(null);
         try {
@@ -171,7 +166,6 @@ export default function FormEditBookmark() {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-    // Navegar al mapa y mostrar el marcador editado
     if (bookmarkData && bookmarkData.location) {
       navigate("/MapView", {
         state: {

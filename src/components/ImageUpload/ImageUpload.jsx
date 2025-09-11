@@ -13,7 +13,6 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
     const [uploadSuccess, setUploadSuccess] = useState(initialImages.length > 0);
     const abortController = useRef(null);
 
-    // Notificar las imágenes iniciales al componente padre
     useEffect(() => {
         if (initialImages.length > 0) {
             onImagesReceived(initialImages);
@@ -32,7 +31,7 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
         const files = Array.from(event.target.files);
         if (!files.length) return;
 
-        const maxSize = 10 * 1024 * 1024; // 10MB por imagem
+        const maxSize = 10 * 1024 * 1024;
         const validFiles = [];
         const invalidFiles = [];
 
@@ -61,11 +60,8 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
         setUploadSuccess(false);
         setUploadedUrls([]);
 
-        // Criar previews
         const newPreviews = validFiles.map(file => URL.createObjectURL(file));
         setPreviews(newPreviews);
-
-        // Subir automáticamente las imágenes
         await uploadImagesAutomatically(validFiles);
     };
 
@@ -135,7 +131,6 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
                 setError('Subida cancelada');
             } else {
                 setError(`Error al subir imágenes: ${err.message}`);
-                console.error('Error en la subida:', err);
             }
         } finally {
             setUploading(false);
@@ -183,7 +178,6 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
                             {selectedFiles.length} archivo(s) seleccionado(s)
                         </div>
                         
-                        {/* Preview de las imágenes */}
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
                             {previews.map((preview, index) => (
                                 <div key={index} className="relative">
@@ -199,7 +193,6 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
                             ))}
                         </div>
 
-                        {/* Botones de acción */}
                         <div className="flex gap-2">
                             <button
                                 type="button"
@@ -221,7 +214,6 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
                             )}
                         </div>
 
-                        {/* Barra de progreso */}
                         {uploading && (
                             <div className="mt-2">
                                 <div className="text-center text-sm mb-2 text-primary">
@@ -236,7 +228,6 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
                             </div>
                         )}
 
-                        {/* URLs de las imágenes enviadas */}
                         {uploadSuccess && uploadedUrls.length > 0 && (
                             <div className="mt-4 p-3 bg-success/10 rounded border border-success/20">
                                 <div className="text-success font-semibold mb-2">

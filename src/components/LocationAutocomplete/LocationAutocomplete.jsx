@@ -15,7 +15,6 @@ const reverseGeocode = async (lat, lon) => {
       display_name: data.display_name || `${lat}, ${lon}`
     };
   } catch (error) {
-    console.error('Error in reverse geocoding:', error);
     return {
       lat,
       lon,
@@ -58,7 +57,6 @@ const LocationAutocomplete = ({ onSelect, showMap = true, initialValue = '' }) =
       const data = await response.json();
       setSuggestions(data);
     } catch (error) {
-      console.error('Error fetching suggestions:', error);
       setSuggestions([]);
     } finally {
       setIsLoading(false);

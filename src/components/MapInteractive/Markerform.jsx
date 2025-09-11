@@ -63,12 +63,11 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
         longitude: position[1].toString()
       });
       await submitBookmark(payload, reset);
-      setImageUrls([]); // Limpiar imágenes después de enviar
+      setImageUrls([]);
       if (onSubmit) {
         onSubmit();
       }
     } catch (error) {
-      console.error('Error al procesar el formulario:', error);
       setShowErrorModal(true);
     }
   };

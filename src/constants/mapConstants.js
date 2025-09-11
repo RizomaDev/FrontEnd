@@ -2,13 +2,12 @@ export const DEFAULT_MAP_CENTER = [36.7213, -4.4214];
 export const DEFAULT_ZOOM = 13;
 
 export const CATEGORY_COLORS = {
-  'conflictos': 'oklch(0.6789 0.1477 35.23)',    // color-primary (naranja)
-  'propuestas': 'oklch(0.7036 0.0814 186.26)',    // color-success/secondary
-  'iniciativas': 'oklch(0.8663 0.1867 99.58)'    // color-warning
+  'conflictos': 'oklch(0.6789 0.1477 35.23)',    
+  'propuestas': 'oklch(0.7036 0.0814 186.26)',    
+  'iniciativas': 'oklch(0.8663 0.1867 99.58)'    
 };
 
-// Valor por defecto para categorías no encontradas
-export const DEFAULT_CATEGORY_COLOR = 'oklch(0.4607 0.0611 264.88)'; // color-neutral
+export const DEFAULT_CATEGORY_COLOR = 'oklch(0.4607 0.0611 264.88)'; 
 
 export const TAG_MAPPING = {
   'feminismo': 'Feminismos',
@@ -16,4 +15,4 @@ export const TAG_MAPPING = {
   'memoria democratica': 'Memoria democrática'
 };
 
-export const DEFAULT_TAG = 'Medio Ambiente'; 
+export const DEFAULT_TAG = 'Medio Ambiente';

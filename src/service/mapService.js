@@ -1,8 +1,7 @@
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 
 /**
- * Search for a location using OpenStreetMap's Nominatim service
-  @param {string} searchValue - The location to search for
+  @param {string} searchTerm - The location to search for
  *@returns {Promise<{lat: number, lon: number} | null>} The coordinates of the first result
  */
 export const searchLocation = async (searchTerm) => {
@@ -20,7 +19,6 @@ export const searchLocation = async (searchTerm) => {
     }
     return null;
   } catch (error) {
-    console.error('Error en la búsqueda de ubicación:', error);
     return null;
   }
 };
@@ -33,15 +31,12 @@ export const getLocationName = async (lat, lon) => {
     const data = await response.json();
     
     if (data && data.display_name) {
-      // Extraer solo la parte relevante de la dirección
       const parts = data.display_name.split(',');
-      // Tomar los primeros 3 elementos (calle, barrio, ciudad)
       const relevantParts = parts.slice(0, 3);
       return relevantParts.join(', ');
     }
     return 'Ubicación desconocida';
   } catch (error) {
-    console.error('Error al obtener el nombre de la ubicación:', error);
     return 'Ubicación desconocida';
   }
 }; 

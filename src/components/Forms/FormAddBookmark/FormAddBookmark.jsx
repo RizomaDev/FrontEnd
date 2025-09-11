@@ -40,7 +40,6 @@ export default function FormAddBookmark() {
     if (!data.title) valid = false;
     if (!data.tagId) valid = false;
     if (!data.categoryId) valid = false;
-    // Note: Image validation is handled in onNext function
     return valid;
   };
 
@@ -149,7 +148,6 @@ export default function FormAddBookmark() {
                   categoriesError={categoriesError}
                 />
                 
-                {/* ImageUpload component - step 1 */}
                 <div className="form-control w-full max-w-md mb-6 text-left mx-auto">
                   <ImageUpload 
                     onImagesReceived={handleImagesReceived}

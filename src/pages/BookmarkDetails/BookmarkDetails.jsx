@@ -25,23 +25,17 @@ export default function BookmarkDetails() {
     setLoading(true);
     getBookmarkById(id)
       .then((data) => {
-        console.log("Full bookmark data:", data);
         setBookmark(data);
         setLoading(false);
         if (data.userId) {
-          console.log("Attempting to fetch user with ID:", data.userId);
-          // Si el bookmark tiene el nombre del creador, lo usamos como fallback
           if (data.creatorName) {
             setCreator({ id: data.userId, name: data.creatorName });
           }
           getUserById(data.userId)
             .then((userData) => {
-              console.log("Final user data to display:", userData);
               setCreator(userData);
             })
             .catch((error) => {
-              console.error("Failed to fetch user:", error);
-              // Si no pudimos obtener el usuario pero tenemos el nombre del creador, lo mantenemos
               if (!creator && data.creatorName) {
                 setCreator({ id: data.userId, name: data.creatorName });
               } else {
@@ -49,12 +43,10 @@ export default function BookmarkDetails() {
               }
             });
         } else {
-          console.log("No userId found in bookmark, using default creator");
           setCreator({ name: "Usuario Anónimo" });
         }
       })
       .catch((err) => {
-        console.error("Error loading bookmark:", err);
         setError("Error al cargar los detalles del marcador");
         setLoading(false);
       });
@@ -186,7 +178,6 @@ export default function BookmarkDetails() {
                    {bookmark.description} 
                 </p>
                 <div className="text-base text-base-content leading-relaxed space-y-4 ml-5">
-                  {/* Optionally add more details here if available */}
                 </div>
                 {bookmark.url && (
                 <div className="mb-6 ml-5">
@@ -198,7 +189,6 @@ export default function BookmarkDetails() {
                   <div className="mb-6 ml-5">
                     <h4 className="text-lg font-semibold text-primary mb-2">Video</h4>
                     {(() => {
-                      // Suporte para YouTube, Vimeo e Cloudinary
                       const ytMatch = bookmark.video.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([\w-]{11})/);
                       const vimeoMatch = bookmark.video.match(/vimeo\.com\/(\d+)/);
                       const cloudinaryMatch = bookmark.video.match(/cloudinary\.com/);
@@ -254,7 +244,6 @@ export default function BookmarkDetails() {
                 )}
               </div>
 
-              {/* Mapa do Bookmark */}
               {bookmark.location && bookmark.location.latitude && bookmark.location.longitude && (
                 <div className="mt-6 bg-base-200 rounded-lg overflow-hidden">
                   <h3 className="text-2xl font-semibold text-secondary p-5 pb-0">
@@ -268,7 +257,6 @@ export default function BookmarkDetails() {
                 </div>
               )}
 
-              {/* Creado por */}
               <div className="mt-6 bg-base-300 pt-8 pb-6 [filter:sepia(40%)] rounded-lg">
                 <h3 className="text-2xl font-semibold text-primary mb-4 ml-5">
                   Creado por

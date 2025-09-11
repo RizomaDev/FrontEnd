@@ -24,7 +24,6 @@ const SearchControl = ({ className = '', onSearch }) => {
       const data = await response.json();
       setSuggestions(data);
     } catch (error) {
-      console.error('Error fetching suggestions:', error);
       setSuggestions([]);
     } finally {
       setIsLoading(false);
