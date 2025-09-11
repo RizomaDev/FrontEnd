@@ -1,9 +1,4 @@
 
-/**
- * Construye el payload base para un bookmark
- * @param {Object} data - Datos del formulario
- * @returns {Object} - Payload base sin imágenes
- */
 function buildBasePayload(data) {
   const location = (data.latitude && data.longitude)
     ? { latitude: parseFloat(data.latitude), longitude: parseFloat(data.longitude) }
@@ -21,32 +16,20 @@ function buildBasePayload(data) {
   };
 }
 
-/**
- * Procesa imágenes que son URLs de Cloudinary
- * @param {string[]} imageUrls - Array de URLs de Cloudinary
- * @returns {string[]} - Array de URLs (sin procesamiento adicional)
- */
 function processCloudinaryImages(imageUrls) {
-  return imageUrls; // Devolver las URLs directamente
+  return imageUrls;
 }
 
-
-/**
- * Construye el payload para un bookmark con URLs de Cloudinary (síncrono)
- * @param {Object} data - Datos del formulario con imageUrls
- * @returns {Object} - Payload completo
- */
 export function buildBookmarkPayloadSimple(data) {
   const basePayload = buildBasePayload(data);
   
-  // Procesar imágenes (URLs de Cloudinary)
   const imageUrls = data.imageUrls && data.imageUrls.length > 0 
     ? processCloudinaryImages(data.imageUrls)
     : [];
 
   return {
     ...basePayload,
-    imageUrls // Cambiar de 'images' a 'imageUrls' para coincidir con el backend
+    imageUrls
   };
 }
 

@@ -81,7 +81,6 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     setImageUrls(urls);
   };
 
-  // Contadores de caracteres
   const titleValue = watch("title") || "";
   const descriptionValue = watch("description") || "";
   const titleCharacterCount = titleValue.length;

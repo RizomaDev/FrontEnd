@@ -4,12 +4,6 @@ export const capitalizeWords = (str) => {
     .join(' ');
 };
 
-/**
- * Normaliza un string para comparaciones consistentes
- * Convierte a minúsculas y elimina acentos
- * @param {string} str - String a normalizar
- * @returns {string} String normalizado
- */
 export const normalizeString = (str) => {
   if (!str) return '';
   return str

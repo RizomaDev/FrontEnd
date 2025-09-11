@@ -2,7 +2,6 @@ import { Popup } from 'react-leaflet';
 import Buttons from '../Buttons/Buttons';
 import CategoryIcon from './CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
-import { ENDPOINTS } from '../../config/apiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo, faLink } from '@fortawesome/free-solid-svg-icons';
 
