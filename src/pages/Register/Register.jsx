@@ -14,9 +14,13 @@ export default function Register() {
   } = useForm();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
     try {
       await registerUser(data);
       setSuccess("Registration successful!");
@@ -28,6 +32,8 @@ export default function Register() {
         error.response?.data?.message ||
           "Error during registration. Please try again."
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -172,8 +178,16 @@ export default function Register() {
               <button
                 type="submit"
                 className="btn btn-primary w-full text-lg py-3 rounded-lg mb-4"
+                disabled={isLoading}
               >
-                Register
+                {isLoading ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    
+                  </>
+                ) : (
+                  "Register"
+                )}
               </button>
 
               <div className="text-sm">

@@ -4,11 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import { createCustomIcon } from '../MapInteractive/CustomMarkerIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
-import { ENDPOINTS } from '../../config/apiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo, faLink } from '@fortawesome/free-solid-svg-icons';
 
-// Componente para centralizar o mapa no marcador
 function CenterMarker({ location }) {
   const map = useMap();
   
@@ -25,6 +23,7 @@ function DetailedBookmarkPopup({ marker }) {
   const navigate = useNavigate();
   const categoryLower = marker.category ? marker.category.toLowerCase() : '';
   const backgroundColor = CATEGORY_COLORS[categoryLower] || DEFAULT_CATEGORY_COLOR;
+  
 
   const getButtonClass = (category) => {
     switch (category?.toLowerCase()) {
@@ -108,11 +107,18 @@ function DetailedBookmarkPopup({ marker }) {
         )}
        
         {marker.imageUrls && marker.imageUrls.length > 0 && (
-          <img
-            src={`${ENDPOINTS.IMAGES}/${marker.imageUrls[0].split('/').pop()}`}
-            alt={marker.title}
-            className="w-full h-32 object-cover mt-2 rounded"
-          />
+          <div className="mt-2">
+            <img
+              src={marker.imageUrls[0]}
+              alt={marker.title}
+              className="w-full h-32 object-cover rounded"
+            />
+            {marker.imageUrls.length > 1 && (
+              <p className="text-xs text-gray-500 mt-1 text-center">
+                +{marker.imageUrls.length - 1} imagen{marker.imageUrls.length - 1 > 1 ? 'es' : ''} más
+              </p>
+            )}
+          </div>
         )}
 
         <div className="mt-4 flex justify-end">

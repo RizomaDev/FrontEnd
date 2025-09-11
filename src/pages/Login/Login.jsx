@@ -14,10 +14,13 @@ export default function Login() {
   } = useForm();
 
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
+    setError("");
     try {
       await login(data);
       navigate("/MapView");
@@ -26,6 +29,8 @@ export default function Login() {
         error.response?.data?.message ||
           "Login failed. Please check your credentials."
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,8 +125,16 @@ export default function Login() {
               <button
                 type="submit"
                 className="btn btn-primary w-full text-lg py-3 rounded-lg mb-4"
+                disabled={isLoading}
               >
-                Login
+                {isLoading ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                   
+                  </>
+                ) : (
+                  "Login"
+                )}
               </button>
             </form>
             <div className="text-sm">

@@ -4,7 +4,7 @@ import { createBookmark } from "../../../service/apiService";
 import { useNavigate } from "react-router-dom";
 import BookmarkBasicInfo from "./BookmarkBasicInfo";
 import BookmarkAdditionalInfo from "./BookmarkAdditionalInfo";
-import BookmarkPlanningContact from "./BookmarkPlanningContact";
+import BookmarkPlanningContact from "./BookmarkLocation";
 import BookmarkSuccessModal from "./BookmarkSuccessModal";
 import BookmarkErrorModal from "./BookmarkErrorModal";
 import { useAddBookmarkForm } from "../../../hooks/useAddBookmarkForm";
@@ -17,12 +17,13 @@ export default function FormAddBookmark() {
   const [newBookmarkId, setNewBookmarkId] = useState(null);
   const [newBookmarkLocation, setNewBookmarkLocation] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImagesReceived = (urls) => {
     setImageUrls(urls);
   };
 
-  const { register, handleSubmit: formHandleSubmit, formState: { errors }, reset, setError, clearErrors, setValue, getValues } = useForm();
+  const { register, handleSubmit: formHandleSubmit, formState: { errors }, reset, setError, clearErrors, setValue, getValues, watch } = useForm();
   const {
     tags, categories,
     loadingTags, loadingCategories,
@@ -62,7 +63,7 @@ export default function FormAddBookmark() {
     let isValid = false;
     if (currentStep === 1) {
       if (imageUrls.length < 3) {
-        setError("images", { type: "manual", message: "At least 3 images are required. Please upload images first." });
+        setError("images", { type: "manual", message: "Se requieren minimo 3 imágenes. Por favor, sube las imágenes primero." });
         isValid = false;
       } else {
         clearErrors("images");
@@ -94,6 +95,7 @@ export default function FormAddBookmark() {
   };
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const payload = buildBookmarkPayloadSimple({
         ...data,
@@ -109,6 +111,8 @@ export default function FormAddBookmark() {
     } catch (error) {
       setErrorMessage(error.message || "Error adding bookmark");
       setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -136,7 +140,7 @@ export default function FormAddBookmark() {
           <form onSubmit={formHandleSubmit(currentStep === totalSteps ? onSubmit : onNext)} className="w-full">
             {currentStep === 1 && (
               <div className="flex flex-col items-center">
-                <h3 className="text-3xl font-bold text-secondary mb-5 w-full text-center">Bookmark Details</h3>
+                <h3 className="text-3xl font-bold text-secondary mb-5 w-full text-center">Detalles del marcador</h3>
                 <BookmarkBasicInfo
                   register={register}
                   errors={errors}
@@ -146,12 +150,13 @@ export default function FormAddBookmark() {
                   tagsError={tagsError}
                   loadingCategories={loadingCategories}
                   categoriesError={categoriesError}
+                  watch={watch}
                 />
                 
                 <div className="form-control w-full max-w-md mb-6 text-left mx-auto">
                   <ImageUpload 
                     onImagesReceived={handleImagesReceived}
-                    maxImages={10}
+                    maxImages={5}
                   />
                   {errors.images && (
                     <span className="text-error text-sm mt-1">{errors.images.message}</span>
@@ -162,14 +167,14 @@ export default function FormAddBookmark() {
 
             {currentStep === 2 && (
               <div className="flex flex-col items-center">
-                <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Additional Information</h3>
-                <BookmarkAdditionalInfo register={register} errors={errors} setValue={setValue} />
+                <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Información adicional</h3>
+                <BookmarkAdditionalInfo register={register} errors={errors} setValue={setValue} watch={watch} />
               </div>
             )}
 
             {currentStep === 3 && (
               <div className="flex flex-col items-center">
-                <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Planning & Scheduling</h3>
+                <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Localización</h3>
                 <BookmarkPlanningContact register={register} errors={errors} setValue={setValue} getValues={getValues} />
               </div>
             )}
@@ -213,8 +218,19 @@ export default function FormAddBookmark() {
                   Next
                 </button>
               ) : (
-                <button type="submit" className="btn btn-primary flex-1">
-                  Añadir marcador
+                <button 
+                  type="submit" 
+                  className="btn btn-primary flex-1"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="loading loading-spinner loading-sm"></span>
+                      
+                    </>
+                  ) : (
+                    "Añadir marcador"
+                  )}
                 </button>
               )}
             </div>

@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dqbvfsxfg';
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
 
-const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) => {
+const ImageUpload = ({ onImagesReceived, maxImages = 5, initialImages = [] }) => {
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState(null);
@@ -156,7 +156,7 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
             <div className="form-control w-full">
                 <label className="label">
                     <span className="label-text font-semibold">
-                        Seleccionar Imágenes (máximo {maxImages}) <span className="text-error">*</span>
+                        Seleccionar Imágenes (mínimo 3, máximo {maxImages}) <span className="text-error">*</span>
                     </span>
                 </label>
                 

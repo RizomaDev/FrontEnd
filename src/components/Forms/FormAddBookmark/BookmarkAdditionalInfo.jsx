@@ -1,17 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import VideoUpload from "../../VideoUpload/VideoUpload";
 
-export default function BookmarkAdditionalInfo({ register, errors, setValue }) {
+export default function BookmarkAdditionalInfo({ register, errors, setValue, watch }) {
   const handleVideoUrlReceived = (url) => {
     setValue("video", url);
   };
 
+  const descriptionValue = watch("description") || "";
+  const characterCount = descriptionValue.length;
+  const maxCharacters = 250;
+  const isNearLimit = characterCount > maxCharacters * 0.8; // 80% del límite
+  const isOverLimit = characterCount > maxCharacters;
+
   return (
     <>
-      <div className="form-control w-full max-w-md mb-4 text-left">
+      <div className="form-control w-full max-w-md text-left">
         <label className="label">
           <span className="label-text font-semibold">
-            Descripción del marcador (min. 100 caracteres) <span className="text-error">*</span>
+            Descripción del marcador (min. 100, máx. 250 caracteres) <span className="text-error">*</span>
           </span>
         </label>
         <textarea
@@ -19,14 +25,26 @@ export default function BookmarkAdditionalInfo({ register, errors, setValue }) {
           placeholder="Proporciona una descripción detallada del marcador..."
           {...register("description", {
             required: "La descripción es requerida.",
-            minLength: { value: 100, message: "La descripción debe tener al menos 100 caracteres." }
+            minLength: { value: 100, message: "La descripción debe tener al menos 100 caracteres." },
+            maxLength: { value: 250, message: "La descripción no puede tener más de 250 caracteres." }
           })}
         ></textarea>
-        {errors.description && (
-          <span className="text-error text-sm mt-1">
-            {errors.description.message}
-          </span>
-        )}
+        <div className={`flex justify-between items-center ${errors.description ? 'mt-2' : 'mt-1'}`}>
+          <div className="text-sm">
+            {errors.description && (
+              <span className="text-error">
+                {errors.description.message}
+              </span>
+            )}
+          </div>
+          <div className={`text-sm font-medium ${
+            isOverLimit ? 'text-error' : 
+            isNearLimit ? 'text-warning' : 
+            'text-base-content/60'
+          }`}>
+            {characterCount}/{maxCharacters}
+          </div>
+        </div>
       </div>
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">

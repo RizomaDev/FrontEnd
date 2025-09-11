@@ -19,7 +19,8 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     formState: { errors }, 
     reset,
     getValues,
-    setValue 
+    setValue,
+    watch
   } = useForm({
     defaultValues: {
       title: '',
@@ -80,6 +81,18 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
     setImageUrls(urls);
   };
 
+  // Contadores de caracteres
+  const titleValue = watch("title") || "";
+  const descriptionValue = watch("description") || "";
+  const titleCharacterCount = titleValue.length;
+  const descriptionCharacterCount = descriptionValue.length;
+  const titleMaxCharacters = 100;
+  const descriptionMaxCharacters = 250;
+  const titleIsNearLimit = titleCharacterCount > titleMaxCharacters * 0.8;
+  const titleIsOverLimit = titleCharacterCount > titleMaxCharacters;
+  const descriptionIsNearLimit = descriptionCharacterCount > descriptionMaxCharacters * 0.8;
+  const descriptionIsOverLimit = descriptionCharacterCount > descriptionMaxCharacters;
+
   if (!position) return null;
 
   const categoryId = getValues()?.categoryId ? parseInt(getValues().categoryId, 10) : null;
@@ -103,35 +116,63 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
         <form onSubmit={formHandleSubmit(handleFormSubmit)} className="space-y-4">
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Título <span className="text-error">*</span></span>
+              <span className="label-text font-semibold">Título (máx. 100 caracteres) <span className="text-error">*</span></span>
             </label>
             <input
               type="text"
               className="input input-bordered w-full"
               {...register("title", { 
                 required: "El título es requerido",
-                minLength: { value: 3, message: "El título debe tener al menos 3 caracteres" }
+                minLength: { value: 3, message: "El título debe tener al menos 3 caracteres" },
+                maxLength: { value: 100, message: "El título no puede tener más de 100 caracteres" }
               })}
             />
-            {errors.title && (
-              <span className="text-error text-sm mt-1">{errors.title.message}</span>
-            )}
+            <div className={`flex justify-between items-center ${errors.title ? 'mt-2' : 'mt-1'}`}>
+              <div className="text-sm">
+                {errors.title && (
+                  <span className="text-error">
+                    {errors.title.message}
+                  </span>
+                )}
+              </div>
+              <div className={`text-sm font-medium ${
+                titleIsOverLimit ? 'text-error' : 
+                titleIsNearLimit ? 'text-warning' : 
+                'text-base-content/60'
+              }`}>
+                {titleCharacterCount}/{titleMaxCharacters}
+              </div>
+            </div>
           </div>
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Descripción <span className="text-error">*</span></span>
+              <span className="label-text font-semibold">Descripción (min. 100, máx. 250 caracteres) <span className="text-error">*</span></span>
             </label>
             <textarea
               className="textarea textarea-bordered w-full h-24"
               {...register("description", { 
                 required: "La descripción es requerida",
-                minLength: { value: 100, message: "La descripción debe tener al menos 100 caracteres" }
+                minLength: { value: 100, message: "La descripción debe tener al menos 100 caracteres" },
+                maxLength: { value: 250, message: "La descripción no puede tener más de 250 caracteres" }
               })}
             />
-            {errors.description && (
-              <span className="text-error text-sm mt-1">{errors.description.message}</span>
-            )}
+            <div className={`flex justify-between items-center ${errors.description ? 'mt-2' : 'mt-1'}`}>
+              <div className="text-sm">
+                {errors.description && (
+                  <span className="text-error">
+                    {errors.description.message}
+                  </span>
+                )}
+              </div>
+              <div className={`text-sm font-medium ${
+                descriptionIsOverLimit ? 'text-error' : 
+                descriptionIsNearLimit ? 'text-warning' : 
+                'text-base-content/60'
+              }`}>
+                {descriptionCharacterCount}/{descriptionMaxCharacters}
+              </div>
+            </div>
           </div>
 
           <div className="form-control">
@@ -213,11 +254,11 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
           <div className="form-control">
             <ImageUpload 
               onImagesReceived={handleImagesReceived}
-              maxImages={10}
+              maxImages={5}
             />
             {imageUrls.length < 3 && (
               <span className="text-error text-sm mt-1">
-                Debes subir al menos 3 imágenes
+                Se requieren mínimo 3 imágenes (máximo 5)
               </span>
             )}
           </div>
