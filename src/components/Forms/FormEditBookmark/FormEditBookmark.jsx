@@ -29,6 +29,7 @@ export default function FormEditBookmark() {
   const [errorMessage, setErrorMessage] = useState("");
   const [imageUrls, setImageUrls] = useState([]);
   const [bookmarkData, setBookmarkData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -37,6 +38,7 @@ export default function FormEditBookmark() {
     formState: { errors },
     reset,
     getValues,
+    watch,
   } = useForm({
     defaultValues: {
       title: "",
@@ -50,6 +52,18 @@ export default function FormEditBookmark() {
       publicationDate: "",
     },
   });
+
+  // Contadores de caracteres
+  const titleValue = watch("title") || "";
+  const descriptionValue = watch("description") || "";
+  const titleCharacterCount = titleValue.length;
+  const descriptionCharacterCount = descriptionValue.length;
+  const titleMaxCharacters = 100;
+  const descriptionMaxCharacters = 250;
+  const titleIsNearLimit = titleCharacterCount > titleMaxCharacters * 0.8;
+  const titleIsOverLimit = titleCharacterCount > titleMaxCharacters;
+  const descriptionIsNearLimit = descriptionCharacterCount > descriptionMaxCharacters * 0.8;
+  const descriptionIsOverLimit = descriptionCharacterCount > descriptionMaxCharacters;
 
   useEffect(() => {
     const fetchBookmarkAndAuxData = async () => {
@@ -125,6 +139,7 @@ export default function FormEditBookmark() {
   };
 
   const onSubmit = async (formData) => {
+    setIsLoading(true);
     try {
       if (!formData.title || !formData.description || !formData.tag || !formData.category) {
         setErrorMessage("Please fill in all required fields correctly.");
@@ -161,6 +176,8 @@ export default function FormEditBookmark() {
         setErrorMessage("Failed to update bookmark. Please try again.");
       }
       setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -224,35 +241,64 @@ export default function FormEditBookmark() {
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
                 <span className="label-text font-semibold">
-                  Title <span className="text-error">*</span>
+                  Título (máx. 100 caracteres) <span className="text-error">*</span>
                 </span>
               </label>
               <input
                 type="text"
                 className="input input-bordered w-full"
-                {...register("title", { required: "El título del marcador es requerido." })}
+                {...register("title", { 
+                  required: "El título del marcador es requerido.",
+                  maxLength: { value: 100, message: "El título no puede tener más de 100 caracteres." }
+                })}
               />
-              {errors.title && (
-                <span className="text-error text-sm mt-1">
-                  {errors.title.message}
-                </span>
-              )}
+              <div className={`flex justify-between items-center ${errors.title ? 'mt-2' : 'mt-1'}`}>
+                <div className="text-sm">
+                  {errors.title && (
+                    <span className="text-error">
+                      {errors.title.message}
+                    </span>
+                  )}
+                </div>
+                <div className={`text-sm font-medium ${
+                  titleIsOverLimit ? 'text-error' : 
+                  titleIsNearLimit ? 'text-warning' : 
+                  'text-base-content/60'
+                }`}>
+                  {titleCharacterCount}/{titleMaxCharacters}
+                </div>
+              </div>
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
                 <span className="label-text font-semibold">
-                  Descripción <span className="text-error">*</span>
+                  Descripción (min. 100, máx. 250 caracteres) <span className="text-error">*</span>
                 </span>
               </label>
               <textarea
                 className="textarea textarea-bordered h-24 w-full"
-                {...register("description", { required: "La descripción es requerida." })}
+                {...register("description", { 
+                  required: "La descripción es requerida.",
+                  minLength: { value: 100, message: "La descripción debe tener al menos 100 caracteres." },
+                  maxLength: { value: 250, message: "La descripción no puede tener más de 250 caracteres." }
+                })}
               ></textarea>
-              {errors.description && (
-                <span className="text-error text-sm mt-1">
-                  {errors.description.message}
-                </span>
-              )}
+              <div className={`flex justify-between items-center ${errors.description ? 'mt-2' : 'mt-1'}`}>
+                <div className="text-sm">
+                  {errors.description && (
+                    <span className="text-error">
+                      {errors.description.message}
+                    </span>
+                  )}
+                </div>
+                <div className={`text-sm font-medium ${
+                  descriptionIsOverLimit ? 'text-error' : 
+                  descriptionIsNearLimit ? 'text-warning' : 
+                  'text-base-content/60'
+                }`}>
+                  {descriptionCharacterCount}/{descriptionMaxCharacters}
+                </div>
+              </div>
             </div>
             <div className="form-control w-full mb-4 text-left">
               <label className="label">
@@ -389,8 +435,16 @@ export default function FormEditBookmark() {
               <button
                 type="submit"
                 className="btn btn-primary w-full"
+                disabled={isLoading}
               >
-                Actualizar marcador
+                {isLoading ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    
+                  </>
+                ) : (
+                  "Actualizar marcador"
+                )}
               </button>
             </div>
           </form>

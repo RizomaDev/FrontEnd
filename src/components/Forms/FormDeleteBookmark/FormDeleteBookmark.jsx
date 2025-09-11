@@ -6,16 +6,23 @@ export default function FormDeleteBookmark({id_bookmark}) {
     const navigate = useNavigate();
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleDeleteBookmark = async () => {
-        const result = await deleteBookmark(id_bookmark)
-        if (result) {
-            setShowDeleteModal(false);
-            navigate("/HomePage");
-        } else {
+        setIsLoading(true);
+        try {
+            const result = await deleteBookmark(id_bookmark)
+            if (result) {
+                setShowDeleteModal(false);
+                navigate("/HomePage");
+            } else {
+                alert("Error al eliminar el marcador");
+            }
+        } catch (error) {
             alert("Error al eliminar el marcador");
+        } finally {
+            setIsLoading(false);
         }
-
     }
 
     return (
@@ -34,8 +41,16 @@ export default function FormDeleteBookmark({id_bookmark}) {
                         <button
                             className="btn btn-secondary text-black px-6 py-2 rounded-lg"
                             onClick={handleDeleteBookmark}
+                            disabled={isLoading}
                         >
-                            SÍ
+                            {isLoading ? (
+                                <>
+                                    <span className="loading loading-spinner loading-sm"></span>
+                                    
+                                </>
+                            ) : (
+                                "SÍ"
+                            )}
                         </button>
                     </div>
                 </div>
