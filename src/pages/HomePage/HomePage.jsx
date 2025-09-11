@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllBookmarks, getCategories, getTags } from "../../service/apiService";
 import Cards from "../../components/Cards/Cards";
 import Buttons from "../../components/Buttons/Buttons";
@@ -7,7 +7,6 @@ import imageTemporal from "../../assets/imageTemporal.png";
 import { getImageUrl } from '../../utils/imageUtils';
 import Verdiales from "../../assets/Verdiales.jpg";
 import heroWelcome from "../../assets/heroWelcome.jpg";
-import ButtonMap from "../../components/Buttons/ButtonMap";
 import MapInteractive from "../../components/MapInteractive/MapInteractive";
 
 export default function HomePage() {

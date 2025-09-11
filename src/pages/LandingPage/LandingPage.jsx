@@ -1,11 +1,5 @@
 import Header from "../../components/Header/Header";
-import imageTemporal from "../../assets/imageTemporal.png";
 import Footer from "../../components/Footer/Footer";
-import Cards from "../../components/Cards/Cards";
-import Buttons from "../../components/Buttons/Buttons";
-import React, { useEffect, useState } from "react";
-import { getAllBookmarks } from "../../service/apiService";
-import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import heroWelcome from "../../assets/heroWelcome.jpg";
 import Verdiales from "../../assets/Verdiales.jpg";
@@ -13,7 +7,6 @@ import ButtonMap from "../../components/Buttons/ButtonMap";
 import MapInteractive from "../../components/MapInteractive/MapInteractive";
 
 export default function LandingPage() {
-  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
 

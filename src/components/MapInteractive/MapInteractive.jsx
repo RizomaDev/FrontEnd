@@ -10,7 +10,6 @@ import SearchControl from './SearchControl';
 import MapFilters from '../MapFilters';
 import MarkerForm from './Markerform';
 import { createCustomIcon } from './CustomMarkerIcon';
-import { useMapMarkers } from '../../hooks/useMapMarkers';
 import { useMapFilters } from '../../hooks/useMapFilters';
 import { DEFAULT_MAP_CENTER, DEFAULT_ZOOM } from '../../constants/mapConstants';
 import { searchLocation } from '../../service/mapService';
@@ -38,10 +37,7 @@ function MapClickHandler({ onClick, isPreview, showLoginPrompt }) {
 export default function MapInteractive({ 
   showHeader = true, 
   showFilters = true,
-  focusedMarker = null,
   height = '100%',
-  customComponents = null,
-  onMapInstance = null,
   initialCenter = null,
   initialZoom = null,
   focusedBookmarkId = null,

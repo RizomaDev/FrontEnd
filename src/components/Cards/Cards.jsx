@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import CategoryIcon from '../MapInteractive/CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
