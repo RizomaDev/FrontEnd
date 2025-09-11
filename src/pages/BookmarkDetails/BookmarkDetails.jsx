@@ -138,7 +138,7 @@ export default function BookmarkDetails() {
                   >
                     <div className="w-full aspect-[16/9] relative overflow-hidden">
                       <img
-                                                  src={getImageUrl(imgPath)}
+                        src={imgPath}
                         className="absolute inset-0 w-full h-full object-cover"
                         alt={`Bookmark Image ${idx + 1}`}
                       />

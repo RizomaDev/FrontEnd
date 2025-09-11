@@ -1,17 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-const CLOUD_NAME = 'dqbvfsxfg';
-const UPLOAD_PRESET = 'ml_default';
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dqbvfsxfg';
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
 
-const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
+const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) => {
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState(null);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [previews, setPreviews] = useState([]);
-    const [uploadedUrls, setUploadedUrls] = useState([]);
-    const [uploadSuccess, setUploadSuccess] = useState(false);
+    const [uploadedUrls, setUploadedUrls] = useState(initialImages);
+    const [uploadSuccess, setUploadSuccess] = useState(initialImages.length > 0);
     const abortController = useRef(null);
+
+    // Notificar las imágenes iniciales al componente padre
+    useEffect(() => {
+        if (initialImages.length > 0) {
+            onImagesReceived(initialImages);
+        }
+    }, [initialImages, onImagesReceived]);
 
     const formatFileSize = (bytes) => {
         if (bytes === 0) return '0 Bytes';
@@ -21,7 +28,7 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
-    const handleFileSelect = (event) => {
+    const handleFileSelect = async (event) => {
         const files = Array.from(event.target.files);
         if (!files.length) return;
 
@@ -40,12 +47,12 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
         });
 
         if (invalidFiles.length > 0) {
-            setError(`Arquivos inválidos: ${invalidFiles.join(', ')}`);
+            setError(`Archivos inválidos: ${invalidFiles.join(', ')}`);
             return;
         }
 
         if (validFiles.length > maxImages) {
-            setError(`Máximo de ${maxImages} imagens permitidas`);
+            setError(`Máximo de ${maxImages} imágenes permitidas`);
             return;
         }
 
@@ -57,6 +64,9 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
         // Criar previews
         const newPreviews = validFiles.map(file => URL.createObjectURL(file));
         setPreviews(newPreviews);
+
+        // Subir automáticamente las imágenes
+        await uploadImagesAutomatically(validFiles);
     };
 
     const cancelUpload = () => {
@@ -98,15 +108,15 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
         });
     };
 
-    const handleUpload = async () => {
-        if (!selectedFiles.length) return;
+    const uploadImagesAutomatically = async (files) => {
+        if (!files.length) return;
 
         setUploading(true);
         setError(null);
         setUploadSuccess(false);
         
         try {
-            const uploadPromises = selectedFiles.map(file => uploadImage(file));
+            const uploadPromises = files.map(file => uploadImage(file));
             const results = await Promise.all(uploadPromises);
 
             const urls = results.map(result => {
@@ -122,14 +132,18 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
             setUploadSuccess(true);
         } catch (err) {
             if (err.name === 'AbortError') {
-                setError('Upload cancelado');
+                setError('Subida cancelada');
             } else {
-                setError(err.message);
-                console.error('Erro no upload:', err);
+                setError(`Error al subir imágenes: ${err.message}`);
+                console.error('Error en la subida:', err);
             }
         } finally {
             setUploading(false);
         }
+    };
+
+    const handleUpload = async () => {
+        await uploadImagesAutomatically(selectedFiles);
     };
 
     const clearFiles = () => {
@@ -139,6 +153,7 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
         setUploadSuccess(false);
         setError(null);
         setProgress(0);
+        onImagesReceived([]);
     };
 
     return (
@@ -146,7 +161,10 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
             <div className="form-control w-full">
                 <label className="label">
                     <span className="label-text font-semibold">
-                        Selecionar Imagens (máximo {maxImages}) <span className="text-error">*</span>
+                        Seleccionar Imágenes (máximo {maxImages}) <span className="text-error">*</span>
+                    </span>
+                    <span className="label-text-alt text-sm text-gray-500">
+                        Se subirán automáticamente
                     </span>
                 </label>
                 
@@ -162,10 +180,10 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
                 {selectedFiles.length > 0 && (
                     <div className="mt-4">
                         <div className="text-sm text-gray-600 mb-2">
-                            {selectedFiles.length} arquivo(s) selecionado(s)
+                            {selectedFiles.length} archivo(s) seleccionado(s)
                         </div>
                         
-                        {/* Preview das imagens */}
+                        {/* Preview de las imágenes */}
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
                             {previews.map((preview, index) => (
                                 <div key={index} className="relative">
@@ -181,24 +199,15 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
                             ))}
                         </div>
 
-                        {/* Botões de ação */}
+                        {/* Botones de acción */}
                         <div className="flex gap-2">
-                            <button
-                                type="button"
-                                onClick={handleUpload}
-                                disabled={uploading}
-                                className="btn btn-primary btn-sm"
-                            >
-                                {uploading ? 'Enviando...' : 'Enviar para Cloudinary'}
-                            </button>
-                            
                             <button
                                 type="button"
                                 onClick={clearFiles}
                                 disabled={uploading}
                                 className="btn btn-secondary btn-sm"
                             >
-                                Limpar
+                                Limpiar
                             </button>
                             
                             {uploading && (
@@ -207,14 +216,17 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
                                     onClick={cancelUpload}
                                     className="btn btn-error btn-sm"
                                 >
-                                    Cancelar
+                                    Cancelar subida
                                 </button>
                             )}
                         </div>
 
-                        {/* Barra de progresso */}
+                        {/* Barra de progreso */}
                         {uploading && (
                             <div className="mt-2">
+                                <div className="text-center text-sm mb-2 text-primary">
+                                    Subiendo imágenes...
+                                </div>
                                 <progress 
                                     className="progress progress-primary w-full" 
                                     value={progress} 
@@ -224,14 +236,14 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10 }) => {
                             </div>
                         )}
 
-                        {/* URLs das imagens enviadas */}
+                        {/* URLs de las imágenes enviadas */}
                         {uploadSuccess && uploadedUrls.length > 0 && (
                             <div className="mt-4 p-3 bg-success/10 rounded border border-success/20">
                                 <div className="text-success font-semibold mb-2">
-                                    ✅ {uploadedUrls.length} imagem(ns) enviada(s) com sucesso!
+                                    ✅ {uploadedUrls.length} imagen(es) {initialImages.length > 0 ? 'cargada(s)' : 'subida(s) automáticamente'}
                                 </div>
                                 <div className="text-xs text-gray-600">
-                                    As imagens foram salvas no Cloudinary e estão prontas para uso.
+                                    {initialImages.length > 0 ? 'Las imágenes existentes están cargadas.' : 'Las imágenes se han guardado y están listas para usar.'}
                                 </div>
                             </div>
                         )}

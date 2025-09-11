@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
 import { getBookmarkById, getCategories, getTags, updateBookmark } from "../../../service/apiService";
 import LocationAutocomplete from "../../LocationAutocomplete/LocationAutocomplete";
+import ImageUpload from "../../ImageUpload/ImageUpload";
 
 const getCurrentUser = () => {
   const user = localStorage.getItem("user");
@@ -26,6 +27,8 @@ export default function FormEditBookmark() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [imageUrls, setImageUrls] = useState([]);
+  const [bookmarkData, setBookmarkData] = useState(null);
 
   const {
     register,
@@ -45,7 +48,6 @@ export default function FormEditBookmark() {
       location_latitude: "",
       location_longitude: "",
       publicationDate: "",
-      images: [],
     },
   });
 
@@ -63,6 +65,11 @@ export default function FormEditBookmark() {
           setLoading(false);
           return;
         }
+        
+        // Guardar los datos del bookmark
+        setBookmarkData(bookmarkData);
+        
+        // Cargar datos del formulario
         setValue("title", bookmarkData.title || "");
         setValue("description", bookmarkData.description || "");
         setValue("tag", bookmarkData.tag || "");
@@ -72,6 +79,9 @@ export default function FormEditBookmark() {
         setValue("location_latitude", bookmarkData.location?.latitude || "");
         setValue("location_longitude", bookmarkData.location?.longitude || "");
         setValue("publicationDate", bookmarkData.publicationDate ? new Date(bookmarkData.publicationDate).toISOString().slice(0, 16) : "");
+        setImageUrls(bookmarkData.imageUrls || []);
+        
+        // Cargar categorías y tags
         setLoadingCategories(true);
         setCategoriesError(null);
         try {
@@ -82,6 +92,7 @@ export default function FormEditBookmark() {
         } finally {
           setLoadingCategories(false);
         }
+        
         setLoadingTags(true);
         setTagsError(null);
         try {
@@ -93,6 +104,8 @@ export default function FormEditBookmark() {
         } finally {
           setLoadingTags(false);
         }
+        
+        setLoading(false);
       } catch (err) {
         setLoading(false);
         if (err.response) {
@@ -107,23 +120,13 @@ export default function FormEditBookmark() {
           setErrorMessage("Network error or server unreachable. Please check your connection.");
         }
         setShowErrorModal(true);
-      } finally {
-        if (loading) setLoading(false);
       }
     };
     fetchBookmarkAndAuxData();
-  }, [id, navigate, setValue, loading]);
+  }, [id, navigate, setValue]);
 
-  const convertFileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result.split(",")[1];
-        resolve(base64);
-      };
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
+  const handleImagesReceived = (urls) => {
+    setImageUrls(urls);
   };
 
   const onSubmit = async (formData) => {
@@ -152,18 +155,8 @@ export default function FormEditBookmark() {
           longitude: formData.location_longitude ? parseFloat(formData.location_longitude) : null,
         },
         publicationDate: formData.publicationDate ? new Date(formData.publicationDate).toISOString() : null,
-        images: [],
+        imageUrls: imageUrls,
       };
-      if (formData.images && formData.images.length > 0) {
-        payload.images = await Promise.all(
-          Array.from(formData.images).map(async (file) => ({
-            base64: await convertFileToBase64(file),
-            name: file.name,
-            type: file.type,
-            size: file.size,
-          }))
-        );
-      }
       await updateBookmark(id, payload);
       setShowSuccessModal(true);
     } catch (error) {
@@ -178,7 +171,18 @@ export default function FormEditBookmark() {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-    navigate("/HomePage");
+    // Navegar al mapa y mostrar el marcador editado
+    if (bookmarkData && bookmarkData.location) {
+      navigate("/MapView", {
+        state: {
+          center: [bookmarkData.location.latitude, bookmarkData.location.longitude],
+          zoom: 15,
+          focusedBookmarkId: parseInt(id)
+        }
+      });
+    } else {
+      navigate("/HomePage");
+    }
   };
 
   const handleCloseErrorModal = () => {
@@ -381,15 +385,10 @@ export default function FormEditBookmark() {
               />
             </div>
             <div className="form-control w-full mb-4 text-left">
-              <label className="label">
-                <span className="label-text font-semibold">Imágenes</span>
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="file-input file-input-bordered w-full"
-                {...register("images")}
+              <ImageUpload 
+                onImagesReceived={handleImagesReceived}
+                maxImages={10}
+                initialImages={imageUrls}
               />
             </div>
             <div className="flex justify-center w-full mt-6 mx-auto">
@@ -404,15 +403,14 @@ export default function FormEditBookmark() {
         </div>
       </div>
       <dialog id="success_modal" className={`modal ${showSuccessModal ? 'modal-open' : ''}`}>
-        <div className="modal-box bg-warning text-black text-center p-8 rounded-lg shadow-lg">
-          <h3 className="font-bold text-2xl">Marcador actualizado correctamente!</h3>
+        <div className="modal-box bg-success text-white text-center p-8 rounded-lg shadow-lg">
           <p className="py-4 text-lg">Tu marcador ha sido actualizado correctamente.</p>
           <div className="modal-action">
             <button
-              className="btn btn-success text-white px-6 py-2 rounded-lg"
+              className="btn btn-primary text-white px-6 py-2 rounded-lg"
               onClick={handleCloseSuccessModal}
             >
-              Ir a la página de inicio
+              {bookmarkData && bookmarkData.location ? 'Ver en el mapa' : 'Ir a la página de inicio'}
             </button>
           </div>
         </div>

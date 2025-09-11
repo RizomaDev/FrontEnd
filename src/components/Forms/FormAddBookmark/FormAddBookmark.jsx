@@ -18,6 +18,10 @@ export default function FormAddBookmark() {
   const [newBookmarkLocation, setNewBookmarkLocation] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
 
+  const handleImagesReceived = (urls) => {
+    setImageUrls(urls);
+  };
+
   const { register, handleSubmit: formHandleSubmit, formState: { errors }, reset, setError, clearErrors, setValue, getValues } = useForm();
   const {
     tags, categories,
@@ -36,7 +40,7 @@ export default function FormAddBookmark() {
     if (!data.title) valid = false;
     if (!data.tagId) valid = false;
     if (!data.categoryId) valid = false;
-    if (imageUrls.length < 3) valid = false;
+    // Note: Image validation is handled in onNext function
     return valid;
   };
 
@@ -59,7 +63,7 @@ export default function FormAddBookmark() {
     let isValid = false;
     if (currentStep === 1) {
       if (imageUrls.length < 3) {
-        setError("images", { type: "manual", message: "At least 3 images are required." });
+        setError("images", { type: "manual", message: "At least 3 images are required. Please upload images first." });
         isValid = false;
       } else {
         clearErrors("images");
@@ -94,10 +98,11 @@ export default function FormAddBookmark() {
     try {
       const payload = buildBookmarkPayloadSimple({
         ...data,
-        images: imageUrls 
+        imageUrls: imageUrls 
       });
+      
       const response = await createBookmark(payload);
-      setNewBookmarkId(response.id); // Guardamos o ID do bookmark criado
+      setNewBookmarkId(response.id);
       setNewBookmarkLocation(payload.location);
       setShowSuccessModal(true);
       reset();
@@ -143,9 +148,11 @@ export default function FormAddBookmark() {
                   loadingCategories={loadingCategories}
                   categoriesError={categoriesError}
                 />
-                <div className="form-control w-full max-w-md mb-6 text-left">
+                
+                {/* ImageUpload component - step 1 */}
+                <div className="form-control w-full max-w-md mb-6 text-left mx-auto">
                   <ImageUpload 
-                    onImagesReceived={setImageUrls}
+                    onImagesReceived={handleImagesReceived}
                     maxImages={10}
                   />
                   {errors.images && (
@@ -173,7 +180,10 @@ export default function FormAddBookmark() {
               <div className="flex flex-col items-center">
                 <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Confirmación</h3>
                 <BookmarkSummary 
-                  data={getValues()} 
+                  data={{
+                    ...getValues(),
+                    imageUrls: imageUrls
+                  }} 
                   categories={categories} 
                   tags={tags || []}
                   register={register}

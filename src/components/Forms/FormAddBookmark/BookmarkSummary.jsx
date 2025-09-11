@@ -111,12 +111,12 @@ export default function BookmarkSummary({ data, categories, tags, register, erro
 
           <div>
             <h4 className="font-semibold text-base-content mb-1">Imágenes</h4>
-            {data.images && data.images.length > 0 ? (
+            {data.imageUrls && data.imageUrls.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
-                {Array.from(data.images).map((image, index) => (
+                {data.imageUrls.map((imageUrl, index) => (
                   <div key={index} className="relative aspect-square">
                     <img
-                      src={URL.createObjectURL(image)}
+                      src={imageUrl}
                       alt={`Imagen ${index + 1}`}
                       className="w-full h-full object-cover rounded-lg"
                     />

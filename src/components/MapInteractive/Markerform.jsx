@@ -4,12 +4,14 @@ import { useAddBookmarkForm } from '../../hooks/useAddBookmarkForm';
 import CategoryIcon from './CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 import BookmarkErrorModal from '../Forms/FormAddBookmark/BookmarkErrorModal';
-import { buildBookmarkPayload } from '../../utils/bookmarkPayloadBuilder';
+import { buildBookmarkPayloadSimple } from '../../utils/bookmarkPayloadBuilder';
 import { getLocationName } from '../../service/mapService';
 import VideoUpload from '../VideoUpload/VideoUpload';
+import ImageUpload from '../ImageUpload/ImageUpload';
 
 export default function MarkerForm({ position, onSubmit, onCancel }) {
   const [locationName, setLocationName] = useState('Cargando ubicación...');
+  const [imageUrls, setImageUrls] = useState([]);
 
   const { 
     register, 
@@ -24,7 +26,6 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
       description: '',
       tagId: '',
       categoryId: '',
-      images: [],
       video: '',
       url: '',
       latitude: position ? position[0].toString() : '',
@@ -55,12 +56,14 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
 
   const handleFormSubmit = async (data) => {
     try {
-      const payload = await buildBookmarkPayload({
+      const payload = buildBookmarkPayloadSimple({
         ...data,
+        imageUrls: imageUrls,
         latitude: position[0].toString(),
         longitude: position[1].toString()
       });
       await submitBookmark(payload, reset);
+      setImageUrls([]); // Limpiar imágenes después de enviar
       if (onSubmit) {
         onSubmit();
       }
@@ -72,6 +75,10 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
 
   const handleVideoUrlReceived = (url) => {
     setValue("video", url);
+  };
+
+  const handleImagesReceived = (urls) => {
+    setImageUrls(urls);
   };
 
   if (!position) return null;
@@ -205,30 +212,14 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
           </div>
 
           <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold">Imágenes <span className="text-error">*</span></span>
-              <span className="label-text-alt">(mínimo 3)</span>
-            </label>
-            <input
-              type="file"
-              className="file-input file-input-bordered w-full"
-              multiple
-              accept="image/*"
-              {...register("images", {
-                required: "Debes subir al menos 3 imágenes",
-                validate: {
-                  minFiles: files => !files || files.length >= 3 || "Debes subir al menos 3 imágenes",
-                  fileType: files => {
-                    if (!files) return true;
-                    return Array.from(files).every(file => 
-                      file.type === "image/jpeg" || file.type === "image/png"
-                    ) || "Solo se permiten archivos JPG y PNG";
-                  }
-                }
-              })}
+            <ImageUpload 
+              onImagesReceived={handleImagesReceived}
+              maxImages={10}
             />
-            {errors.images && (
-              <span className="text-error text-sm mt-1">{errors.images.message}</span>
+            {imageUrls.length < 3 && (
+              <span className="text-error text-sm mt-1">
+                Debes subir al menos 3 imágenes
+              </span>
             )}
           </div>
 
@@ -243,7 +234,7 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={loadingCategories || loadingTags}
+              disabled={loadingCategories || loadingTags || imageUrls.length < 3}
             >
               Guardar
             </button>

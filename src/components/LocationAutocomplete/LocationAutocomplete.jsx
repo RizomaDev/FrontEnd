@@ -5,7 +5,6 @@ import { createCustomIcon } from '../MapInteractive/CustomMarkerIcon';
 
 const NOMINATIM_URL = 'https://corsproxy.io/?https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=';
 
-// Função auxiliar para fazer geocoding reverso
 const reverseGeocode = async (lat, lon) => {
   try {
     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
@@ -25,7 +24,6 @@ const reverseGeocode = async (lat, lon) => {
   }
 };
 
-// Componente para capturar cliques no mapa
 function MapClickHandler({ onLocationSelect }) {
   useMapEvents({
     click: async (e) => {
@@ -44,7 +42,6 @@ const LocationAutocomplete = ({ onSelect, showMap = true, initialValue = '' }) =
   const [selectedLocation, setSelectedLocation] = useState(null);
   const debounceTimeout = useRef();
 
-  // Atualizar o query quando o initialValue mudar
   useEffect(() => {
     setQuery(initialValue);
   }, [initialValue]);

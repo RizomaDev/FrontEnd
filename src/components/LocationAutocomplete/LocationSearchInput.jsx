@@ -8,7 +8,6 @@ const LocationSearchInput = ({ onSelect, initialValue = '' }) => {
   const [isLoading, setIsLoading] = useState(false);
   const debounceTimeout = useRef();
 
-  // Atualizar o query quando o initialValue mudar
   useEffect(() => {
     setQuery(initialValue);
   }, [initialValue]);

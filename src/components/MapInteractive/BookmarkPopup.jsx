@@ -88,11 +88,18 @@ export default function BookmarkPopup({ marker }) {
         )}
        
         {marker.imageUrls && marker.imageUrls.length > 0 && (
-          <img
-            src={`${ENDPOINTS.IMAGES}/${marker.imageUrls[0].split('/').pop()}`}
-            alt={marker.title}
-            className="w-full h-32 object-cover mt-2 rounded"
-          />
+          <div className="mt-2">
+            <img
+              src={marker.imageUrls[0]}
+              alt={marker.title}
+              className="w-full h-32 object-cover rounded"
+            />
+            {marker.imageUrls.length > 1 && (
+              <p className="text-xs text-gray-500 mt-1 text-center">
+                +{marker.imageUrls.length - 1} imagen{marker.imageUrls.length - 1 > 1 ? 'es' : ''} más
+              </p>
+            )}
+          </div>
         )}
 
         {marker.id && (
