@@ -130,17 +130,20 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
                                 {formatFileSize(selectedFile.size)}
                             </p>
                         </div>
-                        {!uploading && !uploadSuccess && (
+                        {!uploading && (
                             <button 
                                 onClick={() => {
                                     setSelectedFile(null);
                                     setPreview(null);
                                     setUploadedUrl(null);
                                     setUploadSuccess(false);
+                                    setError(null);
+                                    setProgress(0);
+                                    onVideoUrlReceived('');
                                 }}
                                 className="btn btn-ghost btn-sm"
                             >
-                                Remover
+                                Limpiar
                             </button>
                         )}
                     </div>
@@ -156,7 +159,6 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
 
                     <video 
                         src={uploadedUrl || preview} 
-                        controls 
                         className="w-full max-h-48 object-contain mb-4 rounded"
                     />
 

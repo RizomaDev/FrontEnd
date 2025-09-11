@@ -158,9 +158,6 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
                     <span className="label-text font-semibold">
                         Seleccionar Imágenes (máximo {maxImages}) <span className="text-error">*</span>
                     </span>
-                    <span className="label-text-alt text-sm text-gray-500">
-                        Se subirán automáticamente
-                    </span>
                 </label>
                 
                 <input
@@ -186,9 +183,6 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
                                         alt={`Preview ${index + 1}`}
                                         className="w-full h-24 object-cover rounded border"
                                     />
-                                    <div className="text-xs text-center mt-1">
-                                        {formatFileSize(selectedFiles[index].size)}
-                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -229,12 +223,17 @@ const ImageUpload = ({ onImagesReceived, maxImages = 10, initialImages = [] }) =
                         )}
 
                         {uploadSuccess && uploadedUrls.length > 0 && (
-                            <div className="mt-4 p-3 bg-success/10 rounded border border-success/20">
-                                <div className="text-success font-semibold mb-2">
-                                    ✅ {uploadedUrls.length} imagen(es) {initialImages.length > 0 ? 'cargada(s)' : 'subida(s) automáticamente'}
+                            <div className="mt-4 p-4 bg-success/10 rounded-lg border border-success/20">
+                                <div className="flex items-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span className="text-success font-semibold">
+                                        {uploadedUrls.length} imagen(es) {initialImages.length > 0 ? 'cargada(s)' : 'subida(s)'}
+                                    </span>
                                 </div>
-                                <div className="text-xs text-gray-600">
-                                    {initialImages.length > 0 ? 'Las imágenes existentes están cargadas.' : 'Las imágenes se han guardado y están listas para usar.'}
+                                <div className="text-xs text-base-content/60">
+                                    {initialImages.length > 0 ? 'Las imágenes están cargadas.' : 'Las imágenes se han guardado'}
                                 </div>
                             </div>
                         )}
