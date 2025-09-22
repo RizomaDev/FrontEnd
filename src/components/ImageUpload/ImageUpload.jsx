@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dqbvfsxfg';
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
 
-const ImageUpload = ({ onImagesReceived, maxImages = 5, initialImages = [] }) => {
+const ImageUpload = ({ onImagesReceived, maxImages = 3, initialImages = [] }) => {
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState(null);
@@ -156,28 +156,52 @@ const ImageUpload = ({ onImagesReceived, maxImages = 5, initialImages = [] }) =>
             <div className="form-control w-full">
                 <label className="label">
                     <span className="label-text font-semibold">
-                        Seleccionar Imágenes (mínimo 3, máximo {maxImages}) <span className="text-error">*</span>
+                        Seleccionar Imágenes (mínimo 1, máximo {maxImages}) <span className="text-error">*</span>
                     </span>
                 </label>
                 
-                <input
-                    type="file"
-                    className="file-input file-input-bordered w-full"
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileSelect}
-                    disabled={uploading}
-                />
+                <div className="p-6 text-center">
+                    <input
+                        type="file"
+                        className="file-input file-input-bordered w-full"
+                        multiple
+                        accept="image/*"
+                        onChange={handleFileSelect}
+                        disabled={uploading}
+                    />
+                </div>
                 
                 {selectedFiles.length > 0 && (
-                    <div className="mt-4">
-                        <div className="text-sm text-gray-600 mb-2">
-                            {selectedFiles.length} archivo(s) seleccionado(s)
+                    <div className="bg-base-200 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <div>
+                                <p className="font-semibold">{selectedFiles.length} archivo(s) seleccionado(s)</p>
+                                <p className="text-sm text-gray-500">
+                                    {selectedFiles.map(file => file.name).join(', ')}
+                                </p>
+                            </div>
+                            {!uploading && (
+                                <button 
+                                    onClick={clearFiles}
+                                    disabled={uploading}
+                                    className="btn btn-ghost btn-sm"
+                                >
+                                    Limpiar
+                                </button>
+                            )}
                         </div>
                         
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+                        <div className={`mb-4 ${
+                            selectedFiles.length === 1 
+                                ? 'flex justify-center' 
+                                : selectedFiles.length === 2 
+                                    ? 'grid grid-cols-2 gap-2' 
+                                    : 'grid grid-cols-3 gap-2'
+                        }`}>
                             {previews.map((preview, index) => (
-                                <div key={index} className="relative">
+                                <div key={index} className={`relative ${
+                                    selectedFiles.length === 1 ? 'max-w-xs' : ''
+                                }`}>
                                     <img
                                         src={preview}
                                         alt={`Preview ${index + 1}`}
@@ -187,15 +211,7 @@ const ImageUpload = ({ onImagesReceived, maxImages = 5, initialImages = [] }) =>
                             ))}
                         </div>
 
-                        <div className="flex gap-2">
-                            <button
-                                type="button"
-                                onClick={clearFiles}
-                                disabled={uploading}
-                                className="btn btn-secondary btn-sm"
-                            >
-                                Limpiar
-                            </button>
+                        <div className="flex justify-center gap-2">
                             
                             {uploading && (
                                 <button

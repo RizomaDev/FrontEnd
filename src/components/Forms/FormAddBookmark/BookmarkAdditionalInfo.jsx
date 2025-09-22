@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import VideoUpload from "../../VideoUpload/VideoUpload";
+import ImageUpload from "../../ImageUpload/ImageUpload";
 
-export default function BookmarkAdditionalInfo({ register, errors, setValue, watch }) {
+export default function BookmarkAdditionalInfo({ register, errors, setValue, watch, onImagesReceived, imageUrls }) {
   const handleVideoUrlReceived = (url) => {
     setValue("video", url);
   };
@@ -48,6 +49,37 @@ export default function BookmarkAdditionalInfo({ register, errors, setValue, wat
       </div>
       <div className="form-control w-full max-w-md mb-4 text-left">
         <label className="label">
+          <span className="label-text font-semibold">Contenido multimedia</span>
+        </label>
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 space-y-4">
+          <div>
+            <label className="label">
+              <span className="label-text font-medium">Video (opcional)</span>
+            </label>
+            <VideoUpload onVideoUrlReceived={handleVideoUrlReceived} />
+            <input
+              type="hidden"
+              {...register("video")}
+            />
+            {errors.video && (
+              <span className="text-error text-sm mt-1">{errors.video.message}</span>
+            )}
+          </div>
+          
+          <div>
+            <ImageUpload 
+              onImagesReceived={onImagesReceived}
+              maxImages={3}
+            />
+            {errors.images && (
+              <span className="text-error text-sm mt-1">{errors.images.message}</span>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <div className="form-control w-full max-w-md mb-4 text-left">
+        <label className="label">
           <span className="label-text font-semibold">Información adicional (URL)</span>
         </label>
         <input
@@ -63,19 +95,6 @@ export default function BookmarkAdditionalInfo({ register, errors, setValue, wat
         />
         {errors.url && (
           <span className="text-error text-sm mt-1">{errors.url.message}</span>
-        )}
-      </div>
-      <div className="form-control w-full max-w-md mb-4 text-left">
-        <label className="label">
-          <span className="label-text font-semibold">Video</span>
-        </label>
-        <VideoUpload onVideoUrlReceived={handleVideoUrlReceived} />
-        <input
-          type="hidden"
-          {...register("video")}
-        />
-        {errors.video && (
-          <span className="text-error text-sm mt-1">{errors.video.message}</span>
         )}
       </div>
     </>

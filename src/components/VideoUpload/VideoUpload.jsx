@@ -110,7 +110,7 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
     return (
         <div className="w-full space-y-4">
             {!selectedFile ? (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                <div className="p-6 text-center">
                     <input
                         type="file"
                         accept="video/*"

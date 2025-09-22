@@ -21,6 +21,9 @@ export default function FormAddBookmark() {
 
   const handleImagesReceived = (urls) => {
     setImageUrls(urls);
+    if (urls.length > 0) {
+      clearErrors("images");
+    }
   };
 
   const { register, handleSubmit: formHandleSubmit, formState: { errors }, reset, setError, clearErrors, setValue, getValues, watch } = useForm();
@@ -62,18 +65,25 @@ export default function FormAddBookmark() {
   const onNext = (data) => {
     let isValid = false;
     if (currentStep === 1) {
-      if (imageUrls.length < 3) {
-        setError("images", { type: "manual", message: "Se requieren minimo 3 imágenes. Por favor, sube las imágenes primero." });
+      isValid = validateStep1(data);
+    } else if (currentStep === 2) {
+      // Validar descripción Y imágenes
+      const descriptionValid = validateStep2(data);
+      if (imageUrls.length < 1) {
+        setError("images", { type: "manual", message: "Se requiere minimo 1 imagen. Por favor, sube al menos una imagen." });
         isValid = false;
       } else {
         clearErrors("images");
-        isValid = validateStep1(data);
+        isValid = descriptionValid;
       }
+    } else if (currentStep === 3) {
+      isValid = validateStep3(data);
+    } else if (currentStep === 4) {
+      isValid = validateStep4(data);
+    } else if (currentStep > 4) {
+      isValid = true;
     }
-    if (currentStep === 2) isValid = validateStep2(data);
-    if (currentStep === 3) isValid = validateStep3(data);
-    if (currentStep === 4) isValid = validateStep4(data);
-    if (currentStep > 4) isValid = true;
+    
     if (isValid) setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
@@ -153,22 +163,20 @@ export default function FormAddBookmark() {
                   watch={watch}
                 />
                 
-                <div className="form-control w-full max-w-md mb-6 text-left mx-auto">
-                  <ImageUpload 
-                    onImagesReceived={handleImagesReceived}
-                    maxImages={5}
-                  />
-                  {errors.images && (
-                    <span className="text-error text-sm mt-1">{errors.images.message}</span>
-                  )}
-                </div>
               </div>
             )}
 
             {currentStep === 2 && (
               <div className="flex flex-col items-center">
                 <h3 className="text-2xl font-semibold text-secondary mb-5 w-full text-center">Información adicional</h3>
-                <BookmarkAdditionalInfo register={register} errors={errors} setValue={setValue} watch={watch} />
+                <BookmarkAdditionalInfo 
+                  register={register} 
+                  errors={errors} 
+                  setValue={setValue} 
+                  watch={watch}
+                  onImagesReceived={handleImagesReceived}
+                  imageUrls={imageUrls}
+                />
               </div>
             )}
 

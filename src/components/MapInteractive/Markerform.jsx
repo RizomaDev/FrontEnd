@@ -253,11 +253,11 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
           <div className="form-control">
             <ImageUpload 
               onImagesReceived={handleImagesReceived}
-              maxImages={5}
+              maxImages={3}
             />
-            {imageUrls.length < 3 && (
+            {imageUrls.length < 1 && (
               <span className="text-error text-sm mt-1">
-                Se requieren mínimo 3 imágenes (máximo 5)
+                Se requiere mínimo 1 imagen (máximo 3)
               </span>
             )}
           </div>
@@ -273,7 +273,7 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={loadingCategories || loadingTags || imageUrls.length < 3}
+              disabled={loadingCategories || loadingTags || imageUrls.length < 1}
             >
               Guardar
             </button>
