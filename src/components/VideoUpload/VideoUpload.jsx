@@ -148,19 +148,21 @@ const VideoUpload = ({ onVideoUrlReceived }) => {
                         )}
                     </div>
 
-                    {uploadSuccess && (
-                        <div className="alert alert-success mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>Vídeo enviado com sucesso!</span>
-                        </div>
-                    )}
-
                     <video 
                         src={uploadedUrl || preview} 
                         className="w-full max-h-48 object-contain mb-4 rounded"
                     />
+
+                    {uploadSuccess && (
+                        <div className="mt-4 p-4 bg-success/10 rounded-lg border border-success/20">
+                            <div className="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5 text-success" fill="none" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="text-sm font-medium text-success">Vídeo enviado com sucesso!</span>
+                            </div>
+                        </div>
+                    )}
 
                     {!uploadSuccess && (
                         !uploading ? (

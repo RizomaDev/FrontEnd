@@ -155,7 +155,7 @@ const ImageUpload = ({ onImagesReceived, maxImages = 3, initialImages = [] }) =>
         <div className="w-full">
             <div className="form-control w-full">
                 <label className="label">
-                    <span className="label-text font-semibold">
+                    <span className="label-text">
                         Seleccionar Imágenes (mínimo 1, máximo {maxImages}) <span className="text-error">*</span>
                     </span>
                 </label>
@@ -173,10 +173,10 @@ const ImageUpload = ({ onImagesReceived, maxImages = 3, initialImages = [] }) =>
                 
                 {selectedFiles.length > 0 && (
                     <div className="bg-base-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <div>
-                                <p className="font-semibold">{selectedFiles.length} archivo(s) seleccionado(s)</p>
-                                <p className="text-sm text-gray-500">
+                        <div className="flex items-start justify-between mb-2 gap-2">
+                            <div className="flex-1 min-w-0">
+                                <p className="font-semibold truncate">{selectedFiles.length} archivo(s) seleccionado(s)</p>
+                                <p className="text-sm text-gray-500 truncate">
                                     {selectedFiles.map(file => file.name).join(', ')}
                                 </p>
                             </div>
@@ -184,7 +184,7 @@ const ImageUpload = ({ onImagesReceived, maxImages = 3, initialImages = [] }) =>
                                 <button 
                                     onClick={clearFiles}
                                     disabled={uploading}
-                                    className="btn btn-ghost btn-sm"
+                                    className="btn btn-ghost btn-sm flex-shrink-0"
                                 >
                                     Limpiar
                                 </button>
@@ -241,10 +241,10 @@ const ImageUpload = ({ onImagesReceived, maxImages = 3, initialImages = [] }) =>
                         {uploadSuccess && uploadedUrls.length > 0 && (
                             <div className="mt-4 p-4 bg-success/10 rounded-lg border border-success/20">
                                 <div className="flex items-center mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5 text-success" fill="none" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <span className="text-success font-semibold">
+                                    <span className="text-sm font-medium text-success">
                                         {uploadedUrls.length} imagen(es) {initialImages.length > 0 ? 'cargada(s)' : 'subida(s)'}
                                     </span>
                                 </div>

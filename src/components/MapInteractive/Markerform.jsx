@@ -218,20 +218,6 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Video (opcional)</span>
-            </label>
-            <VideoUpload onVideoUrlReceived={handleVideoUrlReceived} />
-            <input
-              type="hidden"
-              {...register("video")}
-            />
-            {errors.video && (
-              <span className="text-error text-sm mt-1">{errors.video.message}</span>
-            )}
-          </div>
-
-          <div className="form-control">
-            <label className="label">
               <span className="label-text font-semibold">URL Adicional (opcional)</span>
             </label>
             <input
@@ -251,15 +237,36 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
           </div>
 
           <div className="form-control">
-            <ImageUpload 
-              onImagesReceived={handleImagesReceived}
-              maxImages={3}
-            />
-            {imageUrls.length < 1 && (
-              <span className="text-error text-sm mt-1">
-                Se requiere mínimo 1 imagen (máximo 3)
-              </span>
-            )}
+            <label className="label">
+              <span className="label-text font-semibold">Contenido multimedia</span>
+            </label>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 space-y-4">
+              <div>
+                <label className="label">
+                  <span className="label-text font-medium">Video (opcional)</span>
+                </label>
+                <VideoUpload onVideoUrlReceived={handleVideoUrlReceived} />
+                <input
+                  type="hidden"
+                  {...register("video")}
+                />
+                {errors.video && (
+                  <span className="text-error text-sm mt-1">{errors.video.message}</span>
+                )}
+              </div>
+              
+              <div>
+                <ImageUpload 
+                  onImagesReceived={handleImagesReceived}
+                  maxImages={3}
+                />
+                {imageUrls.length < 1 && (
+                  <span className="text-error text-sm mt-1">
+                    Se requiere mínimo 1 imagen (máximo 3)
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end gap-2 mt-6">
