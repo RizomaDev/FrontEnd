@@ -5,13 +5,15 @@ import CategoryIcon from './CategoryIcon';
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from '../../constants/mapConstants';
 import BookmarkErrorModal from '../Forms/FormAddBookmark/BookmarkErrorModal';
 import { buildBookmarkPayloadSimple } from '../../utils/bookmarkPayloadBuilder';
-import { getLocationName } from '../../service/mapService';
+import { getLocationName, searchLocation } from '../../service/mapService';
 import VideoUpload from '../VideoUpload/VideoUpload';
 import ImageUpload from '../ImageUpload/ImageUpload';
 
 export default function MarkerForm({ position, onSubmit, onCancel }) {
   const [locationName, setLocationName] = useState('Cargando ubicación...');
   const [imageUrls, setImageUrls] = useState([]);
+  const [editablePosition, setEditablePosition] = useState(position);
+  const [searchValue, setSearchValue] = useState('');
 
   const { 
     register, 
@@ -29,8 +31,8 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
       categoryId: '',
       video: '',
       url: '',
-      latitude: position ? position[0].toString() : '',
-      longitude: position ? position[1].toString() : ''
+      latitude: editablePosition ? editablePosition[0].toString() : '',
+      longitude: editablePosition ? editablePosition[1].toString() : ''
     }
   });
 
@@ -47,21 +49,21 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
 
   useEffect(() => {
     const fetchLocationName = async () => {
-      if (position) {
-        const name = await getLocationName(position[0], position[1]);
+      if (editablePosition) {
+        const name = await getLocationName(editablePosition[0], editablePosition[1]);
         setLocationName(name);
       }
     };
     fetchLocationName();
-  }, [position]);
+  }, [editablePosition]);
 
   const handleFormSubmit = async (data) => {
     try {
       const payload = buildBookmarkPayloadSimple({
         ...data,
         imageUrls: imageUrls,
-        latitude: position[0].toString(),
-        longitude: position[1].toString()
+        latitude: editablePosition[0].toString(),
+        longitude: editablePosition[1].toString()
       });
       await submitBookmark(payload, reset);
       setImageUrls([]);
@@ -79,6 +81,24 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
 
   const handleImagesReceived = (urls) => {
     setImageUrls(urls);
+  };
+
+  const handleLocationSearch = async (searchValue) => {
+    try {
+      const coordinates = await searchLocation(searchValue);
+      if (coordinates) {
+        const newPosition = [coordinates.lat, coordinates.lon];
+        setEditablePosition(newPosition);
+        setValue("latitude", newPosition[0].toString());
+        setValue("longitude", newPosition[1].toString());
+        
+        // Actualizar el nombre de la ubicación
+        const name = await getLocationName(newPosition[0], newPosition[1]);
+        setLocationName(name);
+      }
+    } catch (error) {
+      console.error('Error searching location:', error);
+    }
   };
 
   const titleValue = watch("title") || "";
@@ -108,9 +128,33 @@ export default function MarkerForm({ position, onSubmit, onCancel }) {
       <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"></div>
       <div className="bg-base-100 rounded-lg shadow-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto relative z-[10000]">
         <h3 className="text-2xl font-bold text-primary mb-6">Agregar Marcador</h3>
-        <p className="text-sm text-base-content/70 mb-4">
-          {locationName}
-        </p>
+        
+        {/* Campo de búsqueda de ubicación */}
+        <div className="form-control mb-4">
+          <label className="label">
+            <span className="label-text font-semibold">Ubicación</span>
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Buscar ubicación..."
+              className="input input-bordered flex-1"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => handleLocationSearch(searchValue)}
+              className="btn btn-primary"
+              disabled={!searchValue.trim()}
+            >
+              Buscar
+            </button>
+          </div>
+          <p className="text-sm text-base-content/70 mt-1">
+            {locationName}
+          </p>
+        </div>
         
         <form onSubmit={formHandleSubmit(handleFormSubmit)} className="space-y-4">
           <div className="form-control">

@@ -9,6 +9,7 @@ import LocationMarker from './LocationMarker';
 import SearchControl from './SearchControl';
 import MapFilters from '../MapFilters';
 import MarkerForm from './Markerform';
+import AddMarkerControl from './AddMarkerControl';
 import { createCustomIcon } from './CustomMarkerIcon';
 import { useMapFilters } from '../../hooks/useMapFilters';
 import { DEFAULT_MAP_CENTER, DEFAULT_ZOOM } from '../../constants/mapConstants';
@@ -70,7 +71,6 @@ export default function MapInteractive({
         setError(null);
         const bookmarksData = await getAllBookmarks();
         
-        // Filtrar marcadores válidos con coordenadas
         const validBookmarks = bookmarksData.filter(bookmark => 
           bookmark.location && 
           bookmark.location.latitude && 
@@ -165,6 +165,53 @@ export default function MapInteractive({
     }
   };
 
+  const handleAddMarker = () => {
+    if (!user) return;
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLocation = [position.coords.latitude, position.coords.longitude];
+          setTemporaryMarker(userLocation);
+          setIsPositionConfirmed(false);
+          
+          if (mapInstance) {
+            mapInstance.setView(userLocation, 16);
+          }
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          if (mapInstance) {
+            const center = mapInstance.getCenter();
+            const fallbackLocation = [center.lat, center.lng];
+            setTemporaryMarker(fallbackLocation);
+            setIsPositionConfirmed(false);
+          }
+        }
+      );
+    } else {
+      // Fallback: usar el centro del mapa actual
+      if (mapInstance) {
+        const center = mapInstance.getCenter();
+        const fallbackLocation = [center.lat, center.lng];
+        setTemporaryMarker(fallbackLocation);
+        setIsPositionConfirmed(false);
+      }
+    }
+  };
+
+  const handleAddMarkerAtLocation = () => {
+    if (temporaryMarker) {
+      setFormPosition(temporaryMarker);
+      setIsPositionConfirmed(true);
+    }
+  };
+
+  const handleAddMarkerAtClick = () => {
+    setTemporaryMarker(null);
+    setIsPositionConfirmed(false);
+  };
+
   const filteredMarkers = filterMarkers(markers);
 
   const showLoginPrompt = () => {
@@ -237,6 +284,15 @@ export default function MapInteractive({
                 onTagChange={handleTagChange}
               />
             </>
+          )}
+          
+          {user && (
+            <AddMarkerControl
+              onAddMarker={handleAddMarker}
+              onAddMarkerAtLocation={handleAddMarkerAtLocation}
+              onAddMarkerAtClick={handleAddMarkerAtClick}
+              temporaryMarker={temporaryMarker}
+            />
           )}
           <MapContainer
             center={initialCenter || DEFAULT_MAP_CENTER}
