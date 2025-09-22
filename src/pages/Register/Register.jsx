@@ -15,6 +15,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
@@ -23,14 +24,14 @@ export default function Register() {
     setSuccess("");
     try {
       await registerUser(data);
-      setSuccess("Registration successful!");
+      setSuccess("¡Registro exitoso!");
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error) {
       setError(
         error.response?.data?.message ||
-          "Error during registration. Please try again."
+          "Error durante el registro. Por favor intenta de nuevo."
       );
     } finally {
       setIsLoading(false);
@@ -50,7 +51,7 @@ export default function Register() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="card-body items-center text-left">
               <h2 className="card-title text-4xl font-bold text-primary mb-6">
-                Register
+                Registro
               </h2>
               {error && (
                 <div role="alert" className="alert alert-warning text-neutral">
@@ -91,22 +92,22 @@ export default function Register() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Name</span>
+                  <span className="label-text">Nombre</span>
                 </label>
                 <input
                   type="text"
                   {...register("name", {
-                    required: "Name is required",
+                    required: "El nombre es requerido",
                     minLength: {
                       value: 2,
-                      message: "Name must be at least 2 characters long",
+                      message: "El nombre debe tener al menos 2 caracteres",
                     },
                     maxLength: {
                       value: 50,
-                      message: "Name must be at most 50 characters long",
+                      message: "El nombre debe tener máximo 50 caracteres",
                     },
                   })}
-                  placeholder="Name"
+                  placeholder="Nombre"
                   className="input input-bordered w-full"
                 />
                 {errors.name && (
@@ -118,22 +119,22 @@ export default function Register() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Email</span>
+                  <span className="label-text">Correo Electrónico</span>
                 </label>
                 <input
                   type="email"
                   {...register("email", {
-                    required: "Email is required",
+                    required: "El correo electrónico es requerido",
                     maxLength: {
                       value: 120,
-                      message: "Email must be at most 120 characters long",
+                      message: "El correo debe tener máximo 120 caracteres",
                     },
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      message: "Dirección de correo electrónico inválida",
                     },
                   })}
-                  placeholder="Email"
+                  placeholder="ejemplo@correo.com"
                   className="input input-bordered w-full"
                 />
                 {errors.email && (
@@ -145,29 +146,74 @@ export default function Register() {
 
               <div className="form-control w-full max-w-xs mb-4">
                 <label className="label">
-                  <span className="label-text">Password</span>
+                  <span className="label-text">Contraseña</span>
                 </label>
-                <input
-                  type="password"
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 8,
-                      message:
-                        "Password must be at least 8 characters.",
-                    },
-                    maxLength: {
-                      value: 120,
-                      message: "Password must be at most 120 characters long",
-                    },
-                    pattern: {
-                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&^()_+=-]).{8,}$/,
-                      message: "Password must include uppercase, lowercase, number, and special character",
-                    },
-                  })}
-                  placeholder="Password"
-                  className="input input-bordered w-full"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    {...register("password", {
+                      required: "La contraseña es requerida",
+                      minLength: {
+                        value: 6,
+                        message:
+                          "La contraseña debe tener al menos 6 caracteres",
+                      },
+                      maxLength: {
+                        value: 120,
+                        message: "La contraseña debe tener máximo 120 caracteres",
+                      },
+                      pattern: {
+                        value: /^(?=.*[A-Z])(?=.*[@$!%*#?&^()_+=-]).{6,}$/,
+                        message: "La contraseña debe tener al menos una mayúscula y un carácter especial",
+                      },
+                    })}
+                    placeholder="MiClave123!"
+                    className="input input-bordered w-full pr-12"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-gray-400 hover:text-gray-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-gray-400 hover:text-gray-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                </div>
                 {errors.password && (
                   <span className="text-error text-sm mt-1 ">
                     {errors.password.message}
@@ -186,18 +232,18 @@ export default function Register() {
                     
                   </>
                 ) : (
-                  "Register"
+                  "Registrarse"
                 )}
               </button>
 
               <div className="text-sm">
                 <p className="mb-1">
-                  Already registered?{" "}
+                  ¿Ya tienes cuenta?{" "}
                   <a
                     href="./Login"
                     className="link link-hover text-primary font-semibold"
                   >
-                    Log in here
+                    Inicia sesión aquí
                   </a>
                 </p>
                
